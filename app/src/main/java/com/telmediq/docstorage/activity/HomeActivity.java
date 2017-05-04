@@ -2,6 +2,8 @@ package com.telmediq.docstorage.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,6 +11,7 @@ import android.view.View;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
+import com.telmediq.docstorage.adapters.StringAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,7 +20,12 @@ import butterknife.OnClick;
 public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
 	@BindView(R.id.toolbar) Toolbar toolbar;
+	@BindView(R.id.HomeActivity_RecyclerView) RecyclerView mRecyclerView;
 	//</editor-fold>
+
+	RecyclerView.LayoutManager mLayoutManager;
+	RecyclerView.Adapter mAdapter;
+	String[] myDataset = {"sdfdssdf", "foo", "bar", "baz"};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +34,13 @@ public class HomeActivity extends TelmediqActivity {
 		ButterKnife.bind(this);
 
 		setupToolbar();
+		mRecyclerView.setHasFixedSize(true);
+		mLayoutManager = new LinearLayoutManager(this);
+
+		mRecyclerView.setLayoutManager(mLayoutManager);
+
+		mAdapter = new StringAdapter(myDataset);
+		mRecyclerView.setAdapter(mAdapter);
 	}
 
 	private void setupToolbar() {
