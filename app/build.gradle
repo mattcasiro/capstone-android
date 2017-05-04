@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
+
+android {
+	compileSdkVersion 25
+	buildToolsVersion "25.0.2"
+	defaultConfig {
+		applicationId "com.telmediq.docstorage"
+		minSdkVersion 21
+		targetSdkVersion 25
+		versionCode 1
+		versionName "1.0"
+		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+	}
+	buildTypes {
+		release {
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+		}
+	}
+}
+
+dependencies {
+	//Android
+	compile 'com.android.support:appcompat-v7:25.3.1'
+	compile 'com.android.support:design:25.3.1'
+	compile 'com.android.support:cardview-v7:25.3.1'
+	compile 'com.android.support:recyclerview-v7:25.3.1'
+	compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+	//Firebase
+	compile 'com.google.firebase:firebase-crash:10.2.4'
+
+	//Retrofit - https://github.com/square/retrofit
+	compile 'com.squareup.retrofit2:retrofit:2.2.0'
+	compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+	compile 'com.squareup.okhttp3:okhttp:3.3.1'
+	compile 'com.google.code.gson:gson:2.7'
+
+	//Glide - https://github.com/bumptech/glide
+	compile 'com.github.bumptech.glide:glide:3.7.0'
+
+	//Butterknife - https://github.com/JakeWharton/butterknife
+	compile 'com.jakewharton:butterknife:8.5.1'
+	annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+	//Timber - https://github.com/JakeWharton/timber
+	compile 'com.jakewharton.timber:timber:4.1.2'
+
+	//Material Icons - https://github.com/code-mc/material-icon-lib
+	compile 'net.steamcrafted:materialiconlib:1.1.1'
+
+	//Test
+	androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+		exclude group: 'com.android.support', module: 'support-annotations'
+	})
+	testCompile 'junit:junit:4.12'
+}
+
+apply plugin: 'com.google.gms.google-services'

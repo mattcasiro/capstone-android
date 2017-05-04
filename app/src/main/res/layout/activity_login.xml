@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context="com.telmediq.docstorage.activity.HomeActivity">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginLeft="@dimen/activity_horizontal_margin"
+		android:layout_marginRight="@dimen/activity_horizontal_margin"
+		android:gravity="center"
+		android:orientation="vertical">
+
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/activityLogin_emailLayout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<AutoCompleteTextView
+				android:id="@+id/activityLogin_emailText"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/email"
+				android:imeOptions="actionDone"
+				android:inputType="textEmailAddress"/>
+		</android.support.design.widget.TextInputLayout>
+
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/activityLogin_passwordLayout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<AutoCompleteTextView
+				android:id="@+id/activityLogin_passwordText"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/password"
+				android:imeOptions="actionDone"
+				android:inputType="textPassword"/>
+		</android.support.design.widget.TextInputLayout>
+
+		<Button
+			android:id="@+id/activityLogin_loginButton"
+			style="@style/Base.Widget.AppCompat.Button.Colored"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="Login"/>
+
+	</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

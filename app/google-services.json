@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "836463361017",
+    "firebase_url": "https://doc-storage-265ef.firebaseio.com",
+    "project_id": "doc-storage-265ef",
+    "storage_bucket": "doc-storage-265ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836463361017:android:09a2b78503433d91",
+        "android_client_info": {
+          "package_name": "com.telmediq.docstorage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836463361017-fdtamot3bcuebmr8rpulleuih5fkofrt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_NHRMZ6r7RcKKbWd5gdfQcmuSHVjTPl0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
