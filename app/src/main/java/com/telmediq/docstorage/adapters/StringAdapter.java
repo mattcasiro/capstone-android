@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.telmediq.docstorage.R;
@@ -17,10 +18,10 @@ public class StringAdapter extends RecyclerView.Adapter<StringAdapter.ViewHolder
     private String[] myDataset;
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView mTextView;
-        public ViewHolder(TextView v){
+        public RelativeLayout mRelativeLayout;
+        public ViewHolder(RelativeLayout v){
             super(v);
-            mTextView = v;
+            mRelativeLayout = v;
         }
     }
 
@@ -29,7 +30,7 @@ public class StringAdapter extends RecyclerView.Adapter<StringAdapter.ViewHolder
     }
 
     public StringAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TextView v = (TextView) LayoutInflater.from(parent.getContext())
+        RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.string_text_view, parent, false);
 
 
@@ -39,7 +40,8 @@ public class StringAdapter extends RecyclerView.Adapter<StringAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(StringAdapter.ViewHolder holder, int position) {
-        holder.mTextView.setText(myDataset[position]);
+        TextView mtv = (TextView)holder.mRelativeLayout.findViewById(R.id.test_boop);
+        mtv.setText(myDataset[position]);
     }
 
     @Override
