@@ -20,11 +20,11 @@ import butterknife.OnClick;
 public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
 	@BindView(R.id.toolbar) Toolbar toolbar;
-	@BindView(R.id.HomeActivity_RecyclerView) RecyclerView mRecyclerView;
+	@BindView(R.id.homeActivity_recyclerView) RecyclerView recyclerView;
 	//</editor-fold>
 
-	RecyclerView.LayoutManager mLayoutManager;
-	RecyclerView.Adapter mAdapter;
+	RecyclerView.LayoutManager layoutManager;
+	RecyclerView.Adapter adapter;
 	String[] myDataset = {"sdfdssdf", "foo", "bar", "baz"};
 
 	@Override
@@ -34,13 +34,13 @@ public class HomeActivity extends TelmediqActivity {
 		ButterKnife.bind(this);
 
 		setupToolbar();
-		mRecyclerView.setHasFixedSize(true);
-		mLayoutManager = new LinearLayoutManager(this);
+		recyclerView.setHasFixedSize(true);
+		layoutManager = new LinearLayoutManager(this);
 
-		mRecyclerView.setLayoutManager(mLayoutManager);
+		recyclerView.setLayoutManager(layoutManager);
 
-		mAdapter = new StringAdapter(myDataset);
-		mRecyclerView.setAdapter(mAdapter);
+		adapter = new StringAdapter(myDataset);
+		recyclerView.setAdapter(adapter);
 	}
 
 	private void setupToolbar() {

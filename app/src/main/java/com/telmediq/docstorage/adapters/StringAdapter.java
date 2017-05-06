@@ -18,10 +18,10 @@ public class StringAdapter extends RecyclerView.Adapter<StringAdapter.ViewHolder
     private String[] myDataset;
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public RelativeLayout mRelativeLayout;
+        public RelativeLayout relativeLayout;
         public ViewHolder(RelativeLayout v){
             super(v);
-            mRelativeLayout = v;
+            relativeLayout = v;
         }
     }
 
@@ -40,7 +40,7 @@ public class StringAdapter extends RecyclerView.Adapter<StringAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(StringAdapter.ViewHolder holder, int position) {
-        TextView mtv = (TextView)holder.mRelativeLayout.findViewById(R.id.test_boop);
+        TextView mtv = (TextView)holder.relativeLayout.findViewById(R.id.test_boop);
         mtv.setText(myDataset[position]);
     }
 
