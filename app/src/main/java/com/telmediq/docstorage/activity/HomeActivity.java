@@ -11,7 +11,11 @@ import android.view.View;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
+import com.telmediq.docstorage.adapters.FileAdapter;
 import com.telmediq.docstorage.adapters.StringAdapter;
+import com.telmediq.docstorage.model.File;
+
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +29,7 @@ public class HomeActivity extends TelmediqActivity {
 
 	RecyclerView.LayoutManager layoutManager;
 	RecyclerView.Adapter adapter;
-	String[] myDataset = {"sdfdssdf", "foo", "bar", "baz"};
+	File[] myDataset;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,11 @@ public class HomeActivity extends TelmediqActivity {
 
 		recyclerView.setLayoutManager(layoutManager);
 
-		adapter = new StringAdapter(myDataset);
+		myDataset = new File[2];
+
+		myDataset[0] = new File("File1", new Date(), new Date(), 1234);
+		myDataset[1] = new File("File2", new Date(), new Date(), 14);
+		adapter = new FileAdapter(myDataset);
 		recyclerView.setAdapter(adapter);
 	}
 
