@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.telmediq.docstorage.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by root on 03/05/17.
  */
@@ -17,13 +20,6 @@ public class StringAdapter extends RecyclerView.Adapter<StringAdapter.ViewHolder
 
     private String[] myDataset;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-        public RelativeLayout relativeLayout;
-        public ViewHolder(RelativeLayout v){
-            super(v);
-            relativeLayout = v;
-        }
-    }
 
     public StringAdapter(String[] myDataset) {
         this.myDataset = myDataset;
@@ -40,12 +36,28 @@ public class StringAdapter extends RecyclerView.Adapter<StringAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(StringAdapter.ViewHolder holder, int position) {
-        TextView mtv = (TextView)holder.relativeLayout.findViewById(R.id.test_boop);
-        mtv.setText(myDataset[position]);
+	    holder.bindView(myDataset[position]);
+
     }
 
     @Override
     public int getItemCount() {
         return myDataset.length;
     }
+
+	public static class ViewHolder extends RecyclerView.ViewHolder{
+		@BindView(R.id.test_boop) RelativeLayout relativeLayout;
+
+
+		public ViewHolder(RelativeLayout view){
+			super(view);
+			ButterKnife.bind(this, view);
+
+		}
+
+		public void bindView(String text){
+			TextView textTop = (TextView) relativeLayout.findViewById(R.id.text_top);
+			textTop.setText(text);
+		}
+	}
 }
