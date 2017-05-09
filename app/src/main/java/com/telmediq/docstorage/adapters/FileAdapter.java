@@ -11,6 +11,7 @@ import com.telmediq.docstorage.model.File;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,10 +22,10 @@ import butterknife.ButterKnife;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
-    private File[] viewDataset;
+    private List<File> viewDataset;
 
-    public FileAdapter(File[] dataSet) {
-        viewDataset = dataSet;
+    public FileAdapter(List<File> files) {
+        viewDataset = files;
     }
 
     public FileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -37,13 +38,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(FileAdapter.ViewHolder holder, int position) {
-	    holder.bindView(viewDataset[position]);
+	    holder.bindView(viewDataset.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        return viewDataset.length;
+        return viewDataset.size();
     }
 
 	static class ViewHolder extends RecyclerView.ViewHolder{
