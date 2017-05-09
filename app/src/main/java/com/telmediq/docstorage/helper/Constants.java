@@ -7,10 +7,9 @@ import com.telmediq.docstorage.BuildConfig;
  */
 
 public class Constants {
-	public static final String SERVER_URL = "app.telmediq.com";
+	public static final String SERVER_URL = "https://cds.development.telmediq.com";
 
 	public interface Preference {
-		String ACCESS_KEY = BuildConfig.APPLICATION_ID + ".accessKey";
-		String SECRET_KEY = BuildConfig.APPLICATION_ID + ".secretKey";
+		String ACCESS_TOKEN = BuildConfig.APPLICATION_ID + ".accessToken";
 	}
 }
