@@ -1,9 +1,10 @@
-package com.telmediq.docstorage.adapters;
+package com.telmediq.docstorage.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.telmediq.docstorage.R;
@@ -21,11 +22,12 @@ import butterknife.ButterKnife;
  */
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
-
     private List<File> viewDataset;
+	private Listener listener;
 
-    public FileAdapter(List<File> files) {
-        viewDataset = files;
+    public FileAdapter(List<File> files, Listener listener) {
+	    this.viewDataset = files;
+	    this.listener = listener;
     }
 
     public FileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,7 +40,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(FileAdapter.ViewHolder holder, int position) {
-	    holder.bindView(viewDataset.get(position));
+	    holder.bindView(viewDataset.get(position), listener);
 
     }
 
@@ -48,18 +50,50 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
     }
 
 	static class ViewHolder extends RecyclerView.ViewHolder{
+		//<editor-fold desc="View Initialization">
 		@BindView(R.id.text_top) TextView textView1;
 		@BindView(R.id.text_bottom) TextView textView2;
+		@BindView(R.id.text_setting_icon) ImageView textSettingIcon;
+		@BindView(R.id.test_boop) View rootView;
+		//</editor-fold>
 
-		public ViewHolder(View view){
+		ViewHolder(View view){
 			super(view);
 			ButterKnife.bind(this, view);
 		}
 
-		public void bindView(File file){
+		void bindView(File file, final Listener listener){
 			DateFormat df  = new SimpleDateFormat("MMM dd, yyyy");
 			textView1.setText(file.getName());
 			textView2.setText(df.format(file.getCreated()));
+
+			setupListener(file.getId(), listener);
 		}
+
+		private void setupListener(final String fileId, final Listener listener) {
+			if (listener == null){
+				return;
+			}
+
+			rootView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					listener.onItemClicked(fileId);
+				}
+			});
+
+			textSettingIcon.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					listener.onItemOptionSelected(fileId);
+				}
+			});
+		}
+	}
+
+	public interface Listener {
+		void onItemClicked(String fileId);
+
+		void onItemOptionSelected(String fileId);
 	}
 }

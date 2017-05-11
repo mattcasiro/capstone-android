@@ -7,16 +7,27 @@ import java.util.Date;
  */
 
 public class File {
+	private String id;
 	private String name;
 	private Date created;
 	private Date modified;
 	private long size;
 
-	public File(String name, Date created, Date modified, long size){
+	public File(String id, String name, Date created, Date modified, long size){
+		this.id = id;
 		this.name = name;
 		this.created = created;
 		this.modified = modified;
 		this.size = size;
+	}
+
+	//<editor-fold desc="Getter and Setters">
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -38,4 +49,5 @@ public class File {
 	public long getSize() {
 		return size;
 	}
+	//</editor-fold>
 }
