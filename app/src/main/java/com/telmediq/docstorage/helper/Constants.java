@@ -13,4 +13,8 @@ public class Constants {
 		String ACCESS_KEY = BuildConfig.APPLICATION_ID + ".accessKey";
 		String SECRET_KEY = BuildConfig.APPLICATION_ID + ".secretKey";
 	}
+
+	public interface Extras {
+		String FILE_ID = BuildConfig.APPLICATION_ID + ".fileId";
+	}
 }

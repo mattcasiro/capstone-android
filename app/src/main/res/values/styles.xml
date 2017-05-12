@@ -17,4 +17,27 @@
 
 	<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+	<style name="divider">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">2px</item>
+		<item name="android:background">@color/divider</item>
+	</style>
+
+	<style name="simpleListItem">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:minHeight">?attr/listPreferredItemHeight</item>
+		<item name="android:gravity">center_vertical</item>
+		<item name="android:orientation">horizontal</item>
+		<item name="android:background">?attr/selectableItemBackground</item>
+	</style>
+
+	<style name="listItemIcon">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:padding">@dimen/itemSpacing</item>
+		<item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
+		<item name="android:layout_marginRight">@dimen/activity_horizontal_margin</item>
+	</style>
+
 </resources>
