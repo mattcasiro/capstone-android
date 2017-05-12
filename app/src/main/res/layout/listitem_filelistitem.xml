@@ -1,36 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="56dp"
-	android:id="@+id/test_boop"
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+
+	android:layout_width="match_parent"
+	android:layout_height="56dp"
+	android:id="@+id/filelistitem_root"
 	android:background="?attr/selectableItemBackground">
 
-	<ImageView
-		android:id="@+id/image_image"
-		android:layout_width="56dp"
-		android:layout_height="56dp"
-		android:scaleType="centerCrop"
-		android:src="@drawable/muffin"/>
+	<LinearLayout
+		style="@style/simpleListItem"
+		android:background="@android:color/transparent">
 
-	<TextView
-		android:id="@+id/text_top"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Top"
-		android:layout_toRightOf="@id/image_image"
-		/>
+		<ImageView
+			android:id="@+id/image_image"
+			android:layout_width="56dp"
+			android:layout_height="56dp"
+			android:scaleType="centerCrop"
+			android:padding="@dimen/itemSpacing"
+			android:src="@drawable/muffin"/>
 
-	<TextView
-		android:id="@+id/text_bottom"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Bottom"
-		android:layout_toRightOf="@id/image_image"
-		android:layout_below="@id/text_top"/>
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_weight="1"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
 
-	<ImageView
-		android:id="@+id/text_setting_icon"
-		android:layout_width="56dp"
-		android:layout_height="56dp"
-		android:layout_alignParentRight="true"
-		android:src="@drawable/frog"/>
+			<TextView
+				android:id="@+id/filelistitem_filename"
+				android:text="File1"
+				android:textSize="14sp"
+				android:textColor="@android:color/black"
+				android:maxLines="1"
+				android:ellipsize="middle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textSize="12sp"
+					android:maxLines="1"
+					android:ellipsize="middle"
+				    android:text="@string/modified_title"/>
+
+				<TextView
+					android:id="@+id/filelistitem_modified_date"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingLeft="2dp"
+					android:textSize="12sp"
+					android:maxLines="1"
+					android:ellipsize="middle"/>
+
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/filelistitem_menu"
+		    style="@style/listItemIcon"
+		    android:background="?attr/selectableItemBackgroundBorderless"
+		    app:materialIcon="dots_vertical"
+		    app:materialIconColor="@color/textSecondary"
+		    app:materialIconSize="24dp" />
+
+
+	</LinearLayout>
 </RelativeLayout>

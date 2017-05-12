@@ -1,5 +1,6 @@
 package com.telmediq.docstorage.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.model.File;
+
+import net.steamcrafted.materialiconlib.MaterialIconView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,21 +54,25 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
 	static class ViewHolder extends RecyclerView.ViewHolder{
 		//<editor-fold desc="View Initialization">
-		@BindView(R.id.text_top) TextView textView1;
-		@BindView(R.id.text_bottom) TextView textView2;
-		@BindView(R.id.text_setting_icon) ImageView textSettingIcon;
-		@BindView(R.id.test_boop) View rootView;
+		@BindView(R.id.filelistitem_filename) TextView filename;
+		@BindView(R.id.filelistitem_modified_date) TextView modifiedDate;
+		@BindView(R.id.filelistitem_menu) MaterialIconView fileOptionsIcon;
+		@BindView(R.id.filelistitem_root) View rootView;
 		//</editor-fold>
+
+		Context ctx;
 
 		ViewHolder(View view){
 			super(view);
+			ctx = view.getContext();
 			ButterKnife.bind(this, view);
 		}
 
 		void bindView(File file, final Listener listener){
 			DateFormat df  = new SimpleDateFormat("MMM dd, yyyy");
-			textView1.setText(file.getName());
-			textView2.setText(df.format(file.getCreated()));
+			filename.setText(file.getName());
+
+			modifiedDate.setText(df.format(file.getModified()));
 
 			setupListener(file.getId(), listener);
 		}
@@ -82,7 +89,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 				}
 			});
 
-			textSettingIcon.setOnClickListener(new View.OnClickListener() {
+			fileOptionsIcon.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					listener.onItemOptionSelected(fileId);
