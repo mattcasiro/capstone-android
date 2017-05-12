@@ -25,51 +25,55 @@ import butterknife.ButterKnife;
  */
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
-    private List<File> viewDataset;
+	private List<File> viewDataset;
 	private Listener listener;
 
-    public FileAdapter(List<File> files, Listener listener) {
-	    this.viewDataset = files;
-	    this.listener = listener;
-    }
+	public FileAdapter(List<File> files, Listener listener) {
+		this.viewDataset = files;
+		this.listener = listener;
+	}
 
-    public FileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.listitem_filelistitem, parent, false);
+	public FileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+		View v = LayoutInflater.from(parent.getContext())
+				.inflate(R.layout.listitem_filelistitem, parent, false);
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
-    }
+		ViewHolder vh = new ViewHolder(v);
+		return vh;
+	}
 
-    @Override
-    public void onBindViewHolder(FileAdapter.ViewHolder holder, int position) {
-	    holder.bindView(viewDataset.get(position), listener);
+	@Override
+	public void onBindViewHolder(FileAdapter.ViewHolder holder, int position) {
+		holder.bindView(viewDataset.get(position), listener);
 
-    }
+	}
 
-    @Override
-    public int getItemCount() {
-        return viewDataset.size();
-    }
+	@Override
+	public int getItemCount() {
+		return viewDataset.size();
+	}
 
-	static class ViewHolder extends RecyclerView.ViewHolder{
+	static class ViewHolder extends RecyclerView.ViewHolder {
 		//<editor-fold desc="View Initialization">
-		@BindView(R.id.filelistitem_filename) TextView filename;
-		@BindView(R.id.filelistitem_modified_date) TextView modifiedDate;
-		@BindView(R.id.filelistitem_menu) MaterialIconView fileOptionsIcon;
-		@BindView(R.id.filelistitem_root) View rootView;
+		@BindView(R.id.filelistitem_filename)
+		TextView filename;
+		@BindView(R.id.filelistitem_modified_date)
+		TextView modifiedDate;
+		@BindView(R.id.filelistitem_menu)
+		MaterialIconView fileOptionsIcon;
+		@BindView(R.id.filelistitem_root)
+		View rootView;
 		//</editor-fold>
 
 		Context ctx;
 
-		ViewHolder(View view){
+		ViewHolder(View view) {
 			super(view);
 			ctx = view.getContext();
 			ButterKnife.bind(this, view);
 		}
 
-		void bindView(File file, final Listener listener){
-			DateFormat df  = new SimpleDateFormat("MMM dd, yyyy");
+		void bindView(File file, final Listener listener) {
+			DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
 			filename.setText(file.getName());
 
 			modifiedDate.setText(df.format(file.getModified()));
@@ -78,7 +82,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 		}
 
 		private void setupListener(final String fileId, final Listener listener) {
-			if (listener == null){
+			if (listener == null) {
 				return;
 			}
 

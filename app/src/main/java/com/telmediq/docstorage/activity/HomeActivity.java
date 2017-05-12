@@ -27,8 +27,10 @@ import butterknife.OnClick;
 
 public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
-	@BindView(R.id.toolbar) Toolbar toolbar;
-	@BindView(R.id.homeActivity_recyclerView) RecyclerView recyclerView;
+	@BindView(R.id.toolbar)
+	Toolbar toolbar;
+	@BindView(R.id.homeActivity_recyclerView)
+	RecyclerView recyclerView;
 	//</editor-fold>
 
 	RecyclerView.LayoutManager layoutManager;
