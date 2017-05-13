@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
+import com.telmediq.docstorage.helper.AppValues;
 import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.AuthorizationResponse;
 
@@ -21,9 +22,12 @@ import timber.log.Timber;
 
 public class LoginActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
-	@BindView(R.id.activityLogin_emailText) EditText emailEditText;
-	@BindView(R.id.activityLogin_passwordText) EditText passwordEditText;
-	@BindView(R.id.activityLogin_loginButton) Button loginButton;
+	@BindView(R.id.activityLogin_emailText)
+	EditText emailEditText;
+	@BindView(R.id.activityLogin_passwordText)
+	EditText passwordEditText;
+	@BindView(R.id.activityLogin_loginButton)
+	Button loginButton;
 	//</editor-fold>
 
 	@Override
@@ -43,13 +47,11 @@ public class LoginActivity extends TelmediqActivity {
 		Call<AuthorizationResponse> loginCall = getTelmediqService().login(email, password);
 		loginCall.enqueue(loginCallback);
 	}
+
 	//<editor-fold desc="Listeners">
 	View.OnClickListener loginClicked = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-	//		Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-	//		startActivity(intent);
-	//		finish();
 			login();
 		}
 	};
@@ -64,7 +66,9 @@ public class LoginActivity extends TelmediqActivity {
 				onFailure(call, new Throwable(error));
 				return;
 			}
+
 			Timber.i(response.body().getStatus());
+			AppValues.setAccessToken(response.body());
 		}
 
 		@Override
