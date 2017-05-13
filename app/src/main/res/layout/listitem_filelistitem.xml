@@ -5,15 +5,19 @@
 
 	android:id="@+id/filelistitem_root"
 	android:layout_width="match_parent"
-	android:layout_height="56dp"
+	android:layout_height="70dp"
 	android:background="?attr/selectableItemBackground">
 
 	<LinearLayout
 		style="@style/simpleListItem"
-		android:background="@android:color/transparent">
+		android:layout_alignParentBottom="true"
+		android:layout_below="@+id/imageView2"
+		android:background="@android:color/transparent"
+		android:gravity="center">
 
 		<ImageView
 			android:id="@+id/image_image"
+			style="@style/listItemIcon"
 			android:layout_width="56dp"
 			android:layout_height="56dp"
 			android:padding="@dimen/itemSpacing"
@@ -34,7 +38,7 @@
 				android:maxLines="1"
 				android:text="File1"
 				android:textColor="@android:color/black"
-				android:textSize="14sp"/>
+				android:textSize="16sp"/>
 
 			<LinearLayout
 				android:layout_width="match_parent"
@@ -46,7 +50,7 @@
 					android:ellipsize="middle"
 					android:maxLines="1"
 					android:text="@string/modified_title"
-					android:textSize="12sp"/>
+					android:textSize="14sp"/>
 
 				<TextView
 					android:id="@+id/filelistitem_modified_date"
@@ -55,8 +59,7 @@
 					android:ellipsize="middle"
 					android:maxLines="1"
 					android:paddingLeft="2dp"
-					android:textSize="12sp"/>
-
+					android:textSize="14sp"/>
 
 			</LinearLayout>
 
@@ -70,6 +73,10 @@
 			app:materialIconColor="@color/textSecondary"
 			app:materialIconSize="24dp"/>
 
-
 	</LinearLayout>
+
+	<ImageView
+		android:id="@+id/imageView2"
+		style="@style/divider"/>
+
 </RelativeLayout>
