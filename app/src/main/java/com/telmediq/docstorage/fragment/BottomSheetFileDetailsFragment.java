@@ -18,9 +18,6 @@ import com.telmediq.docstorage.model.File;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
-import java.util.Date;
-import java.util.UUID;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -33,19 +30,22 @@ import timber.log.Timber;
 
 public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	//<editor-fold desc="View Initialization">
-	@BindView(R.id.fileTypeImage) MaterialIconView fileTypeImage;
-	@BindView(R.id.fileNameTextView) TextView fileNameTextView;
-	@BindView(R.id.starSwitch) SwitchCompat starSwitch;
+	@BindView(R.id.fileTypeImage)
+	MaterialIconView fileTypeImage;
+	@BindView(R.id.fileNameTextView)
+	TextView fileNameTextView;
+	@BindView(R.id.starSwitch)
+	SwitchCompat starSwitch;
 	//</editor-fold>
 
 	private File file;
 	private boolean isUserInteraction = true; // boolean to make sure programmatic changes don't trigger listeners
 
-	public static BottomSheetFileDetailsFragment newInstance(String fileId) {
+	public static BottomSheetFileDetailsFragment newInstance(int fileId) {
 		BottomSheetFileDetailsFragment messagesFragment = new BottomSheetFileDetailsFragment();
 
 		Bundle arguments = new Bundle();
-		arguments.putString(Constants.Extras.FILE_ID, fileId);
+		arguments.putInt(Constants.Extras.FILE_ID, fileId);
 		messagesFragment.setArguments(arguments);
 
 		return messagesFragment;
@@ -53,7 +53,6 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 
 	@Override
 	public void setupDialog(Dialog dialog, int style) {
-		super.setupDialog(dialog, style);
 		View contentView = View.inflate(getContext(), R.layout.content_file_details, null);
 		dialog.setContentView(contentView);
 		ButterKnife.bind(this, contentView);
@@ -116,7 +115,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 		}
 
 		// ToDo: get file from database using id
-		file = new File(UUID.randomUUID().toString(), "AnImage", new Date(), new Date(), 2048);
+		//file = new File(UUID.randomUUID().toString(), "AnImage", new Date(), new Date(), 2048);
 		return true;
 	}
 

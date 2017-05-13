@@ -81,7 +81,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 			setupListener(file.getId(), listener);
 		}
 
-		private void setupListener(final String fileId, final Listener listener) {
+		private void setupListener(final int fileId, final Listener listener) {
 			if (listener == null) {
 				return;
 			}
@@ -103,8 +103,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 	}
 
 	public interface Listener {
-		void onItemClicked(String fileId);
+		void onItemClicked(int fileId);
 
-		void onItemOptionSelected(String fileId);
+		void onItemOptionSelected(int fileId);
 	}
 }
