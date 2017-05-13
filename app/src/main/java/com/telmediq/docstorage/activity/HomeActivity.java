@@ -1,5 +1,6 @@
 package com.telmediq.docstorage.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -95,9 +96,12 @@ public class HomeActivity extends TelmediqActivity {
 	}
 
 	FileAdapter.Listener fileListener = new FileAdapter.Listener() {
+
 		@Override
 		public void onItemClicked(String fileId) {
-			Toast.makeText(getApplicationContext(), String.format("Selected: %s", fileId), Toast.LENGTH_SHORT).show();
+			//Toast.makeText(getApplicationContext(), String.format("Selected: %s", fileId), Toast.LENGTH_SHORT).show();
+			Intent intent = new Intent(HomeActivity.this, FileViewActivity.class);
+			startActivity(intent);
 		}
 
 		@Override
