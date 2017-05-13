@@ -1,18 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context="com.telmediq.docstorage.activity.HomeActivity">
+	android:orientation="vertical">
+
+	<!-- Header -->
+	<LinearLayout
+		style="@style/simpleListItem"
+		android:background="@android:color/black">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/back_arrow"
+			style="@style/listItemIcon"
+			app:materialIcon="arrow_left"
+			app:materialIconColor="@android:color/white"
+			app:materialIconSize="@dimen/icon_size"/>
+
+		<TextView
+			android:id="@+id/fileName"
+			style="@style/TextAppearance.AppCompat.Body2"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:maxLines="1"
+			android:textColor="@android:color/white"
+			android:text="An Image"/>
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/file_options"
+			style="@style/listItemIcon"
+			android:background="?attr/selectableItemBackgroundBorderless"
+			app:materialIcon="dots_vertical"
+			app:materialIconColor="@android:color/white"
+			app:materialIconSize="24dp"/>
+
+	</LinearLayout>
 
 	<ImageView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:background="@android:color/black"
 		android:scaleType="centerInside"
 		android:src="@drawable/frog"
 		android:id="@+id/fileViewActivity_fileView"/>
 
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
