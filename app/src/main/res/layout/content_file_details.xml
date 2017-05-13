@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<!-- Header -->
+	<LinearLayout
+		style="@style/simpleListItem"
+		android:background="@android:color/transparent">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/fileTypeImage"
+			style="@style/listItemIcon"
+			app:materialIcon="image"
+			app:materialIconColor="@color/colorPrimary"
+			app:materialIconSize="@dimen/icon_size"/>
+
+		<TextView
+			android:id="@+id/fileNameTextView"
+			style="@style/TextAppearance.AppCompat.Body2"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:maxLines="1"
+			android:text="An Image"/>
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/fileInfo"
+			style="@style/listItemIcon"
+			android:background="?attr/selectableItemBackgroundBorderless"
+			app:materialIcon="information"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="24dp"/>
+
+	</LinearLayout>
+
+	<ImageView style="@style/divider"/>
+
+	<!-- Add people -->
+	<LinearLayout
+		android:id="@+id/addPeopleListItem"
+		style="@style/simpleListItem">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			style="@style/listItemIcon"
+			app:materialIcon="account_plus"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="@dimen/icon_size"/>
+
+		<TextView
+			style="@style/TextAppearance.AppCompat.Body1"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:maxLines="1"
+			android:text="Add people"/>
+
+	</LinearLayout>
+
+	<!-- Share link -->
+	<LinearLayout
+		android:id="@+id/shareLinkListItem"
+		style="@style/simpleListItem">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			style="@style/listItemIcon"
+			app:materialIcon="link"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="@dimen/icon_size"/>
+
+		<TextView
+			style="@style/TextAppearance.AppCompat.Body1"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:maxLines="1"
+			android:text="Share link"/>
+
+	</LinearLayout>
+
+	<ImageView
+		style="@style/divider"
+		android:layout_marginLeft="56dp"/>
+
+	<!-- Move -->
+	<LinearLayout
+		android:id="@+id/moveListItem"
+		style="@style/simpleListItem">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			style="@style/listItemIcon"
+			app:materialIcon="folder_move"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="@dimen/icon_size"/>
+
+		<TextView
+			style="@style/TextAppearance.AppCompat.Body1"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:maxLines="1"
+			android:text="Move"/>
+
+	</LinearLayout>
+
+	<!-- Star -->
+	<LinearLayout
+		android:id="@+id/starListItem"
+		style="@style/simpleListItem">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			style="@style/listItemIcon"
+			app:materialIcon="star"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="@dimen/icon_size"/>
+
+		<TextView
+			style="@style/TextAppearance.AppCompat.Body1"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:maxLines="1"
+			android:text="Star"/>
+
+		<android.support.v7.widget.SwitchCompat
+			android:id="@+id/starSwitch"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:padding="@dimen/itemSpacing"/>
+
+	</LinearLayout>
+
+	<!-- Rename -->
+	<LinearLayout
+		android:id="@+id/renameListItem"
+		style="@style/simpleListItem">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			style="@style/listItemIcon"
+			app:materialIcon="pencil_box"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="@dimen/icon_size"/>
+
+		<TextView
+			style="@style/TextAppearance.AppCompat.Body1"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:maxLines="1"
+			android:text="Rename"/>
+
+	</LinearLayout>
+
+	<ImageView
+		style="@style/divider"
+		android:layout_marginLeft="56dp"/>
+
+	<!-- Remove -->
+	<LinearLayout
+		android:id="@+id/removeListItem"
+		style="@style/simpleListItem">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			style="@style/listItemIcon"
+			app:materialIcon="delete"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="@dimen/icon_size"/>
+
+		<TextView
+			style="@style/TextAppearance.AppCompat.Body1"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:maxLines="1"
+			android:text="Remove"/>
+
+	</LinearLayout>
+
+</LinearLayout>

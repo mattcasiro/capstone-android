@@ -12,4 +12,8 @@ public class Constants {
 	public interface Preference {
 		String ACCESS_TOKEN = BuildConfig.APPLICATION_ID + ".accessToken";
 	}
+
+	public interface Extras {
+		String FILE_ID = BuildConfig.APPLICATION_ID + ".fileId";
+	}
 }
