@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.telmediq.docstorage.endpoint.TelmediqService;
+
 import io.realm.Realm;
 
 /**
@@ -29,5 +31,9 @@ public class TelmediqActivity extends AppCompatActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		realm.close();
+	}
+
+	public TelmediqService getTelmediqService() {
+		return ((TelmediqApplication)getApplication()).getTelmediqService();
 	}
 }

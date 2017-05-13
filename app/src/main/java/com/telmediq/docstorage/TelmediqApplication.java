@@ -3,6 +3,7 @@ package com.telmediq.docstorage;
 import android.app.Application;
 import android.content.Context;
 
+import com.telmediq.docstorage.endpoint.TelmediqService;
 import com.telmediq.docstorage.helper.AppValues;
 import com.telmediq.docstorage.helper.Constants;
 
@@ -19,6 +20,7 @@ import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 /**
@@ -31,6 +33,7 @@ public class TelmediqApplication extends Application {
 	private static RealmConfiguration realmConfiguration;
 
 	private Retrofit retrofit;
+	private TelmediqService telmediqService;
 
 	@Override
 	public void onCreate() {
@@ -76,7 +79,8 @@ public class TelmediqApplication extends Application {
 
 	public static Retrofit createRetrofitInstance() {
 		Retrofit.Builder builder = new Retrofit.Builder()
-				.baseUrl(Constants.SERVER_URL + "/");
+				.baseUrl(Constants.SERVER_URL + "/")
+				.addConverterFactory(GsonConverterFactory.create());
 
 		OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 
@@ -85,6 +89,13 @@ public class TelmediqApplication extends Application {
 
 		builder.client(clientBuilder.build());
 		return builder.build();
+	}
+
+	public TelmediqService getTelmediqService() {
+		if (telmediqService == null) {
+			telmediqService = getRetrofit().create(TelmediqService.class);
+		}
+		return telmediqService;
 	}
 
 	private static Interceptor authorizationInterceptor = new Interceptor() {
@@ -96,7 +107,7 @@ public class TelmediqApplication extends Application {
 			}
 
 			Request.Builder requestBuilder = originalRequest.newBuilder()
-					.addHeader("Authorization", AppValues.getAuthorization())
+					.addHeader("Authorization", String.format("token %s", AppValues.getAccessToken()))
 					.method(originalRequest.method(), originalRequest.body());
 			Request request = requestBuilder.build();
 			return chain.proceed(request);

@@ -5,32 +5,31 @@ package com.telmediq.docstorage.model;
  */
 
 public class AuthorizationResponse {
-	private String access_key_id;
-	private String secret_access_key;
+	private String status;
+	private String token;
 
 	public AuthorizationResponse() {
+
 	}
 
-	public AuthorizationResponse(String access_key_id, String secret_access_key) {
-		this.access_key_id = access_key_id;
-		this.secret_access_key = secret_access_key;
+	public AuthorizationResponse(String status, String token) {
+		this.status = status;
+		this.token = token;
 	}
 
-	//<editor-fold desc="Getter and Setters">
-	public String getAccess_key_id() {
-		return access_key_id;
+	public String getStatus() {
+		return status;
 	}
 
-	public void setAccess_key_id(String access_key_id) {
-		this.access_key_id = access_key_id;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
-	public String getSecret_access_key() {
-		return secret_access_key;
+	public String getToken() {
+		return token;
 	}
 
-	public void setSecret_access_key(String secret_access_key) {
-		this.secret_access_key = secret_access_key;
+	public void setToken(String token) {
+		this.token = token;
 	}
-	//</editor-fold>
 }
