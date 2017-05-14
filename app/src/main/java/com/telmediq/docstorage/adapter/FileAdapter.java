@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.telmediq.docstorage.R;
+import com.telmediq.docstorage.helper.UrlHelper;
 import com.telmediq.docstorage.model.File;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
@@ -62,6 +64,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 		MaterialIconView fileOptionsIcon;
 		@BindView(R.id.filelistitem_root)
 		View rootView;
+		@BindView(R.id.filelistitem_image)
+		ImageView thumbnail;
 		//</editor-fold>
 
 		Context ctx;
@@ -77,6 +81,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 			filename.setText(file.getName());
 
 			modifiedDate.setText(df.format(file.getModified()));
+
+			Glide.with(ctx)
+					.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))
+					.into(thumbnail);
 
 			setupListener(file.getId(), listener);
 		}

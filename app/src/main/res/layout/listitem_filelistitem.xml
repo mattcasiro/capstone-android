@@ -16,7 +16,7 @@
 		android:gravity="center">
 
 		<ImageView
-			android:id="@+id/image_image"
+			android:id="@+id/filelistitem_image"
 			style="@style/listItemIcon"
 			android:layout_width="56dp"
 			android:layout_height="56dp"
