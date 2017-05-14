@@ -37,6 +37,7 @@ public class File extends RealmObject {
 	public static File getFile(Realm realm, String fileId) {
 		return realm.where(File.class).equalTo("id", new Integer(fileId)).findFirst();
 	}
+
 	//<editor-fold desc="Getter and Setters">
 	public Integer getId() {
 		if (id == null) {
@@ -130,7 +131,7 @@ public class File extends RealmObject {
 		this.owner = owner;
 	}
 
-	public String getUrl(){
+	public String getUrl() {
 		return String.format("/api/folders/%d/files/%d/file/stream/", folder, id);
 	}
 
