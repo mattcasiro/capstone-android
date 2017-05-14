@@ -129,5 +129,10 @@ public class File extends RealmObject {
 	public void setOwner(Integer owner) {
 		this.owner = owner;
 	}
+
+	public String getUrl(){
+		return String.format("/api/folders/%d/files/%d/file/stream/", folder, id);
+	}
+
 	//</editor-fold>
 }

@@ -6,10 +6,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
 import com.telmediq.docstorage.fragment.BottomSheetFileDetailsFragment;
 import com.telmediq.docstorage.helper.Constants;
+import com.telmediq.docstorage.helper.UrlHelper;
 import com.telmediq.docstorage.model.File;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
@@ -42,6 +44,10 @@ public class FileViewActivity extends TelmediqActivity {
 			return;
 		}
 		fileName.setText(file.getName());
+
+		Glide.with(this)
+				.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))
+				.into(fileView);
 	}
 
 	private boolean getFile() {
