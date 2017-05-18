@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
@@ -18,11 +17,9 @@ import com.telmediq.docstorage.fragment.BottomSheetFileDetailsFragment;
 import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.File;
+import com.telmediq.docstorage.model.Folder;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,10 +41,12 @@ public class HomeActivity extends TelmediqActivity {
 	//</editor-fold>
 
 	RecyclerView.LayoutManager layoutManager;
-	FileAdapter adapter;
+	FileAdapter adapter; // TODO change to DirectoryAdapter
 
+	RealmResults<Folder> folders;
 	RealmResults<File> files;
 
+	Folder parentFolder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +54,9 @@ public class HomeActivity extends TelmediqActivity {
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 
+		parentFolder = Folder.getRootFolder(realm);
+
+		getFolderList();
 		getFileList();
 		setupToolbar();
 		setupViews();
@@ -77,6 +79,21 @@ public class HomeActivity extends TelmediqActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
+	}
+
+	private void getFolderList() {
+		Timber.d("Fetch folder list");
+
+		// Handle case when no folders are in realm yet
+		if (parentFolder == null) {
+			folders = Folder.getEmptyFolderList(realm);
+		} else {
+			folders = Folder.getFoldersByParent(realm, parentFolder.getId());
+		}
+		folders.addChangeListener(realmChangeListener);
+
+		Call<List<Folder>> userFolderCall = getTelmediqService().getFolders();
+		userFolderCall.enqueue(userFolderCallback);
 	}
 
 	public void getFileList() {
@@ -112,6 +129,7 @@ public class HomeActivity extends TelmediqActivity {
 	@OnClick(R.id.fab)
 	public void onFabClicked(View view) {
 		Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+		getFolderList();
 	}
 
 	FileAdapter.Listener fileListener = new FileAdapter.Listener() {
@@ -162,6 +180,33 @@ public class HomeActivity extends TelmediqActivity {
 
 		@Override
 		public void onFailure(Call<List<File>> call, Throwable t) {
+
+		}
+	};
+
+	Callback<List<Folder>> userFolderCallback = new Callback<List<Folder>>() {
+		@Override
+		public void onResponse(Call<List<Folder>> call, final Response<List<Folder>> response) {
+			String error = Utils.checkResponseForError(response);
+			if (error != null) {
+				onFailure(call, new Throwable(error));
+				return;
+			}
+			realm.executeTransactionAsync(new Realm.Transaction() {
+				@Override
+				public void execute(Realm realm){
+					realm.copyToRealmOrUpdate(response.body());
+				}
+			}, new Realm.Transaction.OnSuccess(){
+				@Override
+				public void onSuccess(){
+					Timber.d("Saved Folder to DB");
+				}
+			});
+		}
+
+		@Override
+		public void onFailure(Call<List<Folder>> call, Throwable t) {
 
 		}
 	};
