@@ -37,7 +37,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
 	public FileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View v = LayoutInflater.from(parent.getContext())
-				.inflate(R.layout.listitem_filelistitem, parent, false);
+				.inflate(R.layout.listitem_file, parent, false);
 
 		ViewHolder vh = new ViewHolder(v);
 		return vh;
