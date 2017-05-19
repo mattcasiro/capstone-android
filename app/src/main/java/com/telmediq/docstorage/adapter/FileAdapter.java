@@ -62,7 +62,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 		TextView modifiedDate;
 		@BindView(R.id.filelistitem_menu)
 		MaterialIconView fileOptionsIcon;
-		@BindView(R.id.filelistitem_root)
+		@BindView(R.id.listItem_rootView)
 		View rootView;
 		@BindView(R.id.filelistitem_image)
 		ImageView thumbnail;

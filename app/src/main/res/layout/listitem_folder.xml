@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 
-	android:id="@+id/folderListItemRoot"
+	android:id="@+id/listItem_rootView"
 	android:layout_width="match_parent"
 	android:layout_height="70dp"
 	android:background="?attr/selectableItemBackground">
@@ -11,12 +11,12 @@
 	<LinearLayout
 		style="@style/simpleListItem"
 		android:layout_alignParentBottom="true"
-		android:layout_below="@+id/folderlistitem_divider"
+		android:layout_below="@+id/listItemFolder_divider"
 		android:background="@android:color/transparent"
 		android:gravity="center">
 
 		<net.steamcrafted.materialiconlib.MaterialIconView
-			android:id="@+id/folderListItem"
+			android:id="@+id/listItemFolder_folderIcon"
 			style="@style/listItemIcon"
 			android:background="?attr/selectableItemBackgroundBorderless"
 			app:materialIcon="folder"
@@ -30,7 +30,7 @@
 			android:orientation="vertical">
 
 			<TextView
-				android:id="@+id/folderlistitem_name"
+				android:id="@+id/listItemFolder_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:ellipsize="middle"
@@ -52,7 +52,7 @@
 					android:textSize="14sp"/>
 
 				<TextView
-					android:id="@+id/folderlistitem_modified_date"
+					android:id="@+id/listItemFolder_modifiedDate"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:ellipsize="middle"
@@ -65,7 +65,7 @@
 		</LinearLayout>
 
 		<net.steamcrafted.materialiconlib.MaterialIconView
-			android:id="@+id/folderlistitem_menu"
+			android:id="@+id/listItemFolder_menuIcon"
 			style="@style/listItemIcon"
 			android:background="?attr/selectableItemBackgroundBorderless"
 			app:materialIcon="dots_vertical"
@@ -75,7 +75,7 @@
 	</LinearLayout>
 
 	<ImageView
-		android:id="@+id/folderlistitem_divider"
+		android:id="@+id/listItemFolder_divider"
 		style="@style/divider"/>
 
 </RelativeLayout>
