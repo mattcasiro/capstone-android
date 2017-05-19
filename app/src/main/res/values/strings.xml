@@ -10,4 +10,9 @@
 	<string name="login">Login</string>
 	<string name="unable_to_get_file_details">Unable to get file details</string>
 	<string name="modified_title">Modified:</string>
+	<string name="confirm">Confirm</string>
+	<string name="cancel">Cancel</string>
+	<string name="edit">Edit</string>
+	<string name="first_name">First Name</string>
+	<string name="last_name">Last Name</string>
 </resources>

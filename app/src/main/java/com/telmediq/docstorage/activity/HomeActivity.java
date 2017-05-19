@@ -111,7 +111,9 @@ public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.fab)
 	public void onFabClicked(View view) {
-		Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+		//Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+		Intent intent = new Intent(HomeActivity.this, ProfileViewActivity.class);
+		startActivity(intent);
 	}
 
 	FileAdapter.Listener fileListener = new FileAdapter.Listener() {

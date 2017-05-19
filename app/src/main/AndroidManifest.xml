@@ -32,6 +32,10 @@
 			android:name=".activity.FileViewActivity"
 			android:label="DocStorage"
 			android:theme="@style/AppTheme.NoActionBar"/>
+		<activity
+			android:name=".activity.ProfileViewActivity"
+			android:label="DocStorage"
+			android:theme="@style/AppTheme.NoActionBar"/>
 	</application>
 
 </manifest>
