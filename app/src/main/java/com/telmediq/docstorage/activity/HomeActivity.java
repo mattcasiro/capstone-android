@@ -113,6 +113,7 @@ public class HomeActivity extends TelmediqActivity {
 	public void onFabClicked(View view) {
 		//Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 		Intent intent = new Intent(HomeActivity.this, ProfileViewActivity.class);
+		//intent.putExtra(Constants.Extras.USER_ID, userID);
 		startActivity(intent);
 	}
 

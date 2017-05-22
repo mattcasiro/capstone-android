@@ -87,9 +87,13 @@ public class ProfileViewActivity extends TelmediqActivity{
     @OnClick(R.id.profile_confirmButton)
     void onConfirmButtonClicked(View view){
         firstName.setVisibility(View.VISIBLE);
+        firstName.setText(editTextFirstName.getText());
         editTextFirstName.setVisibility(View.GONE);
+
         lastName.setVisibility(View.VISIBLE);
+        lastName.setText(editTextLastName.getText());
         editTextLastName.setVisibility(View.GONE);
+
         editButton.setVisibility(View.VISIBLE);
         confirmButton.setVisibility(View.GONE);
         cancelButton.setVisibility(View.GONE);
