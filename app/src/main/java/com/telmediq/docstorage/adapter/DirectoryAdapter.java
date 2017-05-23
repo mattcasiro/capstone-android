@@ -24,6 +24,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Created by Andrea on 2017-05-18.
@@ -159,7 +160,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 			});
 		}
 		void bindFile(final File file, final DirectoryAdapter.Listener listener){
-			if(filename == null){
+			if(filename == null || fileOptionsIcon == null){
 				return;
 			}
 			DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
@@ -181,11 +182,20 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 					listener.onFileClicked(file.getId());
 				}
 			});
+
+			fileOptionsIcon.setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v){
+					Timber.i("File menu clicked");
+					listener.onFileOptionClicked(file.getId());
+				}
+			});
 		}
 	}
 
 	public interface Listener {
 		void onFolderClicked(Integer folderId);
 		void onFileClicked(Integer fileId);
+		void onFileOptionClicked(Integer fileId);
 	}
 }

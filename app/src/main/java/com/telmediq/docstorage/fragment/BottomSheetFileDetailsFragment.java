@@ -22,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -41,7 +42,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	private File file;
 	private boolean isUserInteraction = true; // boolean to make sure programmatic changes don't trigger listeners
 
-	public static BottomSheetFileDetailsFragment newInstance(int fileId) {
+	public static BottomSheetFileDetailsFragment newInstance(Integer fileId) {
 		BottomSheetFileDetailsFragment messagesFragment = new BottomSheetFileDetailsFragment();
 
 		Bundle arguments = new Bundle();
@@ -109,14 +110,12 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 			return false;
 		}
 
-		String fileId = getArguments().getString(Constants.Extras.FILE_ID);
-		if (fileId == null) {
-			return false;
-		}
+		Integer fileId = getArguments().getInt(Constants.Extras.FILE_ID);
 
-		// ToDo: get file from database using id
-		//file = new File(UUID.randomUUID().toString(), "AnImage", new Date(), new Date(), 2048);
-		return true;
+		Realm realm = Realm.getDefaultInstance();
+		file = File.getFile(realm, fileId.toString());
+
+		return file != null;
 	}
 
 	//<editor-fold desc="Listeners">

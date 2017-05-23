@@ -155,10 +155,11 @@ public class HomeActivity extends TelmediqActivity {
 			startActivity(intent);
 		}
 
-//		@Override
-//		public void onItemOptionSelected(Integer fileId) {
-//			BottomSheetFileDetailsFragment.newInstance(fileId).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
-//		}
+		@Override
+		public void onFileOptionClicked(Integer fileId){
+			Timber.i("File option clicked");
+			BottomSheetFileDetailsFragment.newInstance(fileId).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
+		}
 	};
 
 	RealmChangeListener realmChangeListener = new RealmChangeListener() {
