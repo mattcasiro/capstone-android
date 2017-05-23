@@ -8,10 +8,20 @@ import android.widget.TextView;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
+import com.telmediq.docstorage.helper.Utils;
+import com.telmediq.docstorage.model.File;
+
+import java.util.Dictionary;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import timber.log.Timber;
 
 /**
  * Created by Jared on 18/05/17.
@@ -33,7 +43,7 @@ public class ProfileViewActivity extends TelmediqActivity{
     @BindView(R.id.profile_lastName)
     TextView lastName;
 
-    private View[] profileViews;
+    private View[] swappableProfileViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +52,9 @@ public class ProfileViewActivity extends TelmediqActivity{
         ButterKnife.bind(this);
 
         //TODO: fetch first & last name + email from server then set the appropriate View contents
+        Timber.d("get profile contents");
+        Call<Dictionary> profileCall = getTelmediqService().getProfile();
+        profileCall.enqueue(profileCallback);
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,14 +62,12 @@ public class ProfileViewActivity extends TelmediqActivity{
                 onEditButtonClicked(v);
             }
         });
-
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onCancelButtonClicked(v);
             }
         });
-
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,8 +75,8 @@ public class ProfileViewActivity extends TelmediqActivity{
             }
         });
 
-        //profileViews is a list of all views that are hidden / exposed during button clicks
-        profileViews = new View[]{firstName, editTextFirstName, lastName, editTextLastName, editButton, confirmButton, cancelButton};
+        //swappableProfileViews is a list of all views that are hidden / exposed during button clicks
+        swappableProfileViews = new View[]{firstName, editTextFirstName, lastName, editTextLastName, editButton, confirmButton, cancelButton};
     }
 
     @OnClick(R.id.profile_editButton)
@@ -88,7 +99,7 @@ public class ProfileViewActivity extends TelmediqActivity{
     }
 
     void swapViews(){
-        for(View v : profileViews){
+        for(View v : swappableProfileViews){
             if(v.getVisibility() == View.VISIBLE){
                 v.setVisibility(View.GONE);
             } else {
@@ -96,4 +107,31 @@ public class ProfileViewActivity extends TelmediqActivity{
             }
         }
     }
+
+    Callback<Dictionary> profileCallback = new Callback<Dictionary>() {
+        @Override
+        public void onResponse(Call<Dictionary> call, final Response<Dictionary> response) {
+            String error = Utils.checkResponseForError(response);
+            if (error != null) {
+                onFailure(call, new Throwable(error));
+                return;
+            }
+            /*realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.copyToRealmOrUpdate(response.body());
+                }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    Timber.d("WOWOW (saved to db)");
+                }
+            });*/
+        }
+
+        @Override
+        public void onFailure(Call<Dictionary> call, Throwable t) {
+
+        }
+    };
 }
