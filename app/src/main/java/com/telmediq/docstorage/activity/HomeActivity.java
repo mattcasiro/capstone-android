@@ -12,10 +12,12 @@ import android.view.View;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
+import com.telmediq.docstorage.adapter.DirectoryAdapter;
 import com.telmediq.docstorage.adapter.FileAdapter;
 import com.telmediq.docstorage.fragment.BottomSheetFileDetailsFragment;
 import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
+import com.telmediq.docstorage.model.DirectoryHolder;
 import com.telmediq.docstorage.model.File;
 import com.telmediq.docstorage.model.Folder;
 
@@ -41,7 +43,7 @@ public class HomeActivity extends TelmediqActivity {
 	//</editor-fold>
 
 	RecyclerView.LayoutManager layoutManager;
-	FileAdapter adapter; // TODO change to DirectoryAdapter
+	DirectoryAdapter adapter; // TODO change to DirectoryAdapter
 
 	RealmResults<Folder> folders;
 	RealmResults<File> files;
@@ -67,13 +69,20 @@ public class HomeActivity extends TelmediqActivity {
 	}
 
 	private void setupViews() {
+		setupRecyclerView();
+	}
+
+	private void setupRecyclerView(){
+		List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
 		recyclerView.setHasFixedSize(true);
-		layoutManager = new LinearLayoutManager(this);
 
-		recyclerView.setLayoutManager(layoutManager);
-
-		adapter = new FileAdapter(files, fileListener);
-		recyclerView.setAdapter(adapter);
+		if(recyclerView.getAdapter() == null){
+			adapter = new DirectoryAdapter(directoryHolders, directoryListener);
+			recyclerView.setLayoutManager(new LinearLayoutManager(this));
+			recyclerView.setAdapter(adapter);
+		} else {
+			adapter.updateData(directoryHolders);
+		}
 	}
 
 	@Override
@@ -132,20 +141,24 @@ public class HomeActivity extends TelmediqActivity {
 		getFolderList();
 	}
 
-	FileAdapter.Listener fileListener = new FileAdapter.Listener() {
+	DirectoryAdapter.Listener directoryListener = new DirectoryAdapter.Listener() {
 
 		@Override
-		public void onItemClicked(int fileId) {
-			//Toast.makeText(getApplicationContext(), String.format("Selected: %s", fileId), Toast.LENGTH_SHORT).show();
+		public void onFolderClicked(Integer folderId) {
+			Timber.d("clicked folder " + folderId.toString());
+		}
+
+		@Override
+		public void onFileClicked(Integer fileId) {
 			Intent intent = new Intent(HomeActivity.this, FileViewActivity.class);
 			intent.putExtra(Constants.Extras.FILE_ID, fileId);
 			startActivity(intent);
 		}
 
-		@Override
-		public void onItemOptionSelected(int fileId) {
-			BottomSheetFileDetailsFragment.newInstance(fileId).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
-		}
+//		@Override
+//		public void onItemOptionSelected(Integer fileId) {
+//			BottomSheetFileDetailsFragment.newInstance(fileId).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
+//		}
 	};
 
 	RealmChangeListener realmChangeListener = new RealmChangeListener() {
