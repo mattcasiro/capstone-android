@@ -69,6 +69,7 @@ public class LoginActivity extends TelmediqActivity {
 
 			Timber.i(response.body().getStatus());
 			AppValues.setAccessToken(response.body());
+			AppValues.setRootFolderId(response.body());
 		}
 
 		@Override

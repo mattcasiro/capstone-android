@@ -38,6 +38,10 @@ public class File extends RealmObject {
 		return realm.where(File.class).equalTo("id", new Integer(fileId)).findFirst();
 	}
 
+	public static RealmResults<File> getEmptyFileList(Realm realm) {
+		return realm.where(File.class).equalTo("id", new Integer(-1)).findAll();
+	}
+
 	//<editor-fold desc="Getter and Setters">
 	public Integer getId() {
 		if (id == null) {

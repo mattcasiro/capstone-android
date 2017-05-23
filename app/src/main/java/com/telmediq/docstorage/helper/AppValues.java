@@ -36,4 +36,17 @@ public class AppValues {
 		return !getAccessToken().isEmpty();
 	}
 	//</editor-fold>
+
+	public static void setRootFolderId(AuthorizationResponse authorization){
+		if (authorization == null){
+			sharedPrefs().edit().remove(Constants.Preference.ROOT_FOLDER_ID).apply();
+			return;
+		}
+		sharedPrefs().edit().putInt(Constants.Preference.ROOT_FOLDER_ID, authorization.getRootId()).apply();
+		Timber.i("Root folder set: %d", authorization.getRootId());
+	}
+
+	public static Integer getRootFolderId(){
+		return sharedPrefs().getInt(Constants.Preference.ROOT_FOLDER_ID, 0);
+	}
 }

@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
@@ -42,7 +43,7 @@ public class HomeActivity extends TelmediqActivity {
 	//</editor-fold>
 
 	RecyclerView.LayoutManager layoutManager;
-	DirectoryAdapter adapter; // TODO change to DirectoryAdapter
+	DirectoryAdapter adapter;
 
 	RealmResults<Folder> folders;
 	RealmResults<File> files;
@@ -55,7 +56,7 @@ public class HomeActivity extends TelmediqActivity {
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 
-		parentFolder = Folder.getRootFolder(realm);
+		parentFolder = getCurrentFolder();
 
 		getFolderList();
 		getFileList();
@@ -89,6 +90,16 @@ public class HomeActivity extends TelmediqActivity {
 		super.onBackPressed();
 	}
 
+	private Folder getCurrentFolder(){
+		Integer folderId = getIntent().getIntExtra(Constants.Extras.FOLDER_ID, -1);
+
+		if (folderId <= 0){
+			return null;
+		}
+
+		return Folder.getFolder(realm, folderId);
+	}
+
 	private void getFolderList() {
 		Timber.d("Fetch folder list");
 
@@ -106,7 +117,14 @@ public class HomeActivity extends TelmediqActivity {
 
 	public void getFileList() {
 		Timber.d("Fetch file list");
-		files = File.getFiles(realm);
+
+		// Handle case when no parent folder is in realm yet
+		if (parentFolder == null) {
+			files = File.getEmptyFileList(realm);
+		} else {
+			files = File.getFilesByFolder(realm, parentFolder.getId().toString());
+		}
+
 		files.addChangeListener(realmChangeListener);
 
 		Call<List<File>> userFileCall = getTelmediqService().getFiles();
@@ -144,11 +162,15 @@ public class HomeActivity extends TelmediqActivity {
 
 		@Override
 		public void onFolderClicked(Integer folderId) {
-			Timber.d("clicked folder " + folderId.toString());
+			Timber.d("Clicked folder %d", folderId);
+			Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
+			intent.putExtra(Constants.Extras.FOLDER_ID, folderId);
+			startActivity(intent);
 		}
 
 		@Override
 		public void onFileClicked(Integer fileId) {
+			Timber.d("Clicked file %d", fileId);
 			Intent intent = new Intent(HomeActivity.this, FileViewActivity.class);
 			intent.putExtra(Constants.Extras.FILE_ID, fileId);
 			startActivity(intent);
