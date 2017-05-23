@@ -20,36 +20,36 @@ public class EmptyRecyclerView extends RecyclerView {
 		}
 	};
 
-	public void setEmptyView(View emptyView){
+	public void setEmptyView(View emptyView) {
 		this.emptyView = emptyView;
 	}
 
-	public EmptyRecyclerView(Context context){
+	public EmptyRecyclerView(Context context) {
 		super(context);
 	}
 
-	public EmptyRecyclerView(Context context, AttributeSet attrs){
+	public EmptyRecyclerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public EmptyRecyclerView(Context context, AttributeSet attrs, int defStyle){
+	public EmptyRecyclerView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
 	@Override
-	public void setAdapter(RecyclerView.Adapter adapter){
-		if(getAdapter() != null){
+	public void setAdapter(RecyclerView.Adapter adapter) {
+		if (getAdapter() != null) {
 			getAdapter().unregisterAdapterDataObserver(dataObserver);
 		}
-		if(adapter != null){
+		if (adapter != null) {
 			adapter.registerAdapterDataObserver(dataObserver);
 		}
 		super.setAdapter(adapter);
 		updateEmptyView();
 	}
 
-	private void updateEmptyView(){
-		if(emptyView != null && getAdapter() != null){
+	private void updateEmptyView() {
+		if (emptyView != null && getAdapter() != null) {
 			boolean showEmptyView = getAdapter().getItemCount() == 0;
 			emptyView.setVisibility(showEmptyView ? VISIBLE : GONE);
 			setVisibility(showEmptyView ? GONE : VISIBLE);
