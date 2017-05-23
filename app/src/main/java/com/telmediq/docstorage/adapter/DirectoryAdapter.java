@@ -31,7 +31,6 @@ import timber.log.Timber;
  */
 
 public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.ViewHolder> {
-	private static final int VIEW_TYPE_EMPTY_LIST_PLACEHOLDER = -1;
 	private List<DirectoryHolder> data;
 	private Listener listener;
 
@@ -42,10 +41,6 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
 	@Override
 	public int getItemViewType(int position) {
-		if (data.isEmpty()) {
-			return VIEW_TYPE_EMPTY_LIST_PLACEHOLDER;
-		}
-
 		return data.get(position).getType();
 	}
 
@@ -55,9 +50,6 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 		View contentView;
 
 		switch (viewType) {
-			case VIEW_TYPE_EMPTY_LIST_PLACEHOLDER:
-				contentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem_empty_list, parent, false);
-				break;
 			case DirectoryHolder.FOLDER:
 				contentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem_folder, parent, false);
 				break;

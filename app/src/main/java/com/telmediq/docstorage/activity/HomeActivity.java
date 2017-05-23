@@ -20,6 +20,7 @@ import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.DirectoryHolder;
 import com.telmediq.docstorage.model.File;
 import com.telmediq.docstorage.model.Folder;
+import com.telmediq.docstorage.views.EmptyRecyclerView;
 
 import java.util.List;
 
@@ -39,7 +40,9 @@ public class HomeActivity extends TelmediqActivity {
 	@BindView(R.id.toolbar)
 	Toolbar toolbar;
 	@BindView(R.id.homeActivity_recyclerView)
-	RecyclerView recyclerView;
+	EmptyRecyclerView recyclerView;
+	@BindView(R.id.listItem_empty)
+	View emptyView;
 	//</editor-fold>
 
 	RecyclerView.LayoutManager layoutManager;
@@ -75,6 +78,7 @@ public class HomeActivity extends TelmediqActivity {
 	private void setupRecyclerView() {
 		List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
 		recyclerView.setHasFixedSize(true);
+		recyclerView.setEmptyView(emptyView);
 
 		if (recyclerView.getAdapter() == null) {
 			adapter = new DirectoryAdapter(directoryHolders, directoryListener);
