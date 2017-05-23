@@ -2,6 +2,7 @@ package com.telmediq.docstorage.endpoint;
 
 import com.telmediq.docstorage.model.AuthorizationResponse;
 import com.telmediq.docstorage.model.File;
+import com.telmediq.docstorage.model.Profile;
 
 import java.util.Dictionary;
 import java.util.List;
@@ -29,5 +30,5 @@ public interface TelmediqService {
 	Call<List<File>> getFiles();
 
 	@GET("api/profile/")
-	Call<Dictionary> getProfile();
+	Call<Profile> getProfile();
 }

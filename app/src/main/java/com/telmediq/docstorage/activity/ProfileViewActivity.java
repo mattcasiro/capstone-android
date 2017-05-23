@@ -9,15 +9,14 @@ import android.widget.TextView;
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
 import com.telmediq.docstorage.helper.Utils;
-import com.telmediq.docstorage.model.File;
-
-import java.util.Dictionary;
-import java.util.List;
+import com.telmediq.docstorage.model.Profile;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,11 +36,36 @@ public class ProfileViewActivity extends TelmediqActivity{
     @BindView(R.id.profile_editTextFirstName)
     EditText editTextFirstName;
     @BindView(R.id.profile_firstName)
-    TextView firstName;
+    TextView textViewFirstName;
     @BindView(R.id.profile_editTextLastName)
     EditText editTextLastName;
     @BindView(R.id.profile_lastName)
-    TextView lastName;
+    TextView textViewLastName;
+    @BindView(R.id.profile_email)
+    TextView textViewEmail;
+
+    RealmResults<Profile> profile;
+    Callback<Profile> profileCallback = new Callback<Profile>() {
+        @Override
+        public void onResponse(Call<Profile> call, final Response<Profile> response) {
+            String error = Utils.checkResponseForError(response);
+            if (error != null) {
+                onFailure(call, new Throwable(error));
+                return;
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Profile> call, Throwable t) {
+
+        }
+    };
+    RealmChangeListener realmChangeListener = new RealmChangeListener() {
+        @Override
+        public void onChange(Object element) {
+            setupViews();
+        }
+    };
 
     private View[] swappableProfileViews;
 
@@ -51,10 +75,11 @@ public class ProfileViewActivity extends TelmediqActivity{
         setContentView(R.layout.profile_view);
         ButterKnife.bind(this);
 
+        swappableProfileViews = new View[]{textViewFirstName, editTextFirstName, textViewLastName, editTextLastName, editButton, confirmButton, cancelButton};
+
         //TODO: fetch first & last name + email from server then set the appropriate View contents
-        Timber.d("get profile contents");
-        Call<Dictionary> profileCall = getTelmediqService().getProfile();
-        profileCall.enqueue(profileCallback);
+        getProfile();
+        setupViews();
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,8 +100,21 @@ public class ProfileViewActivity extends TelmediqActivity{
             }
         });
 
-        //swappableProfileViews is a list of all views that are hidden / exposed during button clicks
-        swappableProfileViews = new View[]{firstName, editTextFirstName, lastName, editTextLastName, editButton, confirmButton, cancelButton};
+    }
+
+    void getProfile(){
+        profile = Profile.getProfile(realm);
+        profile.addChangeListener(realmChangeListener);
+
+        Timber.d("get profile contents");
+        Call<Profile> profileCall = getTelmediqService().getProfile();
+        profileCall.enqueue(profileCallback);
+    }
+
+    private void setupViews(){
+        /*textViewFirstName.setText(profile.getFirstName());
+        textViewLastName.setText(profile.getLastName());
+        textViewEmail.setText(profile.getEmail());*/
     }
 
     @OnClick(R.id.profile_editButton)
@@ -93,8 +131,8 @@ public class ProfileViewActivity extends TelmediqActivity{
     void onConfirmButtonClicked(View view){
         //TODO: update server & realm values for first & last name
 
-        firstName.setText(editTextFirstName.getText());
-        lastName.setText(editTextLastName.getText());
+        textViewFirstName.setText(editTextFirstName.getText());
+        textViewLastName.setText(editTextLastName.getText());
         swapViews();
     }
 
@@ -107,31 +145,4 @@ public class ProfileViewActivity extends TelmediqActivity{
             }
         }
     }
-
-    Callback<Dictionary> profileCallback = new Callback<Dictionary>() {
-        @Override
-        public void onResponse(Call<Dictionary> call, final Response<Dictionary> response) {
-            String error = Utils.checkResponseForError(response);
-            if (error != null) {
-                onFailure(call, new Throwable(error));
-                return;
-            }
-            /*realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    realm.copyToRealmOrUpdate(response.body());
-                }
-            }, new Realm.Transaction.OnSuccess() {
-                @Override
-                public void onSuccess() {
-                    Timber.d("WOWOW (saved to db)");
-                }
-            });*/
-        }
-
-        @Override
-        public void onFailure(Call<Dictionary> call, Throwable t) {
-
-        }
-    };
 }
