@@ -33,12 +33,15 @@ public class ProfileViewActivity extends TelmediqActivity{
     @BindView(R.id.profile_lastName)
     TextView lastName;
 
+    private View[] profileViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_view);
         ButterKnife.bind(this);
+
+        //TODO: fetch first & last name + email from server then set the appropriate View contents
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,42 +63,37 @@ public class ProfileViewActivity extends TelmediqActivity{
                 onConfirmButtonClicked(v);
             }
         });
+
+        //profileViews is a list of all views that are hidden / exposed during button clicks
+        profileViews = new View[]{firstName, editTextFirstName, lastName, editTextLastName, editButton, confirmButton, cancelButton};
     }
 
     @OnClick(R.id.profile_editButton)
     void onEditButtonClicked(View view){
-        firstName.setVisibility(View.GONE);
-        editTextFirstName.setVisibility(View.VISIBLE);
-        lastName.setVisibility(View.GONE);
-        editTextLastName.setVisibility(View.VISIBLE);
-        editButton.setVisibility(View.GONE);
-        confirmButton.setVisibility(View.VISIBLE);
-        cancelButton.setVisibility(View.VISIBLE);
+        swapViews();
     }
 
     @OnClick(R.id.profile_cancelButton)
     void onCancelButtonClicked(View view){
-        firstName.setVisibility(View.VISIBLE);
-        editTextFirstName.setVisibility(View.GONE);
-        lastName.setVisibility(View.VISIBLE);
-        editTextLastName.setVisibility(View.GONE);
-        editButton.setVisibility(View.VISIBLE);
-        confirmButton.setVisibility(View.GONE);
-        cancelButton.setVisibility(View.GONE);
+        swapViews();
     }
 
     @OnClick(R.id.profile_confirmButton)
     void onConfirmButtonClicked(View view){
-        firstName.setVisibility(View.VISIBLE);
+        //TODO: update server & realm values for first & last name
+
         firstName.setText(editTextFirstName.getText());
-        editTextFirstName.setVisibility(View.GONE);
-
-        lastName.setVisibility(View.VISIBLE);
         lastName.setText(editTextLastName.getText());
-        editTextLastName.setVisibility(View.GONE);
+        swapViews();
+    }
 
-        editButton.setVisibility(View.VISIBLE);
-        confirmButton.setVisibility(View.GONE);
-        cancelButton.setVisibility(View.GONE);
+    void swapViews(){
+        for(View v : profileViews){
+            if(v.getVisibility() == View.VISIBLE){
+                v.setVisibility(View.GONE);
+            } else {
+                v.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }
