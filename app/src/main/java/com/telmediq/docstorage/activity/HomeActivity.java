@@ -72,11 +72,11 @@ public class HomeActivity extends TelmediqActivity {
 		setupRecyclerView();
 	}
 
-	private void setupRecyclerView(){
+	private void setupRecyclerView() {
 		List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
 		recyclerView.setHasFixedSize(true);
 
-		if(recyclerView.getAdapter() == null){
+		if (recyclerView.getAdapter() == null) {
 			adapter = new DirectoryAdapter(directoryHolders, directoryListener);
 			recyclerView.setLayoutManager(new LinearLayoutManager(this));
 			recyclerView.setAdapter(adapter);
@@ -156,7 +156,7 @@ public class HomeActivity extends TelmediqActivity {
 		}
 
 		@Override
-		public void onFileOptionClicked(Integer fileId){
+		public void onFileOptionClicked(Integer fileId) {
 			Timber.i("File option clicked");
 			BottomSheetFileDetailsFragment.newInstance(fileId).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
 		}
@@ -208,12 +208,12 @@ public class HomeActivity extends TelmediqActivity {
 			}
 			realm.executeTransactionAsync(new Realm.Transaction() {
 				@Override
-				public void execute(Realm realm){
+				public void execute(Realm realm) {
 					realm.copyToRealmOrUpdate(response.body());
 				}
-			}, new Realm.Transaction.OnSuccess(){
+			}, new Realm.Transaction.OnSuccess() {
 				@Override
-				public void onSuccess(){
+				public void onSuccess() {
 					Timber.d("Saved Folder to DB");
 				}
 			});

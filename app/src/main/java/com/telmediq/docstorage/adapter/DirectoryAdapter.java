@@ -30,20 +30,19 @@ import timber.log.Timber;
  * Created by Andrea on 2017-05-18.
  */
 
-public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.ViewHolder>{
+public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.ViewHolder> {
 	private List<DirectoryHolder> data;
 	private Listener listener;
 
-	public DirectoryAdapter(List<DirectoryHolder> data, Listener listener){
+	public DirectoryAdapter(List<DirectoryHolder> data, Listener listener) {
 		this.data = data;
 		this.listener = listener;
 	}
 
 	@Override
-	public int getItemViewType(int position){
+	public int getItemViewType(int position) {
 		return data.get(position).getType();
 	}
-
 
 
 	@Override
@@ -69,7 +68,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
 	@Override
 	public void onBindViewHolder(DirectoryAdapter.ViewHolder holder, int position) {
-		switch (holder.getItemViewType()){
+		switch (holder.getItemViewType()) {
 			case DirectoryHolder.FOLDER:
 				holder.bindFolder(data.get(position).getFolder(), listener);
 				break;
@@ -89,12 +88,12 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 		return data.size();
 	}
 
-	public void updateData(List<DirectoryHolder> data){
+	public void updateData(List<DirectoryHolder> data) {
 		this.data = data;
 		notifyDataSetChanged();
 	}
 
-	static class ViewHolder extends RecyclerView.ViewHolder{
+	static class ViewHolder extends RecyclerView.ViewHolder {
 		Context ctx;
 
 		@BindView(R.id.listItem_rootView)
@@ -128,39 +127,39 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 		// end File binds
 
 
-
-		ViewHolder(View view){
+		ViewHolder(View view) {
 			super(view);
 			ctx = view.getContext();
 			ButterKnife.bind(this, view);
 		}
 
-		void bindHeader(String headerText){
-			if(headerTitleText == null){
+		void bindHeader(String headerText) {
+			if (headerTitleText == null) {
 				return;
 			}
 			headerTitleText.setText(headerText);
 		}
 
-		void bindFolder(final Folder folder, final DirectoryAdapter.Listener listener){
-			if(folderTitleText == null){
+		void bindFolder(final Folder folder, final DirectoryAdapter.Listener listener) {
+			if (folderTitleText == null) {
 				return;
 			}
 			folderTitleText.setText(folder.getName());
 
-			if(listener == null){
+			if (listener == null) {
 				return;
 			}
 
-			rootView.setOnClickListener(new View.OnClickListener(){
+			rootView.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View v){
+				public void onClick(View v) {
 					listener.onFolderClicked(folder.getId());
 				}
 			});
 		}
-		void bindFile(final File file, final DirectoryAdapter.Listener listener){
-			if(filename == null || fileOptionsIcon == null){
+
+		void bindFile(final File file, final DirectoryAdapter.Listener listener) {
+			if (filename == null || fileOptionsIcon == null) {
 				return;
 			}
 			DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
@@ -172,20 +171,20 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 					.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))
 					.into(thumbnail);
 
-			if(listener == null){
+			if (listener == null) {
 				return;
 			}
 
-			rootView.setOnClickListener(new View.OnClickListener(){
+			rootView.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View v){
+				public void onClick(View v) {
 					listener.onFileClicked(file.getId());
 				}
 			});
 
-			fileOptionsIcon.setOnClickListener(new View.OnClickListener(){
+			fileOptionsIcon.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View v){
+				public void onClick(View v) {
 					Timber.i("File menu clicked");
 					listener.onFileOptionClicked(file.getId());
 				}
@@ -195,7 +194,9 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
 	public interface Listener {
 		void onFolderClicked(Integer folderId);
+
 		void onFileClicked(Integer fileId);
+
 		void onFileOptionClicked(Integer fileId);
 	}
 }

@@ -21,12 +21,12 @@ public class Folder extends RealmObject {
 		return realm.where(Folder.class).findAllSorted("name");
 	}
 
-	public static Folder getRootFolder(Realm realm){
+	public static Folder getRootFolder(Realm realm) {
 		return realm.where(Folder.class).isNull("parent").findFirst();
 	}
 
 	// TODO: fix this to be better. How to get empty list?
-	public static RealmResults<Folder> getEmptyFolderList(Realm realm){
+	public static RealmResults<Folder> getEmptyFolderList(Realm realm) {
 		return realm.where(Folder.class).equalTo("id", new Integer(-1)).findAll();
 	}
 
@@ -37,7 +37,6 @@ public class Folder extends RealmObject {
 	public static Folder getFolder(Realm realm, Integer folderId) {
 		return realm.where(Folder.class).equalTo("id", folderId).findFirst();
 	}
-
 
 
 	public Integer getId() {
@@ -73,7 +72,7 @@ public class Folder extends RealmObject {
 	}
 
 	public Integer getOwner() {
-		if (owner == null){
+		if (owner == null) {
 			return -1;
 		}
 		return owner;

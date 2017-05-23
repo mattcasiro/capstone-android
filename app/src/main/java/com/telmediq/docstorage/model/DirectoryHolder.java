@@ -17,39 +17,41 @@ public class DirectoryHolder {
 	private File file;
 
 	//Constructors
-	public DirectoryHolder(String header){
+	public DirectoryHolder(String header) {
 		this.header = header;
 	}
-	public DirectoryHolder(Folder folder){
+
+	public DirectoryHolder(Folder folder) {
 		this.folder = folder;
 	}
-	public DirectoryHolder(File file){
+
+	public DirectoryHolder(File file) {
 		this.file = file;
 	}
 
-	public static List<DirectoryHolder> generateDirectoryHolder(List<Folder> folders, List<File> files){
+	public static List<DirectoryHolder> generateDirectoryHolder(List<Folder> folders, List<File> files) {
 		List<DirectoryHolder> holders = new ArrayList<>();
 
-		if(folders.size() > 0) {
+		if (folders.size() > 0) {
 			holders.add(new DirectoryHolder("Folders"));
 		}
-		for(Folder folder : folders){
+		for (Folder folder : folders) {
 			holders.add(new DirectoryHolder(folder));
 		}
 
 		if (files.size() > 0) {
 			holders.add(new DirectoryHolder("Files"));
 		}
-		for(File file : files){
+		for (File file : files) {
 			holders.add(new DirectoryHolder(file));
 		}
 		return holders;
 	}
 
-	public int getType(){
-		if(folder != null){
+	public int getType() {
+		if (folder != null) {
 			return FOLDER;
-		} else if (file != null){
+		} else if (file != null) {
 			return FILE;
 		} else {
 			return HEADER;
