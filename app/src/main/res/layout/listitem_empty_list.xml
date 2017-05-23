@@ -9,13 +9,13 @@
 	android:background="?attr/selectableItemBackground">
 
 	<net.steamcrafted.materialiconlib.MaterialIconView
+		android:id="@+id/no_content_icon"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_centerInParent="true"
 		app:materialIcon="ghost"
 		app:materialIconColor="@color/textDisabled"
-		app:materialIconSize="150dp"
-		android:id="@+id/no_content_icon"/>
+		app:materialIconSize="150dp"/>
 
 	<TextView
 		android:layout_width="wrap_content"

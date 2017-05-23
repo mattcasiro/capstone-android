@@ -37,8 +37,8 @@ public class AppValues {
 	}
 	//</editor-fold>
 
-	public static void setRootFolderId(AuthorizationResponse authorization){
-		if (authorization == null){
+	public static void setRootFolderId(AuthorizationResponse authorization) {
+		if (authorization == null) {
 			sharedPrefs().edit().remove(Constants.Preference.ROOT_FOLDER_ID).apply();
 			return;
 		}
@@ -46,7 +46,7 @@ public class AppValues {
 		Timber.i("Root folder set: %d", authorization.getRootId());
 	}
 
-	public static Integer getRootFolderId(){
+	public static Integer getRootFolderId() {
 		return sharedPrefs().getInt(Constants.Preference.ROOT_FOLDER_ID, 0);
 	}
 }

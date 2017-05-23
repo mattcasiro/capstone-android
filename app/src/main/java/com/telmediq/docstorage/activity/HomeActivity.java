@@ -90,10 +90,10 @@ public class HomeActivity extends TelmediqActivity {
 		super.onBackPressed();
 	}
 
-	private Folder getCurrentFolder(){
+	private Folder getCurrentFolder() {
 		Integer folderId = getIntent().getIntExtra(Constants.Extras.FOLDER_ID, -1);
 
-		if (folderId <= 0){
+		if (folderId <= 0) {
 			return null;
 		}
 

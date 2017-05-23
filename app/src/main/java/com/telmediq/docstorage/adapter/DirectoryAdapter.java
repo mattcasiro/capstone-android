@@ -42,7 +42,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
 	@Override
 	public int getItemViewType(int position) {
-		if(data.isEmpty()){
+		if (data.isEmpty()) {
 			return VIEW_TYPE_EMPTY_LIST_PLACEHOLDER;
 		}
 
