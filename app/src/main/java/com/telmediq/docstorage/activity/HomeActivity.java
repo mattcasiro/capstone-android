@@ -13,7 +13,6 @@ import android.view.View;
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
 import com.telmediq.docstorage.adapter.DirectoryAdapter;
-import com.telmediq.docstorage.adapter.FileAdapter;
 import com.telmediq.docstorage.fragment.BottomSheetFileDetailsFragment;
 import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
