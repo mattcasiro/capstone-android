@@ -39,6 +39,9 @@ captures/
 *.iml
 .idea
 
+# Sean said to ignore this
+.idea/misc.xml
+
 # Keystore files
 *.jks
 
