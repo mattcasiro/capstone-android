@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
@@ -74,6 +75,22 @@ public class ProfileViewActivity extends TelmediqActivity{
 
         }
     };
+    Callback<Profile> profileUpdateCallback = new Callback<Profile>() {
+        @Override
+        public void onResponse(Call<Profile> call, final Response<Profile> response) {
+            String error = Utils.checkResponseForError(response);
+            if (error != null) {
+                onFailure(call, new Throwable(error));
+                return;
+            }
+            Toast.makeText(getApplicationContext(), String.format("Profile Updated."), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onFailure(Call<Profile> call, Throwable t) {
+            Toast.makeText(getApplicationContext(), String.format("Oops!"), Toast.LENGTH_SHORT).show();
+        }
+    };
     RealmChangeListener realmChangeListener = new RealmChangeListener() {
         @Override
         public void onChange(Object element) {
@@ -124,6 +141,17 @@ public class ProfileViewActivity extends TelmediqActivity{
         profileCall.enqueue(profileCallback);
     }
 
+    void updateProfile(){
+        String firstName = editTextFirstName.getText().toString();
+        String lastName = editTextLastName.getText().toString();
+        profile.setFirstName(firstName);
+        profile.setLastName(lastName);
+
+        Timber.d("set profile contents");
+        Call<Profile> profileUpdateCall = getTelmediqService().putProfile(firstName, lastName);
+        profileUpdateCall.enqueue(profileUpdateCallback);
+    }
+
     private void setupViews(){
         if(profile != null) {
             textViewFirstName.setText(profile.getFirstName());
@@ -145,6 +173,7 @@ public class ProfileViewActivity extends TelmediqActivity{
     @OnClick(R.id.profile_confirmButton)
     void onConfirmButtonClicked(View view){
         //TODO: update server & realm values for first & last name
+        updateProfile();
 
         textViewFirstName.setText(editTextFirstName.getText());
         textViewLastName.setText(editTextLastName.getText());
