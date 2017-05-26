@@ -91,7 +91,6 @@ public class ProfileViewActivity extends TelmediqActivity{
 
         swappableProfileViews = new View[]{textViewFirstName, editTextFirstName, textViewLastName, editTextLastName, editButton, confirmButton, cancelButton};
 
-        //TODO: fetch first & last name + email from server then set the appropriate View contents
         getProfile();
         setupViews();
 
@@ -119,7 +118,6 @@ public class ProfileViewActivity extends TelmediqActivity{
     void getProfile(){
         realmProfile = Profile.getProfile(realm);
         realmProfile.addChangeListener(realmChangeListener);
-        //profile = realmProfile.first();
 
         Timber.d("get profile contents");
         Call<Profile> profileCall = getTelmediqService().getProfile();
