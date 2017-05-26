@@ -1,5 +1,6 @@
 package com.telmediq.docstorage.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,6 +9,7 @@ import android.widget.EditText;
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
 import com.telmediq.docstorage.helper.AppValues;
+import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.AuthorizationResponse;
 
@@ -68,6 +70,12 @@ public class LoginActivity extends TelmediqActivity {
 			Timber.i(response.body().getStatus());
 			AppValues.setAccessToken(response.body());
 			AppValues.setRootFolderId(response.body());
+
+			// Redirect user to the Home activity
+			Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+			intent.putExtra(Constants.Extras.FOLDER_ID, response.body().getRootId());
+			startActivity(intent);
+			finish();
 		}
 
 		@Override
