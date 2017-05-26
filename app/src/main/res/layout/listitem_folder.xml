@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+
+	android:id="@+id/listItem_rootView"
+	android:layout_width="match_parent"
+	android:layout_height="70dp"
+	android:background="?attr/selectableItemBackground">
+
+	<LinearLayout
+		style="@style/simpleListItem"
+		android:layout_alignParentBottom="true"
+		android:layout_below="@+id/listItemFolder_divider"
+		android:background="@android:color/transparent"
+		android:gravity="center">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/listItemFolder_folderIcon"
+			style="@style/listItemIcon"
+			android:background="?attr/selectableItemBackgroundBorderless"
+			app:materialIcon="folder"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="24dp"/>
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/listItemFolder_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:ellipsize="middle"
+				android:maxLines="1"
+				android:text="File1"
+				android:textColor="@android:color/black"
+				android:textSize="16sp"/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:ellipsize="middle"
+					android:maxLines="1"
+					android:text="@string/modified_title"
+					android:textSize="14sp"/>
+
+				<TextView
+					android:id="@+id/listItemFolder_modifiedDate"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:ellipsize="middle"
+					android:maxLines="1"
+					android:paddingLeft="2dp"
+					android:textSize="14sp"/>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/listItemFolder_menuIcon"
+			style="@style/listItemIcon"
+			android:background="?attr/selectableItemBackgroundBorderless"
+			app:materialIcon="dots_vertical"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="24dp"/>
+
+	</LinearLayout>
+
+	<ImageView
+		android:id="@+id/listItemFolder_divider"
+		style="@style/divider"/>
+
+</RelativeLayout>

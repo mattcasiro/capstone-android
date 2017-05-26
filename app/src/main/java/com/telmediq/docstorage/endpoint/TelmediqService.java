@@ -2,6 +2,7 @@ package com.telmediq.docstorage.endpoint;
 
 import com.telmediq.docstorage.model.AuthorizationResponse;
 import com.telmediq.docstorage.model.File;
+import com.telmediq.docstorage.model.Folder;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface TelmediqService {
 
 	@GET("api/files/")
 	Call<List<File>> getFiles();
+
+	@GET("api/folders/")
+	Call<List<Folder>> getFolders();
 }
