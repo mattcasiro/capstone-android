@@ -4,12 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
@@ -22,18 +21,20 @@ import com.telmediq.docstorage.model.File;
 import com.telmediq.docstorage.model.Folder;
 import com.telmediq.docstorage.views.EmptyRecyclerView;
 
+import net.steamcrafted.materialiconlib.MaterialMenuInflater;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import hugo.weaving.DebugLog;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import timber.log.Timber;
 
 public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
@@ -45,13 +46,13 @@ public class HomeActivity extends TelmediqActivity {
 	View emptyView;
 	//</editor-fold>
 
-	RecyclerView.LayoutManager layoutManager;
 	DirectoryAdapter adapter;
 
 	RealmResults<Folder> folders;
 	RealmResults<File> files;
 
 	Folder parentFolder;
+	int parentFolderId = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,11 @@ public class HomeActivity extends TelmediqActivity {
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 
-		parentFolder = getCurrentFolder();
+		if (!getCurrentFolder()) {
+			Toast.makeText(this, "Not passed a folder ID", Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
 
 		getFolderList();
 		getFileList();
@@ -69,16 +74,19 @@ public class HomeActivity extends TelmediqActivity {
 
 	private void setupToolbar() {
 		setSupportActionBar(toolbar);
+
+		if (parentFolder != null) {
+			toolbar.setTitle(parentFolder.getName());
+		}
 	}
 
 	private void setupViews() {
+		recyclerView.setEmptyView(emptyView);
 		setupRecyclerView();
 	}
 
 	private void setupRecyclerView() {
 		List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
-		recyclerView.setHasFixedSize(true);
-		recyclerView.setEmptyView(emptyView);
 
 		if (recyclerView.getAdapter() == null) {
 			adapter = new DirectoryAdapter(directoryHolders, directoryListener);
@@ -94,41 +102,24 @@ public class HomeActivity extends TelmediqActivity {
 		super.onBackPressed();
 	}
 
-	private Folder getCurrentFolder() {
-		Integer folderId = getIntent().getIntExtra(Constants.Extras.FOLDER_ID, -1);
-
-		if (folderId <= 0) {
-			return null;
-		}
-
-		return Folder.getFolder(realm, folderId);
+	private boolean getCurrentFolder() {
+		parentFolderId = getIntent().getIntExtra(Constants.Extras.FOLDER_ID, -1);
+		parentFolder = Folder.getFolder(realm, parentFolderId);
+		return parentFolderId != -1;
 	}
 
+	@DebugLog
 	private void getFolderList() {
-		Timber.d("Fetch folder list");
-
-		// Handle case when no folders are in realm yet
-		if (parentFolder == null) {
-			folders = Folder.getEmptyFolderList(realm);
-		} else {
-			folders = Folder.getFoldersByParent(realm, parentFolder.getId());
-		}
+		folders = Folder.getFoldersByParent(realm, parentFolderId);
 		folders.addChangeListener(realmChangeListener);
 
 		Call<List<Folder>> userFolderCall = getTelmediqService().getFolders();
 		userFolderCall.enqueue(userFolderCallback);
 	}
 
+	@DebugLog
 	public void getFileList() {
-		Timber.d("Fetch file list");
-
-		// Handle case when no parent folder is in realm yet
-		if (parentFolder == null) {
-			files = File.getEmptyFileList(realm);
-		} else {
-			files = File.getFilesByFolder(realm, parentFolder.getId().toString());
-		}
-
+		files = File.getFilesByFolder(realm, String.valueOf(parentFolderId));
 		files.addChangeListener(realmChangeListener);
 
 		Call<List<File>> userFileCall = getTelmediqService().getFiles();
@@ -138,7 +129,7 @@ public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="Menu">
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
+		MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -158,31 +149,30 @@ public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.fab)
 	public void onFabClicked(View view) {
-		Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+		Snackbar.make(view, "Fetching folder list", Snackbar.LENGTH_LONG).show();
 		getFolderList();
 	}
 
 	DirectoryAdapter.Listener directoryListener = new DirectoryAdapter.Listener() {
-
 		@Override
+		@DebugLog
 		public void onFolderClicked(Integer folderId) {
-			Timber.d("Clicked folder %d", folderId);
 			Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
 			intent.putExtra(Constants.Extras.FOLDER_ID, folderId);
 			startActivity(intent);
 		}
 
 		@Override
+		@DebugLog
 		public void onFileClicked(Integer fileId) {
-			Timber.d("Clicked file %d", fileId);
 			Intent intent = new Intent(HomeActivity.this, FileViewActivity.class);
 			intent.putExtra(Constants.Extras.FILE_ID, fileId);
 			startActivity(intent);
 		}
 
 		@Override
+		@DebugLog
 		public void onFileOptionClicked(Integer fileId) {
-			Timber.i("File option clicked");
 			BottomSheetFileDetailsFragment.newInstance(fileId).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
 		}
 	};
@@ -190,7 +180,7 @@ public class HomeActivity extends TelmediqActivity {
 	RealmChangeListener realmChangeListener = new RealmChangeListener() {
 		@Override
 		public void onChange(Object element) {
-			setupViews();
+			setupRecyclerView();
 		}
 	};
 	//</editor-fold>
@@ -208,11 +198,6 @@ public class HomeActivity extends TelmediqActivity {
 				@Override
 				public void execute(Realm realm) {
 					realm.copyToRealmOrUpdate(response.body());
-				}
-			}, new Realm.Transaction.OnSuccess() {
-				@Override
-				public void onSuccess() {
-					Timber.d("WOWOW (saved to db)");
 				}
 			});
 		}
@@ -235,11 +220,6 @@ public class HomeActivity extends TelmediqActivity {
 				@Override
 				public void execute(Realm realm) {
 					realm.copyToRealmOrUpdate(response.body());
-				}
-			}, new Realm.Transaction.OnSuccess() {
-				@Override
-				public void onSuccess() {
-					Timber.d("Saved Folder to DB");
 				}
 			});
 		}
