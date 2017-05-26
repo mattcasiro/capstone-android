@@ -2,6 +2,7 @@ package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.telmediq.docstorage.R.layout.activity_login;
+
 public class LoginActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
 	@BindView(R.id.activityLogin_emailText)
@@ -28,12 +31,16 @@ public class LoginActivity extends TelmediqActivity {
 	EditText passwordEditText;
 	@BindView(R.id.activityLogin_loginButton)
 	Button loginButton;
+	@BindView(R.id.activityLogin_emailLayout)
+	TextInputLayout emailLayout;
+	@BindView(R.id.activityLogin_passwordLayout)
+	TextInputLayout passwordLayout;
 	//</editor-fold>
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		setContentView(activity_login);
 		ButterKnife.bind(this);
 
 		loginButton.setOnClickListener(loginClicked);
@@ -42,6 +49,14 @@ public class LoginActivity extends TelmediqActivity {
 	private void login() {
 		String email = emailEditText.getText().toString();
 		String password = passwordEditText.getText().toString();
+
+		// Validate both so that all errors are displayed, then check the validity
+		validateEmailAddress();
+		validatePassword();
+		if (!validateEmailAddress() || !validatePassword()) {
+			Timber.e("Email or password not filled in, login cancelled.");
+			return;
+		}
 		Timber.i("email: %s, password: %s", email, password);
 
 		Call<AuthorizationResponse> loginCall = getTelmediqService().login(email, password);
@@ -83,5 +98,51 @@ public class LoginActivity extends TelmediqActivity {
 			Timber.e(t.getMessage());
 		}
 	};
+	//</editor-fold>
+
+	//<editor-fold desc="Validation">
+	private boolean validateEmailAddress() {
+		if (emailEditText == null) {
+			return false;
+		}
+
+		String error = validateEmailAddress(emailEditText.getText().toString());
+		if (error != null) {
+			emailLayout.setError(error);
+			return false;
+		} else {
+			emailLayout.setErrorEnabled(false);
+		}
+		return true;
+	}
+
+	private String validateEmailAddress(String email) {
+		if (email == null || email.equalsIgnoreCase("")) {
+			return "Email address is required";
+		}
+		return null;
+	}
+
+	private boolean validatePassword() {
+		if (passwordEditText == null) {
+			return false;
+		}
+
+		String error = validatePassword(passwordEditText.getText().toString());
+		if (error != null) {
+			passwordLayout.setError(error);
+			return false;
+		} else {
+			passwordLayout.setErrorEnabled(false);
+		}
+		return true;
+	}
+
+	private String validatePassword(String password) {
+		if (password == null || password.equalsIgnoreCase("")) {
+			return "Password is required";
+		}
+		return null;
+	}
 	//</editor-fold>
 }
