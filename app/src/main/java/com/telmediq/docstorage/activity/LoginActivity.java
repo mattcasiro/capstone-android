@@ -75,6 +75,7 @@ public class LoginActivity extends TelmediqActivity {
 			Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
 			intent.putExtra(Constants.Extras.FOLDER_ID, response.body().getRootId());
 			startActivity(intent);
+			finish();
 		}
 
 		@Override
