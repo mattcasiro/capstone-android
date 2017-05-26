@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import com.telmediq.docstorage.TelmediqApplication;
 import com.telmediq.docstorage.model.AuthorizationResponse;
 
+import java.util.Map;
+
 import timber.log.Timber;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
@@ -48,5 +50,14 @@ public class AppValues {
 
 	public static Integer getRootFolderId() {
 		return sharedPrefs().getInt(Constants.Preference.ROOT_FOLDER_ID, 0);
+	}
+
+	public static void destroyAccessToken(){
+		sharedPrefs().edit().remove(Constants.Preference.ACCESS_TOKEN).apply();
+		Timber.i("Access token removed");
+	}
+
+	public static void clear(){
+		sharedPrefs().getAll().clear();
 	}
 }
