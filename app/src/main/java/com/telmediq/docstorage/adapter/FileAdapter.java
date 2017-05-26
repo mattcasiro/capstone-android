@@ -56,15 +56,15 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
 	static class ViewHolder extends RecyclerView.ViewHolder {
 		//<editor-fold desc="View Initialization">
-		@BindView(R.id.filelistitem_filename)
+		@BindView(R.id.listItemFile_filename)
 		TextView filename;
-		@BindView(R.id.filelistitem_modified_date)
+		@BindView(R.id.listItemFile_modified_date)
 		TextView modifiedDate;
-		@BindView(R.id.filelistitem_menu)
+		@BindView(R.id.listItemFile_menu)
 		MaterialIconView fileOptionsIcon;
-		@BindView(R.id.filelistitem_root)
+		@BindView(R.id.listItemFile_root)
 		View rootView;
-		@BindView(R.id.filelistitem_image)
+		@BindView(R.id.listItemFile_image)
 		ImageView thumbnail;
 		//</editor-fold>
 

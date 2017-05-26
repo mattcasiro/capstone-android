@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 
-	android:id="@+id/filelistitem_root"
+	android:id="@+id/listItemFile_root"
 	android:layout_width="match_parent"
 	android:layout_height="70dp"
 	android:background="?attr/selectableItemBackground">
@@ -16,7 +16,7 @@
 		android:gravity="center">
 
 		<ImageView
-			android:id="@+id/filelistitem_image"
+			android:id="@+id/listItemFile_image"
 			style="@style/listItemIcon"
 			android:layout_width="56dp"
 			android:layout_height="56dp"
@@ -31,7 +31,7 @@
 			android:orientation="vertical">
 
 			<TextView
-				android:id="@+id/filelistitem_filename"
+				android:id="@+id/listItemFile_filename"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:ellipsize="middle"
@@ -53,7 +53,7 @@
 					android:textSize="14sp"/>
 
 				<TextView
-					android:id="@+id/filelistitem_modified_date"
+					android:id="@+id/listItemFile_modified_date"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:ellipsize="middle"
@@ -66,7 +66,7 @@
 		</LinearLayout>
 
 		<net.steamcrafted.materialiconlib.MaterialIconView
-			android:id="@+id/filelistitem_menu"
+			android:id="@+id/listItemFile_menu"
 			style="@style/listItemIcon"
 			android:background="?attr/selectableItemBackgroundBorderless"
 			app:materialIcon="dots_vertical"
