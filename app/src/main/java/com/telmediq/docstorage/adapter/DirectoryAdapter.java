@@ -103,10 +103,15 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 		@BindView(R.id.listItem_titleTextView)
 		TextView headerTitleText;
 
+		// Folder binds
 		@Nullable
 		@BindView(R.id.listItemFolder_name)
 		TextView folderTitleText;
 
+		@Nullable
+		@BindView(R.id.listItemFolder_modifiedDate)
+		TextView folderModifiedDate;
+		// end Folder binds
 
 		// File binds
 		@Nullable
@@ -115,7 +120,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
 		@Nullable
 		@BindView(R.id.filelistitem_modified_date)
-		TextView modifiedDate;
+		TextView fileModifiedDate;
 
 		@Nullable
 		@BindView(R.id.filelistitem_menu)
@@ -144,7 +149,11 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 			if (folderTitleText == null) {
 				return;
 			}
+
+			DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
 			folderTitleText.setText(folder.getName());
+
+			folderModifiedDate.setText(df.format(folder.getModified()));
 
 			if (listener == null) {
 				return;
@@ -165,7 +174,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 			DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
 			filename.setText(file.getName());
 
-			modifiedDate.setText(df.format(file.getModified()));
+			fileModifiedDate.setText(df.format(file.getModified()));
 
 			Glide.with(ctx)
 					.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))

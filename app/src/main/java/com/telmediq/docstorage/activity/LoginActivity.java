@@ -1,8 +1,6 @@
 package com.telmediq.docstorage.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,6 +67,7 @@ public class LoginActivity extends TelmediqActivity {
 
 			Timber.i(response.body().getStatus());
 			AppValues.setAccessToken(response.body());
+			AppValues.setRootFolderId(response.body());
 		}
 
 		@Override

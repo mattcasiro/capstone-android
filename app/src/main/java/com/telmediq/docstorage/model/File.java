@@ -1,7 +1,6 @@
 package com.telmediq.docstorage.model;
 
 import java.util.Date;
-import java.util.StringTokenizer;
 
 import io.realm.Realm;
 import io.realm.RealmObject;

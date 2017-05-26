@@ -25,11 +25,6 @@ public class Folder extends RealmObject {
 		return realm.where(Folder.class).isNull("parent").findFirst();
 	}
 
-	// TODO: fix this to be better. How to get empty list?
-	public static RealmResults<Folder> getEmptyFolderList(Realm realm) {
-		return realm.where(Folder.class).equalTo("id", new Integer(-1)).findAll();
-	}
-
 	public static RealmResults<Folder> getFoldersByParent(Realm realm, Integer parent) {
 		return realm.where(Folder.class).equalTo("parent", parent).findAllSorted("name");
 	}
