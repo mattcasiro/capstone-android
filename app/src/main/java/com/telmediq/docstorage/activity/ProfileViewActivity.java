@@ -44,7 +44,9 @@ public class ProfileViewActivity extends TelmediqActivity{
     @BindView(R.id.profile_email)
     TextView textViewEmail;
 
-    RealmResults<Profile> profile;
+    RealmResults<Profile> realmProfile;
+    Profile profile;
+
     Callback<Profile> profileCallback = new Callback<Profile>() {
         @Override
         public void onResponse(Call<Profile> call, final Response<Profile> response) {
@@ -53,6 +55,18 @@ public class ProfileViewActivity extends TelmediqActivity{
                 onFailure(call, new Throwable(error));
                 return;
             }
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.copyToRealmOrUpdate(response.body());
+                }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    Timber.d("WOWOW (saved to db)");
+                }
+            });
+            profile = response.body();
         }
 
         @Override
@@ -103,8 +117,9 @@ public class ProfileViewActivity extends TelmediqActivity{
     }
 
     void getProfile(){
-        profile = Profile.getProfile(realm);
-        profile.addChangeListener(realmChangeListener);
+        realmProfile = Profile.getProfile(realm);
+        realmProfile.addChangeListener(realmChangeListener);
+        //profile = realmProfile.first();
 
         Timber.d("get profile contents");
         Call<Profile> profileCall = getTelmediqService().getProfile();
@@ -112,9 +127,11 @@ public class ProfileViewActivity extends TelmediqActivity{
     }
 
     private void setupViews(){
-        /*textViewFirstName.setText(profile.getFirstName());
-        textViewLastName.setText(profile.getLastName());
-        textViewEmail.setText(profile.getEmail());*/
+        if(profile != null) {
+            textViewFirstName.setText(profile.getFirstName());
+            textViewLastName.setText(profile.getLastName());
+            textViewEmail.setText(profile.getEmail());
+        }
     }
 
     @OnClick(R.id.profile_editButton)
