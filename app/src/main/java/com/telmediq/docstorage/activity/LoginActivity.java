@@ -1,7 +1,9 @@
 package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.util.Patterns;
 import android.view.View;
@@ -55,7 +57,7 @@ public class LoginActivity extends TelmediqActivity {
 		validateEmailAddress();
 		validatePassword();
 		if (!validateEmailAddress() || !validatePassword()) {
-			Timber.e("Email or password not filled in, login cancelled.");
+			Timber.e("Invalid or missing credentials, login cancelled");
 			return;
 		}
 		Timber.i("email: %s, password: %s", email, password);
@@ -97,6 +99,12 @@ public class LoginActivity extends TelmediqActivity {
 		@Override
 		public void onFailure(Call<AuthorizationResponse> call, Throwable t) {
 			Timber.e(t.getMessage());
+			Snackbar snackbar = Snackbar
+					.make(findViewById(R.id.coordinatorLayout),
+							"Invalid email or password",
+							Snackbar.LENGTH_LONG);
+			snackbar.getView().setBackgroundColor(Color.RED);
+			snackbar.show();
 		}
 	};
 	//</editor-fold>
@@ -118,11 +126,8 @@ public class LoginActivity extends TelmediqActivity {
 	}
 
 	private String validateEmailAddress(String email) {
-		if (email == null || email.equalsIgnoreCase("")) {
-			return "Email address is required";
-		}
-		if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-			return "Please use a valid email address";
+		if (email == null || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+			return "Enter a valid email address";
 		}
 		return null;
 	}
