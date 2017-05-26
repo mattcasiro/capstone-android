@@ -3,6 +3,7 @@ package com.telmediq.docstorage.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -119,6 +120,9 @@ public class LoginActivity extends TelmediqActivity {
 	private String validateEmailAddress(String email) {
 		if (email == null || email.equalsIgnoreCase("")) {
 			return "Email address is required";
+		}
+		if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+			return "Please use a valid email address";
 		}
 		return null;
 	}
