@@ -64,8 +64,7 @@ public class FileViewActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.file_options)
 	void onFileOptionClicked(View view) {
-		BottomSheetFileDetailsFragment.newInstance(-1).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
-
+		BottomSheetFileDetailsFragment.newInstance(file.getId()).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
 	}
 
 	@OnClick(R.id.back_arrow)
