@@ -132,7 +132,7 @@ public class HomeActivity extends TelmediqActivity {
 		userFileCall.enqueue(userFileCallback);
 	}
 
-	public void logout(){
+	private void logout(){
 		AppValues.destroyAccessToken();
 		AppValues.clear();
 
