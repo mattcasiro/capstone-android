@@ -46,14 +46,12 @@
 
 	</android.support.v7.widget.Toolbar>
 
-
-	<ImageView
+	<com.github.chrisbanes.photoview.PhotoView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:background="@android:color/black"
 		android:scaleType="centerInside"
 		android:src="@drawable/frog"
 		android:id="@+id/fileViewActivity_fileView"/>
-
 
 </LinearLayout>
