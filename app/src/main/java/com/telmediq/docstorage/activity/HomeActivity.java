@@ -2,6 +2,7 @@ package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
 import com.telmediq.docstorage.adapter.DirectoryAdapter;
 import com.telmediq.docstorage.fragment.BottomSheetFileDetailsFragment;
+import com.telmediq.docstorage.helper.AppValues;
 import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.DirectoryHolder;
@@ -51,7 +53,9 @@ public class HomeActivity extends TelmediqActivity {
 	RealmResults<Folder> folders;
 	RealmResults<File> files;
 
+	@Nullable
 	Folder parentFolder;
+
 	int parentFolderId = -1;
 
 	@Override
@@ -60,7 +64,9 @@ public class HomeActivity extends TelmediqActivity {
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 
-		if (!getCurrentFolder()) {
+		parentFolderId = getIntent().getIntExtra(Constants.Extras.FOLDER_ID, -1);
+		parentFolder = Folder.getFolder(realm, parentFolderId);
+		if (parentFolderId == -1) {
 			Toast.makeText(this, "Not passed a folder ID", Toast.LENGTH_LONG).show();
 			finish();
 			return;
@@ -74,9 +80,14 @@ public class HomeActivity extends TelmediqActivity {
 
 	private void setupToolbar() {
 		setSupportActionBar(toolbar);
+		if (getSupportActionBar() == null) {
+			return;
+		}
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(parentFolderId != AppValues.getRootFolderId());
 
 		if (parentFolder != null) {
-			toolbar.setTitle(parentFolder.getName());
+			getSupportActionBar().setTitle(parentFolder.getName());
 		}
 	}
 
@@ -100,12 +111,6 @@ public class HomeActivity extends TelmediqActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-	}
-
-	private boolean getCurrentFolder() {
-		parentFolderId = getIntent().getIntExtra(Constants.Extras.FOLDER_ID, -1);
-		parentFolder = Folder.getFolder(realm, parentFolderId);
-		return parentFolderId != -1;
 	}
 
 	@DebugLog
@@ -139,6 +144,9 @@ public class HomeActivity extends TelmediqActivity {
 
 		switch (id) {
 			case R.id.action_settings:
+				break;
+			case android.R.id.home:
+				finish();
 				break;
 		}
 
