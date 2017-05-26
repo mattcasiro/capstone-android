@@ -115,19 +115,19 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
 		// File binds
 		@Nullable
-		@BindView(R.id.filelistitem_filename)
+		@BindView(R.id.listItemFile_filename)
 		TextView filename;
 
 		@Nullable
-		@BindView(R.id.filelistitem_modified_date)
+		@BindView(R.id.listItemFile_modified_date)
 		TextView fileModifiedDate;
 
 		@Nullable
-		@BindView(R.id.filelistitem_menu)
+		@BindView(R.id.listItemFile_menu)
 		MaterialIconView fileOptionsIcon;
 
 		@Nullable
-		@BindView(R.id.filelistitem_image)
+		@BindView(R.id.listItemFile_image)
 		ImageView thumbnail;
 		// end File binds
 

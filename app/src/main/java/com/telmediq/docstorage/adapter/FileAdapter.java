@@ -37,7 +37,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
 	public FileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View v = LayoutInflater.from(parent.getContext())
-				.inflate(R.layout.listitem_filelistitem, parent, false);
+				.inflate(R.layout.listitem_file, parent, false);
 
 		ViewHolder vh = new ViewHolder(v);
 		return vh;
@@ -62,7 +62,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 		TextView modifiedDate;
 		@BindView(R.id.listItemFile_menu)
 		MaterialIconView fileOptionsIcon;
-		@BindView(R.id.listItemFile_root)
+		@BindView(R.id.listItem_rootView)
 		View rootView;
 		@BindView(R.id.listItemFile_image)
 		ImageView thumbnail;
