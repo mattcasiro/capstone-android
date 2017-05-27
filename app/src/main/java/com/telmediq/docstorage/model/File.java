@@ -1,7 +1,6 @@
 package com.telmediq.docstorage.model;
 
 import java.util.Date;
-import java.util.StringTokenizer;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -37,6 +36,7 @@ public class File extends RealmObject {
 	public static File getFile(Realm realm, String fileId) {
 		return realm.where(File.class).equalTo("id", new Integer(fileId)).findFirst();
 	}
+
 	//<editor-fold desc="Getter and Setters">
 	public Integer getId() {
 		if (id == null) {
@@ -129,5 +129,10 @@ public class File extends RealmObject {
 	public void setOwner(Integer owner) {
 		this.owner = owner;
 	}
+
+	public String getUrl() {
+		return String.format("/api/folders/%d/files/%d/file/stream/", folder, id);
+	}
+
 	//</editor-fold>
 }

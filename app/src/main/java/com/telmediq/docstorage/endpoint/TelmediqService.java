@@ -3,6 +3,7 @@ package com.telmediq.docstorage.endpoint;
 import com.telmediq.docstorage.model.AuthorizationResponse;
 import com.telmediq.docstorage.model.File;
 import com.telmediq.docstorage.model.Profile;
+import com.telmediq.docstorage.model.Folder;
 
 import java.util.Dictionary;
 import java.util.List;
@@ -39,4 +40,7 @@ public interface TelmediqService {
 			@Field("first_name") String firstName,
 	        @Field("last_name") String lastName
 	);
+	
+	@GET("api/folders/")
+	Call<List<Folder>> getFolders();
 }

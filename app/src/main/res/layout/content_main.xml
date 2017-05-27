@@ -9,14 +9,48 @@
 	tools:context="com.telmediq.docstorage.activity.HomeActivity"
 	tools:showIn="@layout/app_bar_main">
 
-	<android.support.v7.widget.RecyclerView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:scrollbars="vertical"
+	<com.telmediq.docstorage.views.EmptyRecyclerView
 		android:id="@+id/homeActivity_recyclerView"
-		tools:layout_editor_absoluteY="8dp"
-		tools:layout_editor_absoluteX="8dp">
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:scrollbars="vertical"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		>
 
-	</android.support.v7.widget.RecyclerView>
+	</com.telmediq.docstorage.views.EmptyRecyclerView>
+
+	<RelativeLayout
+		android:id="@+id/listItem_empty"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/no_content_icon"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:paddingBottom="20dp"
+			app:materialIcon="file_image"
+			app:materialIconColor="@color/textDisabled"
+			app:materialIconSize="150dp"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/no_content"
+			android:textColor="@color/textDisabled"
+			android:textSize="20sp"
+			android:layout_alignBottom="@+id/no_content_icon"
+			android:layout_centerHorizontal="true"/>
+
+	</RelativeLayout>
+
 
 </android.support.constraint.ConstraintLayout>

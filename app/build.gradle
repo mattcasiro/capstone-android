@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.hugo'
 apply plugin: 'realm-android'
 
 android {
@@ -49,6 +50,9 @@ dependencies {
 
 	//Material Icons - https://github.com/code-mc/material-icon-lib
 	compile 'net.steamcrafted:materialiconlib:1.1.1'
+
+	//PhotoView - https://github.com/chrisbanes/PhotoView
+	compile 'com.github.chrisbanes:PhotoView:2.0.0'
 
 	//Test
 	androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
