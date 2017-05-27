@@ -5,11 +5,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
@@ -47,6 +50,9 @@ public class HomeActivity extends TelmediqActivity {
 	EmptyRecyclerView recyclerView;
 	@BindView(R.id.listItem_empty)
 	View emptyView;
+	@BindView(R.id.action_logout)
+	@Nullable
+	MenuItem actionLogout;
 	//</editor-fold>
 
 	DirectoryAdapter adapter;
@@ -90,6 +96,14 @@ public class HomeActivity extends TelmediqActivity {
 		if (parentFolder != null) {
 			getSupportActionBar().setTitle(parentFolder.getName());
 		}
+
+		actionLogout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				logout();
+				return true;
+			}
+		});
 	}
 
 	private void setupViews() {

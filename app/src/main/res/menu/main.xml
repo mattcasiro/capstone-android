@@ -3,8 +3,20 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
+		android:id="@+id/action_profile"
+		android:title="@string/action_profile"
+		app:materialIcon="settings"
+		app:showAsAction="never"/>
+
+	<item
 		android:id="@+id/action_settings"
 		android:title="@string/action_settings"
 		app:materialIcon="settings"
-		app:showAsAction="ifRoom"/>
+		app:showAsAction="never"/>
+
+	<item
+		android:id="@+id/action_logout"
+		android:title="@string/action_logout"
+		app:materialIcon="settings"
+		app:showAsAction="never"/>
 </menu>

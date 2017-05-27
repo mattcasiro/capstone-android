@@ -11,4 +11,6 @@
 	<string name="unable_to_get_file_details">Unable to get file details</string>
 	<string name="modified_title">Modified:</string>
 	<string name="no_content">No items</string>
+	<string name="action_profile">Profile</string>
+	<string name="action_logout">Logout</string>
 </resources>
