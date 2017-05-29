@@ -13,7 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
+import com.telmediq.docstorage.TelmediqApplication;
 import com.telmediq.docstorage.helper.Constants;
+import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.File;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
@@ -23,6 +25,9 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import io.realm.Realm;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -122,6 +127,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	@OnClick({R.id.fileInfo, R.id.addPeopleListItem, R.id.shareLinkListItem, R.id.moveListItem,
 			R.id.starListItem, R.id.renameListItem, R.id.removeListItem})
 	public void onOptionClicked(View view) {
+		TelmediqApplication app = (TelmediqApplication) getActivity().getApplication();
 		switch (view.getId()) {
 			case R.id.fileInfo:
 
@@ -142,7 +148,10 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 
 				break;
 			case R.id.removeListItem:
+				Timber.d("removing file");
 
+				Call<File> call = app.getTelmediqService().deleteFile(file.getFolder(), file.getId());
+				call.enqueue(userDeleteFileCallback);
 				break;
 		}
 
@@ -164,4 +173,32 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 		Timber.d("Toggled id# %s to %s", button.getId(), isChecked);
 	}
 	//</editor-fold>
+
+	//<editor-fold desc="Network Callbacks">
+	Callback<File> userDeleteFileCallback = new Callback<File>() {
+		@Override
+		public void onResponse(Call<File> call, Response<File> response) {
+			String error = Utils.checkResponseForError(response);
+			if (error != null) {
+				onFailure(call, new Throwable(error));
+				return;
+			}
+			Realm realm = Realm.getDefaultInstance();
+			realm.executeTransaction(new Realm.Transaction() {
+				@Override
+				public void execute(Realm realm) {
+					file.delete(realm);
+				}
+			});
+			dismiss();
+		}
+
+		@Override
+		public void onFailure(Call<File> call, Throwable t) {
+			Timber.d("failed to delete file");
+		}
+	};
+	//</editor-fold>
+
+
 }
