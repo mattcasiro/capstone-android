@@ -133,11 +133,12 @@ public class HomeActivity extends TelmediqActivity {
 	}
 
 	private void logout(){
-		AppValues.destroyAccessToken();
 		AppValues.clear();
 
 		Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
 		startActivity(intent);
+
+		finish();
 	}
 
 	//<editor-fold desc="Menu">
