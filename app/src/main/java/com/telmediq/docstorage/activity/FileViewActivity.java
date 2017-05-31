@@ -47,10 +47,12 @@ public class FileViewActivity extends TelmediqActivity {
 			finish();
 			return;
 		}
-		fileName.setText(file.getName());
-
 		file.addChangeListener(realmChangeListener);
+		setupView();
+	}
 
+	private void setupView(){
+		fileName.setText(file.getName());
 		Glide.with(this)
 				.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))
 				.into(fileView);
@@ -87,7 +89,7 @@ public class FileViewActivity extends TelmediqActivity {
 				finish();
 				return;
 			}
-
+			setupView();
 		}
 	};
 	//</editor-fold>
