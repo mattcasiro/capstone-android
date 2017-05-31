@@ -20,7 +20,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:elevation="4dp"
-		android:background="#70000000">
+		android:background="@color/blackTransparent">
 
 		<net.steamcrafted.materialiconlib.MaterialIconView
 			android:id="@+id/back_arrow"
