@@ -170,7 +170,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 				}
 			});
 
-			folderOptionsIcon.setOnClickListener(new View.OnClickListener(){
+			folderOptionsIcon.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Timber.d("Folder menu clicked");

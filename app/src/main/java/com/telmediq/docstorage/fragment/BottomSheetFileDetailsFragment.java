@@ -158,7 +158,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 				Utils.buildAlertDialog(
 						view.getContext(),
 						R.string.confirm_delete_title,
-						R.string.confirm_delete_message,
+						R.string.confirm_delete_file_message,
 						R.drawable.ic_warning_black,
 						new DialogInterface.OnClickListener() {
 							@Override
@@ -205,7 +205,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 				public void execute(Realm realm) {
 					file.delete(realm);
 					CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
-					Snackbar.make(rootLayout, R.string.delete_notification, Snackbar.LENGTH_LONG).show();
+					Snackbar.make(rootLayout, R.string.delete_file_notification, Snackbar.LENGTH_LONG).show();
 				}
 			});
 			dismiss();

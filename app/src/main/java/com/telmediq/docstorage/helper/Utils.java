@@ -29,7 +29,7 @@ public class Utils {
 	}
 
 
-	public static AlertDialog buildAlertDialog(Context context, int title, int message, int icon, DialogInterface.OnClickListener listener){
+	public static AlertDialog buildAlertDialog(Context context, int title, int message, int icon, DialogInterface.OnClickListener listener) {
 		return new AlertDialog.Builder(context)
 				.setTitle(title)
 				.setMessage(message)
