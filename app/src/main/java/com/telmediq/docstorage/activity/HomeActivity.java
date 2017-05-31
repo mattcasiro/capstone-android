@@ -50,9 +50,6 @@ public class HomeActivity extends TelmediqActivity {
 	EmptyRecyclerView recyclerView;
 	@BindView(R.id.listItem_empty)
 	View emptyView;
-	@BindView(R.id.action_logout)
-	@Nullable
-	MenuItem actionLogout;
 	//</editor-fold>
 
 	DirectoryAdapter adapter;
@@ -96,14 +93,6 @@ public class HomeActivity extends TelmediqActivity {
 		if (parentFolder != null) {
 			getSupportActionBar().setTitle(parentFolder.getName());
 		}
-
-		actionLogout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				logout();
-				return true;
-			}
-		});
 	}
 
 	private void setupViews() {
@@ -167,7 +156,18 @@ public class HomeActivity extends TelmediqActivity {
 		int id = item.getItemId();
 
 		switch (id) {
+			case R.id.action_gridview:
+				break;
+			case R.id.action_search:
+				break;
+			case R.id.action_profile:
+				//Intent intent = new Intent(HomeActivity.this, ProfileViewActivity.class);
+				//startActivity(intent);
+				break;
 			case R.id.action_settings:
+				break;
+			case R.id.action_logout:
+				logout();
 				break;
 			case android.R.id.home:
 				finish();
@@ -181,8 +181,7 @@ public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.fab)
 	public void onFabClicked(View view) {
-		Snackbar.make(view, "Logging out", Snackbar.LENGTH_LONG).show();
-		logout();
+		Snackbar.make(view, "Make me do a thing", Snackbar.LENGTH_LONG).show();
 	}
 
 	DirectoryAdapter.Listener directoryListener = new DirectoryAdapter.Listener() {

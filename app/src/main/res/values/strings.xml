@@ -13,4 +13,6 @@
 	<string name="no_content">No items</string>
 	<string name="action_profile">Profile</string>
 	<string name="action_logout">Logout</string>
+	<string name="action_gridview">Grid View</string>
+	<string name="action_search">Search</string>
 </resources>
