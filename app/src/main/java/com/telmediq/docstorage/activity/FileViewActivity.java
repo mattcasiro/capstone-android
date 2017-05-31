@@ -19,6 +19,10 @@ import net.steamcrafted.materialiconlib.MaterialIconView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.ObjectChangeSet;
+import io.realm.RealmChangeListener;
+import io.realm.RealmObjectChangeListener;
+import timber.log.Timber;
 
 public class FileViewActivity extends TelmediqActivity {
 	@BindView(R.id.fileViewActivity_fileView)
@@ -44,6 +48,8 @@ public class FileViewActivity extends TelmediqActivity {
 			return;
 		}
 		fileName.setText(file.getName());
+
+		file.addChangeListener(realmChangeListener);
 
 		Glide.with(this)
 				.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))
@@ -71,5 +77,18 @@ public class FileViewActivity extends TelmediqActivity {
 	void onBackArrowClicked(View view) {
 		finish();
 	}
+
+	RealmObjectChangeListener<File> realmChangeListener = new RealmObjectChangeListener<File>() {
+		@Override
+		public void onChange(File file, ObjectChangeSet objectChangeSet) {
+			Timber.d("file changed");
+			if (objectChangeSet.isDeleted()){
+				Timber.d("File deleted");
+				finish();
+				return;
+			}
+
+		}
+	};
 	//</editor-fold>
 }
