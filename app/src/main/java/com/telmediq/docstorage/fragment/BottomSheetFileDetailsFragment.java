@@ -1,11 +1,13 @@
 package com.telmediq.docstorage.fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -42,9 +44,12 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	TextView fileNameTextView;
 	@BindView(R.id.starSwitch)
 	SwitchCompat starSwitch;
+	@BindView(R.id.contentFileDetails_rootView)
+	View rootView;
 	//</editor-fold>
 
 	private File file;
+	private TelmediqApplication app;
 	private boolean isUserInteraction = true; // boolean to make sure programmatic changes don't trigger listeners
 
 	public static BottomSheetFileDetailsFragment newInstance(Integer fileId) {
@@ -62,7 +67,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 		View contentView = View.inflate(getContext(), R.layout.content_file_details, null);
 		dialog.setContentView(contentView);
 		ButterKnife.bind(this, contentView);
-
+		app = (TelmediqApplication) getActivity().getApplication();
 		setupBehavior(contentView);
 
 		if (!getFile()) {
@@ -127,7 +132,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	@OnClick({R.id.fileInfo, R.id.addPeopleListItem, R.id.shareLinkListItem, R.id.moveListItem,
 			R.id.starListItem, R.id.renameListItem, R.id.removeListItem})
 	public void onOptionClicked(View view) {
-		TelmediqApplication app = (TelmediqApplication) getActivity().getApplication();
+
 		switch (view.getId()) {
 			case R.id.fileInfo:
 
@@ -150,8 +155,19 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 			case R.id.removeListItem:
 				Timber.d("removing file");
 
-				Call<File> call = app.getTelmediqService().deleteFile(file.getFolder(), file.getId());
-				call.enqueue(userDeleteFileCallback);
+				Utils.buildAlertDialog(
+						view.getContext(),
+						R.string.confirm_delete_title,
+						R.string.confirm_delete_message,
+						R.drawable.ic_warning_black,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Call<File> call = app.getTelmediqService().deleteFile(file.getFolder(), file.getId());
+								call.enqueue(userDeleteFileCallback);
+							}
+						})
+						.show();
 				break;
 		}
 
@@ -188,6 +204,8 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 				@Override
 				public void execute(Realm realm) {
 					file.delete(realm);
+					CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
+					Snackbar.make(rootLayout, R.string.delete_notification, Snackbar.LENGTH_LONG).show();
 				}
 			});
 			dismiss();
