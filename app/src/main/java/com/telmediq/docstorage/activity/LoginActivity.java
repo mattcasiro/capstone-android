@@ -1,7 +1,11 @@
 package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +24,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.telmediq.docstorage.R.layout.activity_login;
+
 public class LoginActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
 	@BindView(R.id.activityLogin_emailText)
@@ -28,12 +34,16 @@ public class LoginActivity extends TelmediqActivity {
 	EditText passwordEditText;
 	@BindView(R.id.activityLogin_loginButton)
 	Button loginButton;
+	@BindView(R.id.activityLogin_emailLayout)
+	TextInputLayout emailLayout;
+	@BindView(R.id.activityLogin_passwordLayout)
+	TextInputLayout passwordLayout;
 	//</editor-fold>
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		setContentView(activity_login);
 		ButterKnife.bind(this);
 
 		loginButton.setOnClickListener(loginClicked);
@@ -42,6 +52,14 @@ public class LoginActivity extends TelmediqActivity {
 	private void login() {
 		String email = emailEditText.getText().toString();
 		String password = passwordEditText.getText().toString();
+
+		// Validate both so that all errors are displayed, then check the validity
+		validateEmailAddress();
+		validatePassword();
+		if (!validateEmailAddress() || !validatePassword()) {
+			Timber.e("Invalid or missing credentials, login cancelled");
+			return;
+		}
 		Timber.i("email: %s, password: %s", email, password);
 
 		Call<AuthorizationResponse> loginCall = getTelmediqService().login(email, password);
@@ -81,7 +99,59 @@ public class LoginActivity extends TelmediqActivity {
 		@Override
 		public void onFailure(Call<AuthorizationResponse> call, Throwable t) {
 			Timber.e(t.getMessage());
+			Snackbar snackbar = Snackbar
+					.make(findViewById(R.id.coordinatorLayout),
+							"Invalid email or password",
+							Snackbar.LENGTH_LONG);
+			snackbar.getView().setBackgroundColor(Color.RED);
+			snackbar.show();
 		}
 	};
+	//</editor-fold>
+
+	//<editor-fold desc="Validation">
+	private boolean validateEmailAddress() {
+		if (emailEditText == null) {
+			return false;
+		}
+
+		String error = validateEmailAddress(emailEditText.getText().toString());
+		if (error != null) {
+			emailLayout.setError(error);
+			return false;
+		} else {
+			emailLayout.setErrorEnabled(false);
+		}
+		return true;
+	}
+
+	private String validateEmailAddress(String email) {
+		if (email == null || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+			return "Enter a valid email address";
+		}
+		return null;
+	}
+
+	private boolean validatePassword() {
+		if (passwordEditText == null) {
+			return false;
+		}
+
+		String error = validatePassword(passwordEditText.getText().toString());
+		if (error != null) {
+			passwordLayout.setError(error);
+			return false;
+		} else {
+			passwordLayout.setErrorEnabled(false);
+		}
+		return true;
+	}
+
+	private String validatePassword(String password) {
+		if (password == null || password.equalsIgnoreCase("")) {
+			return "Password is required";
+		}
+		return null;
+	}
 	//</editor-fold>
 }
