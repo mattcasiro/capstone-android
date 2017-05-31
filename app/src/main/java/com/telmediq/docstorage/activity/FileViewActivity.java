@@ -1,5 +1,6 @@
 package com.telmediq.docstorage.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,7 +21,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.ObjectChangeSet;
-import io.realm.RealmChangeListener;
 import io.realm.RealmObjectChangeListener;
 import timber.log.Timber;
 
@@ -51,7 +51,7 @@ public class FileViewActivity extends TelmediqActivity {
 		setupView();
 	}
 
-	private void setupView(){
+	private void setupView() {
 		fileName.setText(file.getName());
 		Glide.with(this)
 				.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))
@@ -84,8 +84,11 @@ public class FileViewActivity extends TelmediqActivity {
 		@Override
 		public void onChange(File file, ObjectChangeSet objectChangeSet) {
 			Timber.d("file changed");
-			if (objectChangeSet.isDeleted()){
+			if (objectChangeSet.isDeleted()) {
 				Timber.d("File deleted");
+				Intent intent = new Intent();
+				intent.setAction(Constants.Actions.FILE_DELETED);
+				setResult(RESULT_OK, intent);
 				finish();
 				return;
 			}

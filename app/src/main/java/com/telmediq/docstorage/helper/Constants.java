@@ -18,4 +18,8 @@ public class Constants {
 		String FILE_ID = BuildConfig.APPLICATION_ID + ".fileId";
 		String FOLDER_ID = BuildConfig.APPLICATION_ID + ".folderId";
 	}
+
+	public interface Actions {
+		String FILE_DELETED = BuildConfig.APPLICATION_ID + ".fileDeleted";
+	}
 }
