@@ -1,6 +1,7 @@
 package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -131,6 +132,15 @@ public class HomeActivity extends TelmediqActivity {
 		userFileCall.enqueue(userFileCallback);
 	}
 
+	private void logout(){
+		AppValues.clear();
+
+		Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+		startActivity(intent);
+
+		finish();
+	}
+
 	//<editor-fold desc="Menu">
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -157,8 +167,8 @@ public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.fab)
 	public void onFabClicked(View view) {
-		Snackbar.make(view, "Fetching folder list", Snackbar.LENGTH_LONG).show();
-		getFolderList();
+		Snackbar.make(view, "Logging out", Snackbar.LENGTH_LONG).show();
+		logout();
 	}
 
 	DirectoryAdapter.Listener directoryListener = new DirectoryAdapter.Listener() {
