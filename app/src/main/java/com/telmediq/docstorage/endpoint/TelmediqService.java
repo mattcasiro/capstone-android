@@ -37,4 +37,9 @@ public interface TelmediqService {
 			@Path("folderId") Integer folderId,
 			@Path("fileId") Integer fileId
 	);
+
+	@DELETE("api/folders/{folderId}/")
+	Call<Folder> deleteFolder(
+			@Path("folderId") Integer folderId
+	);
 }
