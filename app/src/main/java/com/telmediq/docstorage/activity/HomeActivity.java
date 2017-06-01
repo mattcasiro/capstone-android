@@ -211,7 +211,7 @@ public class HomeActivity extends TelmediqActivity {
 	private void handleFileDetailResults(Intent data) {
 		switch (data.getAction()) {
 			case Constants.Actions.FILE_DELETED:
-				Snackbar.make(recyclerView, "File deleted", Snackbar.LENGTH_SHORT).show();
+				Snackbar.make(recyclerView, R.string.delete_notification, Snackbar.LENGTH_SHORT).show();
 				break;
 		}
 	}

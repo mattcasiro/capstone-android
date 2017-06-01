@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -203,6 +204,11 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 				@Override
 				public void execute(Realm realm) {
 					file.delete(realm);
+
+					if (getActivity().findViewById(R.id.activityMain_coordinatorLayout) != null){
+						CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
+						Snackbar.make(rootLayout, R.string.delete_notification, Snackbar.LENGTH_LONG).show();
+					}
 				}
 			});
 			dismiss();
