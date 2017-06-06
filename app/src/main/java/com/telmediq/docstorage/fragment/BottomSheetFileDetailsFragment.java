@@ -1,11 +1,13 @@
 package com.telmediq.docstorage.fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -13,7 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
+import com.telmediq.docstorage.TelmediqApplication;
 import com.telmediq.docstorage.helper.Constants;
+import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.File;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
@@ -23,6 +27,9 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import io.realm.Realm;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -37,9 +44,12 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	TextView fileNameTextView;
 	@BindView(R.id.starSwitch)
 	SwitchCompat starSwitch;
+	@BindView(R.id.contentFileDetails_rootView)
+	View rootView;
 	//</editor-fold>
 
 	private File file;
+	private TelmediqApplication app;
 	private boolean isUserInteraction = true; // boolean to make sure programmatic changes don't trigger listeners
 
 	public static BottomSheetFileDetailsFragment newInstance(Integer fileId) {
@@ -57,7 +67,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 		View contentView = View.inflate(getContext(), R.layout.content_file_details, null);
 		dialog.setContentView(contentView);
 		ButterKnife.bind(this, contentView);
-
+		app = (TelmediqApplication) getActivity().getApplication();
 		setupBehavior(contentView);
 
 		if (!getFile()) {
@@ -122,6 +132,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	@OnClick({R.id.fileInfo, R.id.addPeopleListItem, R.id.shareLinkListItem, R.id.moveListItem,
 			R.id.starListItem, R.id.renameListItem, R.id.removeListItem})
 	public void onOptionClicked(View view) {
+
 		switch (view.getId()) {
 			case R.id.fileInfo:
 
@@ -142,7 +153,21 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 
 				break;
 			case R.id.removeListItem:
+				Timber.d("removing file");
 
+				Utils.buildAlertDialog(
+						view.getContext(),
+						R.string.confirm_delete_title,
+						R.string.confirm_delete_message,
+						R.drawable.ic_warning_black,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Call<File> call = app.getTelmediqService().deleteFile(file.getFolder(), file.getId());
+								call.enqueue(userDeleteFileCallback);
+							}
+						})
+						.show();
 				break;
 		}
 
@@ -164,4 +189,41 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 		Timber.d("Toggled id# %s to %s", button.getId(), isChecked);
 	}
 	//</editor-fold>
+
+	//<editor-fold desc="Network Callbacks">
+	Callback<File> userDeleteFileCallback = new Callback<File>() {
+		@Override
+		public void onResponse(Call<File> call, Response<File> response) {
+			String error = Utils.checkResponseForError(response);
+			if (error != null) {
+				onFailure(call, new Throwable(error));
+				return;
+			}
+			Realm realm = Realm.getDefaultInstance();
+			realm.executeTransaction(new Realm.Transaction() {
+				@Override
+				public void execute(Realm realm) {
+					file.delete(realm);
+
+					// Need to account for case when we do not change activity after file deletion
+					// occurs (eg. deleting a file from HomeActivity). Otherwise snackbar will be
+					// shown onActivityResult. This could be completely wrong, but it works. Should
+					// probably find a better way.
+					if (getActivity().findViewById(R.id.activityMain_coordinatorLayout) != null){
+						CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
+						Snackbar.make(rootLayout, R.string.delete_notification, Snackbar.LENGTH_LONG).show();
+					}
+				}
+			});
+			dismiss();
+		}
+
+		@Override
+		public void onFailure(Call<File> call, Throwable t) {
+			Timber.d("failed to delete file");
+		}
+	};
+	//</editor-fold>
+
+
 }
