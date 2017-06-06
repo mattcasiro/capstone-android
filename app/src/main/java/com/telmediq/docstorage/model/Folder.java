@@ -33,6 +33,10 @@ public class Folder extends RealmObject {
 		return realm.where(Folder.class).equalTo("id", folderId).findFirst();
 	}
 
+	public void delete(Realm realm) {
+		this.deleteFromRealm();
+	}
+
 
 	public Integer getId() {
 		return id;

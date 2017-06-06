@@ -16,6 +16,7 @@ import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
 import com.telmediq.docstorage.adapter.DirectoryAdapter;
 import com.telmediq.docstorage.fragment.BottomSheetFileDetailsFragment;
+import com.telmediq.docstorage.fragment.BottomSheetFolderDetailsFragment;
 import com.telmediq.docstorage.helper.AppValues;
 import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
@@ -194,6 +195,12 @@ public class HomeActivity extends TelmediqActivity {
 		@DebugLog
 		public void onFileOptionClicked(Integer fileId) {
 			BottomSheetFileDetailsFragment.newInstance(fileId).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
+		}
+
+		@Override
+		@DebugLog
+		public void onFolderOptionClicked(Integer folderId) {
+			BottomSheetFolderDetailsFragment.newInstance(folderId).show(getSupportFragmentManager(), BottomSheetFolderDetailsFragment.class.getSimpleName());
 		}
 	};
 
