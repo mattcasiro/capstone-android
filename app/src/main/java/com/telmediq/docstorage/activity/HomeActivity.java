@@ -1,6 +1,7 @@
 package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -40,6 +41,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends TelmediqActivity {
+	private static final int FILE_DETAIL_REQUEST_CODE = 2432;
+
 	//<editor-fold desc="View Initialization">
 	@BindView(R.id.toolbar)
 	Toolbar toolbar;
@@ -132,6 +135,15 @@ public class HomeActivity extends TelmediqActivity {
 		userFileCall.enqueue(userFileCallback);
 	}
 
+	private void logout(){
+		AppValues.clear();
+
+		Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+		startActivity(intent);
+
+		finish();
+	}
+
 	//<editor-fold desc="Menu">
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -158,7 +170,8 @@ public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.fab)
 	public void onFabClicked(View view) {
-
+		Snackbar.make(view, "Logging out", Snackbar.LENGTH_LONG).show();
+		logout();
 	}
 
 	DirectoryAdapter.Listener directoryListener = new DirectoryAdapter.Listener() {
@@ -175,7 +188,7 @@ public class HomeActivity extends TelmediqActivity {
 		public void onFileClicked(Integer fileId) {
 			Intent intent = new Intent(HomeActivity.this, FileViewActivity.class);
 			intent.putExtra(Constants.Extras.FILE_ID, fileId);
-			startActivity(intent);
+			startActivityForResult(intent, FILE_DETAIL_REQUEST_CODE);
 		}
 
 		@Override
@@ -197,6 +210,28 @@ public class HomeActivity extends TelmediqActivity {
 			setupRecyclerView();
 		}
 	};
+	//</editor-fold>
+
+	//<editor-fold desc="Activity Results">
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			switch (requestCode) {
+				case FILE_DETAIL_REQUEST_CODE:
+					handleFileDetailResults(data);
+					break;
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	private void handleFileDetailResults(Intent data) {
+		switch (data.getAction()) {
+			case Constants.Actions.FILE_DELETED:
+				Snackbar.make(recyclerView, R.string.delete_notification, Snackbar.LENGTH_SHORT).show();
+				break;
+		}
+	}
 	//</editor-fold>
 
 	//<editor-fold desc="Network Callbacks">

@@ -204,8 +204,15 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 				@Override
 				public void execute(Realm realm) {
 					file.delete(realm);
-					CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
-					Snackbar.make(rootLayout, R.string.delete_file_notification, Snackbar.LENGTH_LONG).show();
+
+					// Need to account for case when we do not change activity after file deletion
+					// occurs (eg. deleting a file from HomeActivity). Otherwise snackbar will be
+					// shown onActivityResult. This could be completely wrong, but it works. Should
+					// probably find a better way.
+					if (getActivity().findViewById(R.id.activityMain_coordinatorLayout) != null){
+						CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
+						Snackbar.make(rootLayout, R.string.delete_notification, Snackbar.LENGTH_LONG).show();
+					}
 				}
 			});
 			dismiss();
