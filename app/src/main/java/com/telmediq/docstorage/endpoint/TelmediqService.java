@@ -8,6 +8,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.DELETE;
+import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -41,5 +42,24 @@ public interface TelmediqService {
 	@DELETE("api/folders/{folderId}/")
 	Call<Folder> deleteFolder(
 			@Path("folderId") Integer folderId
+
+	/* You shouldn't need everything when using the API
+	@POST("/api/files/")
+	Call<Response> addFile(
+			@Field("name") String name,
+			@Field("original_name") String original_name,
+			@Field("size") Integer size,
+			@Field("mime_type") String mime_type,
+			@Field("folder") Integer folder,
+			@Field("file") File file,
+			@Field("owner") Integer owner
+	);
+	*/
+	@POST("/api/files/")
+	Call<Response> addFile(
+			@Field("name") String name,
+			@Field("folder") Integer folder,
+			@Field("file") File file,
+			@Field("owner") Integer owner
 	);
 }

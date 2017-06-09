@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+	    style="@style/simpleListItem">
+
+	    <TextView
+		    style="@style/TextAppearance.AppCompat.Headline"
+		    android:padding="20dp"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:maxLines="1"
+	        android:text="New"/>
+    </LinearLayout>
+
+	<ImageView style="@style/divider"/>
+
+	<!-- Buttons -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:weighSum="3">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/addFolder"
+			style="@style/gridItemIcon"
+			app:materialIcon="folder"
+			android:adjustViewBounds="true"
+			app:materialIconColor="@color/textSecondary"/>
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/addFromFile"
+			style="@style/gridItemIcon"
+			app:materialIcon="upload"
+			android:adjustViewBounds="true"
+			app:materialIconColor="@color/textSecondary"/>
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/addFromCamera"
+			style="@style/gridItemIcon"
+			app:materialIcon="camera"
+			android:adjustViewBounds="true"
+			app:materialIconColor="@color/textSecondary"/>
+	</LinearLayout>
+
+	<!-- Text -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:weighSum="3">
+
+		<TextView
+			style="@style/gridItemText"
+		    android:text="Folder"/>
+	</LinearLayout>
+
+</LinearLayout>
