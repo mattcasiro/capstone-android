@@ -33,7 +33,7 @@
 			android:label="DocStorage"
 			android:theme="@style/AppTheme.NoActionBar"/>
 		<activity
-			android:name=".activity.ProfileViewActivity"
+			android:name=".activity.ProfileActivity"
 			android:label="DocStorage"
 			android:theme="@style/AppTheme.NoActionBar"/>
 	</application>
