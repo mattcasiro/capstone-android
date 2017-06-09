@@ -1,6 +1,11 @@
 package com.telmediq.docstorage.helper;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.drawable.Icon;
+
+import com.telmediq.docstorage.R;
 
 import java.io.IOException;
 
@@ -21,5 +26,16 @@ public class Utils {
 			}
 		}
 		return error;
+	}
+
+
+	public static AlertDialog buildAlertDialog(Context context, int title, int message, int icon, DialogInterface.OnClickListener listener) {
+		return new AlertDialog.Builder(context)
+				.setTitle(title)
+				.setMessage(message)
+				.setIcon(icon)
+				.setPositiveButton(R.string.yes, listener)
+				.setNegativeButton(R.string.no, null)
+				.create();
 	}
 }

@@ -7,6 +7,7 @@ import com.telmediq.docstorage.model.Folder;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -30,4 +31,15 @@ public interface TelmediqService {
 
 	@GET("api/folders/")
 	Call<List<Folder>> getFolders();
+
+	@DELETE("api/folders/{folderId}/files/{fileId}/")
+	Call<File> deleteFile(
+			@Path("folderId") Integer folderId,
+			@Path("fileId") Integer fileId
+	);
+
+	@DELETE("api/folders/{folderId}/")
+	Call<Folder> deleteFolder(
+			@Path("folderId") Integer folderId
+	);
 }
