@@ -12,6 +12,10 @@
 	<string name="unable_to_get_folder_details">Unable to get folder details</string>
 	<string name="modified_title">Modified:</string>
 	<string name="no_content">No items</string>
+	<string name="action_profile">Profile</string>
+	<string name="action_logout">Logout</string>
+	<string name="action_gridview">Grid View</string>
+	<string name="action_search">Search</string>
 	<string name="yes">Yes</string>
 	<string name="no">No</string>
 	<string name="confirm_delete_title">Confirm Delete</string>

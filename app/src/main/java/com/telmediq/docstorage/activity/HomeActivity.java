@@ -5,11 +5,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
@@ -156,7 +159,18 @@ public class HomeActivity extends TelmediqActivity {
 		int id = item.getItemId();
 
 		switch (id) {
+			case R.id.action_gridview:
+				break;
+			case R.id.action_search:
+				break;
+			case R.id.action_profile:
+				//Intent intent = new Intent(HomeActivity.this, ProfileViewActivity.class);
+				//startActivity(intent);
+				break;
 			case R.id.action_settings:
+				break;
+			case R.id.action_logout:
+				logout();
 				break;
 			case android.R.id.home:
 				finish();
@@ -170,8 +184,7 @@ public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.fab)
 	public void onFabClicked(View view) {
-		Snackbar.make(view, "Logging out", Snackbar.LENGTH_LONG).show();
-		logout();
+		Snackbar.make(view, "Make me do a thing", Snackbar.LENGTH_LONG).show();
 	}
 
 	DirectoryAdapter.Listener directoryListener = new DirectoryAdapter.Listener() {
