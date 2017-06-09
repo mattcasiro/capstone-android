@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,6 +15,8 @@ import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
 import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.Profile;
+
+import net.steamcrafted.materialiconlib.MaterialMenuInflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,12 +38,12 @@ public class ProfileActivity extends TelmediqActivity{
 	@BindView(R.id.toolbar)
     @Nullable
 	Toolbar toolbar;
-    @BindView(R.id.profile_editButton)
+    /*@BindView(R.id.profile_editButton)
     Button editButton;
     @BindView(R.id.profile_cancelButton)
     Button cancelButton;
     @BindView(R.id.profile_confirmButton)
-    Button confirmButton;
+    Button confirmButton;*/
     @BindView(R.id.profile_firstNameLayout)
     TextInputLayout firstNameLayout;
     @BindView(R.id.profile_firstNameText)
@@ -110,7 +114,10 @@ public class ProfileActivity extends TelmediqActivity{
             textViewEmail.setText(profile.getEmail());
         }
 
-        editButton.setOnClickListener(new View.OnClickListener() {
+        firstNameLayout.setEnabled(false);
+        lastNameLayout.setEnabled(false);
+
+        /*editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onEditButtonClicked(v);
@@ -127,7 +134,7 @@ public class ProfileActivity extends TelmediqActivity{
             public void onClick(View v) {
                 onConfirmButtonClicked(v);
             }
-        });
+        });*/
     }
 
     void swapViews(){
@@ -144,6 +151,40 @@ public class ProfileActivity extends TelmediqActivity{
         }
     }
 
+    //<editor-fold desc="Menu">
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.profile_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.profile_edit:
+                swapViews();
+                break;
+            case R.id.profile_confirm:
+                updateProfile();
+                swapViews();
+                break;
+            case R.id.profile_cancel:
+                textViewFirstName.setText(profile.getFirstName());
+                textViewLastName.setText(profile.getLastName());
+                swapViews();
+                break;
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    //</editor-fold>
+
+    /*
     //<editor-fold desc="ButtonMethods">
     @OnClick(R.id.profile_editButton)
     void onEditButtonClicked(View view){
@@ -163,7 +204,7 @@ public class ProfileActivity extends TelmediqActivity{
         swapViews();
     }
     //</editor-fold>
-
+    */
     //<editor-fold desc="Callbacks">
     Callback<Profile> profileCallback = new Callback<Profile>() {
         @Override

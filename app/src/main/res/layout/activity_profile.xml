@@ -32,7 +32,7 @@
             android:maxLines="1"
             android:text="@string/profile"
             android:textColor="@android:color/white"/>
-
+        <!--
         <net.steamcrafted.materialiconlib.MaterialIconView
             android:id="@+id/profile_edit"
             style="@style/listItemIcon"
@@ -40,7 +40,7 @@
             android:layout_gravity="end"
             app:materialIcon="pencil"
             app:materialIconSize="24dp"
-            app:materialIconColor="@android:color/white"/>
+            app:materialIconColor="@android:color/white"/>-->
 
     </android.support.v7.widget.Toolbar>
 
@@ -94,6 +94,7 @@
             android:text="@string/app_name"
             android:textSize="18sp"/>
 
+        <!--
         <Button
             android:id="@+id/profile_editButton"
             android:layout_width="wrap_content"
@@ -113,6 +114,7 @@
             android:layout_height="wrap_content"
             android:text="@string/confirm"
             android:visibility="gone"/>
+        -->
     </LinearLayout>
 
 </LinearLayout>
