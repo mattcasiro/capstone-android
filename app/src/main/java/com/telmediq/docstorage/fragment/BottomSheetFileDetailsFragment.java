@@ -211,7 +211,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 					// probably find a better way.
 					if (getActivity().findViewById(R.id.activityMain_coordinatorLayout) != null){
 						CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
-						Snackbar.make(rootLayout, R.string.delete_notification, Snackbar.LENGTH_LONG).show();
+						Snackbar.make(rootLayout, R.string.delete_file_notification, Snackbar.LENGTH_LONG).show();
 					}
 				}
 			});
