@@ -18,7 +18,7 @@ import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqApplication;
 import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
-import com.telmediq.docstorage.model.File;
+import com.telmediq.docstorage.model.Folder;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
@@ -36,7 +36,7 @@ import timber.log.Timber;
  * Created by sean1 on 5/11/2017.
  */
 
-public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
+public class BottomSheetFolderDetailsFragment extends BottomSheetDialogFragment {
 	//<editor-fold desc="View Initialization">
 	@BindView(R.id.fileTypeImage)
 	MaterialIconView fileTypeImage;
@@ -48,15 +48,15 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	View rootView;
 	//</editor-fold>
 
-	private File file;
+	private Folder folder;
 	private TelmediqApplication app;
 	private boolean isUserInteraction = true; // boolean to make sure programmatic changes don't trigger listeners
 
-	public static BottomSheetFileDetailsFragment newInstance(Integer fileId) {
-		BottomSheetFileDetailsFragment messagesFragment = new BottomSheetFileDetailsFragment();
+	public static BottomSheetFolderDetailsFragment newInstance(Integer folderId) {
+		BottomSheetFolderDetailsFragment messagesFragment = new BottomSheetFolderDetailsFragment();
 
 		Bundle arguments = new Bundle();
-		arguments.putInt(Constants.Extras.FILE_ID, fileId);
+		arguments.putInt(Constants.Extras.FOLDER_ID, folderId);
 		messagesFragment.setArguments(arguments);
 
 		return messagesFragment;
@@ -70,8 +70,8 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 		app = (TelmediqApplication) getActivity().getApplication();
 		setupBehavior(contentView);
 
-		if (!getFile()) {
-			Toast.makeText(getContext(), R.string.unable_to_get_file_details, Toast.LENGTH_LONG).show();
+		if (!getFolder()) {
+			Toast.makeText(getContext(), R.string.unable_to_get_folder_details, Toast.LENGTH_LONG).show();
 			dismiss();
 			return;
 		}
@@ -109,23 +109,23 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	private void setupView() {
 		isUserInteraction = false;
 
-		fileNameTextView.setText(file.getName());
+		fileNameTextView.setText(folder.getName());
 		starSwitch.setChecked(false); //ToDo: pull value from settings somewhere
 
 		isUserInteraction = true;
 	}
 
-	private boolean getFile() {
+	private boolean getFolder() {
 		if (getArguments() == null) {
 			return false;
 		}
 
-		Integer fileId = getArguments().getInt(Constants.Extras.FILE_ID);
+		Integer folderId = getArguments().getInt(Constants.Extras.FOLDER_ID);
 
 		Realm realm = Realm.getDefaultInstance();
-		file = File.getFile(realm, fileId.toString());
+		folder = Folder.getFolder(realm, folderId);
 
-		return file != null;
+		return folder != null;
 	}
 
 	//<editor-fold desc="Listeners">
@@ -153,18 +153,18 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 
 				break;
 			case R.id.removeListItem:
-				Timber.d("removing file");
+				Timber.d("removing folder");
 
 				Utils.buildAlertDialog(
 						view.getContext(),
 						R.string.confirm_delete_title,
-						R.string.confirm_delete_file_message,
+						R.string.confirm_delete_folder_message,
 						R.drawable.ic_warning_black,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								Call<File> call = app.getTelmediqService().deleteFile(file.getFolder(), file.getId());
-								call.enqueue(userDeleteFileCallback);
+								Call<Folder> call = app.getTelmediqService().deleteFolder(folder.getId());
+								call.enqueue(userDeleteFolderCallback);
 							}
 						})
 						.show();
@@ -191,9 +191,9 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	//</editor-fold>
 
 	//<editor-fold desc="Network Callbacks">
-	Callback<File> userDeleteFileCallback = new Callback<File>() {
+	Callback<Folder> userDeleteFolderCallback = new Callback<Folder>() {
 		@Override
-		public void onResponse(Call<File> call, Response<File> response) {
+		public void onResponse(Call<Folder> call, Response<Folder> response) {
 			String error = Utils.checkResponseForError(response);
 			if (error != null) {
 				onFailure(call, new Throwable(error));
@@ -203,24 +203,17 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 			realm.executeTransaction(new Realm.Transaction() {
 				@Override
 				public void execute(Realm realm) {
-					file.delete(realm);
-
-					// Need to account for case when we do not change activity after file deletion
-					// occurs (eg. deleting a file from HomeActivity). Otherwise snackbar will be
-					// shown onActivityResult. This could be completely wrong, but it works. Should
-					// probably find a better way.
-					if (getActivity().findViewById(R.id.activityMain_coordinatorLayout) != null){
-						CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
-						Snackbar.make(rootLayout, R.string.delete_notification, Snackbar.LENGTH_LONG).show();
-					}
+					folder.delete(realm);
+					CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
+					Snackbar.make(rootLayout, R.string.delete_folder_notification, Snackbar.LENGTH_LONG).show();
 				}
 			});
 			dismiss();
 		}
 
 		@Override
-		public void onFailure(Call<File> call, Throwable t) {
-			Timber.d("failed to delete file");
+		public void onFailure(Call<Folder> call, Throwable t) {
+			Timber.d("failed to delete folder");
 		}
 	};
 	//</editor-fold>
