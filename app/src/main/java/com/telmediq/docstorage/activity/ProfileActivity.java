@@ -1,9 +1,11 @@
 package com.telmediq.docstorage.activity;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,22 +30,27 @@ import timber.log.Timber;
  */
 
 public class ProfileActivity extends TelmediqActivity{
+	//<editor-fold desc="View Initialization">
+	@BindView(R.id.toolbar)
+    @Nullable
+	Toolbar toolbar;
     @BindView(R.id.profile_editButton)
     Button editButton;
     @BindView(R.id.profile_cancelButton)
     Button cancelButton;
     @BindView(R.id.profile_confirmButton)
     Button confirmButton;
-    @BindView(R.id.profile_editTextFirstName)
-    EditText editTextFirstName;
-    @BindView(R.id.profile_firstName)
+    @BindView(R.id.profile_firstNameLayout)
+    TextInputLayout firstNameLayout;
+    @BindView(R.id.profile_firstNameText)
     TextView textViewFirstName;
-    @BindView(R.id.profile_editTextLastName)
-    EditText editTextLastName;
-    @BindView(R.id.profile_lastName)
+    @BindView(R.id.profile_lastNameLayout)
+    TextInputLayout lastNameLayout;
+    @BindView(R.id.profile_lastNameText)
     TextView textViewLastName;
     @BindView(R.id.profile_email)
     TextView textViewEmail;
+	//</editor-fold>
 
     RealmResults<Profile> realmProfile;
     Profile profile;
@@ -56,18 +63,52 @@ public class ProfileActivity extends TelmediqActivity{
         }
     };
 
-    private View[] swappableProfileViews;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile_view);
+        setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
-
-        swappableProfileViews = new View[]{textViewFirstName, editTextFirstName, textViewLastName, editTextLastName, editButton, confirmButton, cancelButton};
 
         getProfile();
         setupViews();
+        setupToolbar();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() == null) {
+            return;
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(profile.getFirstName());
+    }
+
+    void getProfile(){
+        realmProfile = Profile.getProfile(realm);
+        realmProfile.addChangeListener(realmChangeListener);
+
+        Timber.d("get profile contents");
+        Call<Profile> profileCall = getTelmediqService().getProfile();
+        profileCall.enqueue(profileCallback);
+    }
+
+    void updateProfile(){
+        String firstName = textViewFirstName.getText().toString();
+        String lastName = textViewLastName.getText().toString();
+        profile.setFirstName(firstName);
+        profile.setLastName(lastName);
+
+        Timber.d("set profile contents");
+        Call<Profile> profileUpdateCall = getTelmediqService().putProfile(firstName, lastName);
+        profileUpdateCall.enqueue(profileUpdateCallback);
+    }
+
+    private void setupViews(){
+        if(profile != null) {
+            textViewFirstName.setText(profile.getFirstName());
+            textViewLastName.setText(profile.getLastName());
+            textViewEmail.setText(profile.getEmail());
+        }
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,37 +128,21 @@ public class ProfileActivity extends TelmediqActivity{
                 onConfirmButtonClicked(v);
             }
         });
-
     }
 
-    void getProfile(){
-        realmProfile = Profile.getProfile(realm);
-        realmProfile.addChangeListener(realmChangeListener);
+    void swapViews(){
+        if(firstNameLayout.isEnabled()){
+            firstNameLayout.setEnabled(false);
+        } else {
+            firstNameLayout.setEnabled(true);
+        }
 
-        Timber.d("get profile contents");
-        Call<Profile> profileCall = getTelmediqService().getProfile();
-        profileCall.enqueue(profileCallback);
-    }
-
-    void updateProfile(){
-        String firstName = editTextFirstName.getText().toString();
-        String lastName = editTextLastName.getText().toString();
-        profile.setFirstName(firstName);
-        profile.setLastName(lastName);
-
-        Timber.d("set profile contents");
-        Call<Profile> profileUpdateCall = getTelmediqService().putProfile(firstName, lastName);
-        profileUpdateCall.enqueue(profileUpdateCallback);
-    }
-
-    private void setupViews(){
-        if(profile != null) {
-            textViewFirstName.setText(profile.getFirstName());
-            textViewLastName.setText(profile.getLastName());
-            textViewEmail.setText(profile.getEmail());
+        if(lastNameLayout.isEnabled()){
+            lastNameLayout.setEnabled(false);
+        } else {
+            lastNameLayout.setEnabled(true);
         }
     }
-
 
     //<editor-fold desc="ButtonMethods">
     @OnClick(R.id.profile_editButton)
@@ -128,29 +153,16 @@ public class ProfileActivity extends TelmediqActivity{
     @OnClick(R.id.profile_cancelButton)
     void onCancelButtonClicked(View view){
         swapViews();
+        textViewFirstName.setText(profile.getFirstName());
+        textViewLastName.setText(profile.getLastName());
     }
 
     @OnClick(R.id.profile_confirmButton)
     void onConfirmButtonClicked(View view){
-        //TODO: update server & realm values for first & last name
         updateProfile();
-
-        textViewFirstName.setText(editTextFirstName.getText());
-        textViewLastName.setText(editTextLastName.getText());
         swapViews();
     }
     //</editor-fold>
-
-    void swapViews(){
-        for(View v : swappableProfileViews){
-            if(v.getVisibility() == View.VISIBLE){
-                v.setVisibility(View.GONE);
-            } else {
-                v.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
 
     //<editor-fold desc="Callbacks">
     Callback<Profile> profileCallback = new Callback<Profile>() {
@@ -180,6 +192,7 @@ public class ProfileActivity extends TelmediqActivity{
 
         }
     };
+
     Callback<Profile> profileUpdateCallback = new Callback<Profile>() {
         @Override
         public void onResponse(Call<Profile> call, final Response<Profile> response) {
@@ -188,6 +201,12 @@ public class ProfileActivity extends TelmediqActivity{
                 onFailure(call, new Throwable(error));
                 return;
             }
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.copyToRealmOrUpdate(response.body());
+                }
+            });
             Toast.makeText(getApplicationContext(), String.format("Profile Updated."), Toast.LENGTH_SHORT).show();
         }
 

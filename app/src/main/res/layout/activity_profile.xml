@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp">
+
+        <net.steamcrafted.materialiconlib.MaterialIconView
+            android:id="@+id/profile_back_arrow"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            style="@style/listItemIcon"
+            android:layout_gravity="start"
+            app:materialIcon="arrow_left"
+            app:materialIconSize="@dimen/icon_size"
+            app:materialIconColor="@android:color/white"/>
+
+        <TextView
+            android:id="@+id/fileName"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="@string/profile"
+            android:textColor="@android:color/white"/>
+
+        <net.steamcrafted.materialiconlib.MaterialIconView
+            android:id="@+id/profile_edit"
+            style="@style/listItemIcon"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_gravity="end"
+            app:materialIcon="pencil"
+            app:materialIconSize="24dp"
+            app:materialIconColor="@android:color/white"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/profile_firstNameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/profile_firstNameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/first_name"
+                android:imeOptions="actionDone"
+                android:inputType="textPersonName"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/profile_lastNameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/profile_lastNameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/last_name"
+                android:imeOptions="actionDone"
+                android:inputType="textPersonName"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/profile_emailTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/profile_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="18sp"/>
+
+        <Button
+            android:id="@+id/profile_editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit"/>
+
+        <Button
+            android:id="@+id/profile_cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/profile_confirmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirm"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+</LinearLayout>

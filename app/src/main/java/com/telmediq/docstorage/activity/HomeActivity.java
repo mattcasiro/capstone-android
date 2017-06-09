@@ -1,6 +1,7 @@
 package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -128,6 +129,15 @@ public class HomeActivity extends TelmediqActivity {
 
 		Call<List<File>> userFileCall = getTelmediqService().getFiles();
 		userFileCall.enqueue(userFileCallback);
+	}
+
+	private void logout(){
+		AppValues.clear();
+
+		Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+		startActivity(intent);
+
+		finish();
 	}
 
 	//<editor-fold desc="Menu">

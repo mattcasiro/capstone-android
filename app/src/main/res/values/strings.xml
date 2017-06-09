@@ -16,4 +16,5 @@
 	<string name="first_name">First Name</string>
 	<string name="last_name">Last Name</string>
 	<string name="no_content">No items</string>
+	<string name="profile">Profile</string>
 </resources>
