@@ -138,6 +138,10 @@ public class HomeActivity extends TelmediqActivity {
 		userFileCall.enqueue(userFileCallback);
 	}
 
+	public void addFile() {
+		Call<Response> addFileCall = getTelmediqService().addFile()
+	}
+
 	private void logout(){
 		AppValues.clear();
 
