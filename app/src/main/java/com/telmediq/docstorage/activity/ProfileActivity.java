@@ -1,5 +1,6 @@
 package com.telmediq.docstorage.activity;
 
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -173,6 +174,10 @@ public class ProfileActivity extends TelmediqActivity{
                 swapViews();
                 break;
             case R.id.profile_cancel:
+                /*if(textViewFirstName.getText() != profile.getFirstName()){
+                    Utils.buildAlertDialog(getApplicationContext(), "Cancel Edit", "Are you sure you want to cancel changes?",
+                            new DialogInterface.OnClickListener()).show();
+                }*/
                 textViewFirstName.setText(profile.getFirstName());
                 textViewLastName.setText(profile.getLastName());
                 swapViews();
