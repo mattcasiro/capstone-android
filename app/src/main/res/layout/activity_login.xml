@@ -6,6 +6,7 @@
 	android:id="@+id/coordinatorLayout"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+
 	tools:context="com.telmediq.docstorage.activity.HomeActivity">
 
 	<LinearLayout
@@ -15,6 +16,15 @@
 		android:layout_marginRight="@dimen/activity_horizontal_margin"
 		android:gravity="center"
 		android:orientation="vertical">
+
+		<ImageView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="20dp"
+			android:layout_marginStart="20dp"
+			android:layout_marginBottom="20dp"
+			android:adjustViewBounds="true"
+			android:src="@drawable/telmediq_logo_25"/>
 
 		<android.support.design.widget.TextInputLayout
 			android:id="@+id/activityLogin_emailLayout"
