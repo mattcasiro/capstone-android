@@ -17,4 +17,8 @@
 	<string name="last_name">Last Name</string>
 	<string name="no_content">No items</string>
 	<string name="profile">Profile</string>
+	<string name="confirm_cancel_edit_title">Cancel Edit</string>
+	<string name="confirm_cancel_edit_message">Are you sure you want to cancel changes made?</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
 </resources>

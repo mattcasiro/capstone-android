@@ -174,13 +174,26 @@ public class ProfileActivity extends TelmediqActivity{
                 swapViews();
                 break;
             case R.id.profile_cancel:
-                /*if(textViewFirstName.getText() != profile.getFirstName()){
-                    Utils.buildAlertDialog(getApplicationContext(), "Cancel Edit", "Are you sure you want to cancel changes?",
-                            new DialogInterface.OnClickListener()).show();
-                }*/
-                textViewFirstName.setText(profile.getFirstName());
-                textViewLastName.setText(profile.getLastName());
-                swapViews();
+                if(!textViewFirstName.getText().toString().equals(profile.getFirstName())){
+                    Utils.buildAlertDialog(
+                            findViewById(R.id.profile_view).getContext(),
+                            R.string.confirm_cancel_edit_title,
+                            R.string.confirm_cancel_edit_message,
+                            R.drawable.ic_warning_black,
+                            new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    textViewFirstName.setText(profile.getFirstName());
+                                    textViewLastName.setText(profile.getLastName());
+                                    swapViews();
+                                }
+                            }
+                    ).show();
+                } else {
+                    textViewFirstName.setText(profile.getFirstName());
+                    textViewLastName.setText(profile.getLastName());
+                    swapViews();
+                }
                 break;
             case android.R.id.home:
                 finish();
