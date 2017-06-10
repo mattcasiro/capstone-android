@@ -11,7 +11,6 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqApplication;
@@ -30,6 +29,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by Matt Casiro on 2017-06-05.
  */
@@ -46,6 +47,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 
 	private Folder folder;
 	private TelmediqApplication app;
+	static final int REQUEST_FILE_GET = 1;
 
 	public static BottomSheetAddContentFragment newInstance(Integer folderId) {
 		BottomSheetAddContentFragment messagesFragment = new BottomSheetAddContentFragment();
@@ -108,11 +110,11 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	public void onOptionClicked(View view) {
 		switch (view.getId()) {
 			case R.id.addFolder:
-				Timber.d("addFolder");
 				createFolder();
 				break;
 			case R.id.addFromFile:
 				Timber.d("addFromFile");
+				addFromFile();
 				break;
 			case R.id.addFromCamera:
 				Timber.d("addFromCamera");
@@ -128,7 +130,6 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 
 	//<editor-fold desc="Button Actions">
 	private void createFolder() {
-		Timber.d("current folder is: %s", folder.getName());
 		final EditText folderName = new EditText(getContext());
 
 		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
@@ -148,6 +149,20 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 				.show();
 	}
 
+	private void addFromFile () {
+
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
+				.setType("image/*")
+				.addCategory(Intent.CATEGORY_OPENABLE);
+		startActivityForResult(intent, REQUEST_FILE_GET);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == REQUEST_FILE_GET && resultCode == RESULT_OK) {
+			//TODO: create file from URI?
+		}
+	}
 	//</editor-fold>
 
 	//<editor-fold desc="Network Callbacks">
