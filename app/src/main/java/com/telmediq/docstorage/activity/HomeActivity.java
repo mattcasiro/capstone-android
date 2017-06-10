@@ -184,14 +184,7 @@ public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.fab)
 	public void onFabClicked(View view) {
-<<<<<<< app/src/main/java/com/telmediq/docstorage/activity/HomeActivity.java
-		//Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-		Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
-		//intent.putExtra(Constants.Extras.USER_ID, userID);
-		startActivity(intent);
-=======
 		Snackbar.make(view, "Make me do a thing", Snackbar.LENGTH_LONG).show();
->>>>>>> app/src/main/java/com/telmediq/docstorage/activity/HomeActivity.java
 	}
 
 	DirectoryAdapter.Listener directoryListener = new DirectoryAdapter.Listener() {
