@@ -10,8 +10,8 @@
 	    style="@style/simpleListItem">
 
 	    <TextView
-		    style="@style/TextAppearance.AppCompat.Headline"
-		    android:padding="20dp"
+		    style="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"
+		    android:paddingLeft="20dp"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:maxLines="1"
@@ -25,6 +25,7 @@
 		android:id="@+id/gridLayout1"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginBottom="40dp"
 		android:columnCount="3"
 		android:rowCount="2">
 
@@ -56,7 +57,7 @@
 
 		<TextView
 			style="@style/gridItemText"
-			android:text="Image"/>
+			android:text="Camera"/>
 	</GridLayout>
 
 </LinearLayout>
