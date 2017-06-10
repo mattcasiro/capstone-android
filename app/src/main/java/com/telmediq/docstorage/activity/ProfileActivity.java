@@ -174,7 +174,8 @@ public class ProfileActivity extends TelmediqActivity{
                 swapViews();
                 break;
             case R.id.profile_cancel:
-                if(!textViewFirstName.getText().toString().equals(profile.getFirstName())){
+                if(!textViewFirstName.getText().toString().equals(profile.getFirstName()) ||
+                        !textViewLastName.getText().toString().equals(profile.getLastName())){
                     Utils.buildAlertDialog(
                             findViewById(R.id.profile_view).getContext(),
                             R.string.confirm_cancel_edit_title,
