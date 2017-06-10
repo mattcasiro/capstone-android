@@ -1,5 +1,6 @@
 package com.telmediq.docstorage.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +20,9 @@ import net.steamcrafted.materialiconlib.MaterialIconView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.ObjectChangeSet;
+import io.realm.RealmObjectChangeListener;
+import timber.log.Timber;
 
 public class FileViewActivity extends TelmediqActivity {
 	@BindView(R.id.fileViewActivity_fileView)
@@ -43,8 +47,12 @@ public class FileViewActivity extends TelmediqActivity {
 			finish();
 			return;
 		}
-		fileName.setText(file.getName());
+		file.addChangeListener(realmChangeListener);
+		setupView();
+	}
 
+	private void setupView() {
+		fileName.setText(file.getName());
 		Glide.with(this)
 				.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))
 				.into(fileView);
@@ -64,13 +72,28 @@ public class FileViewActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.file_options)
 	void onFileOptionClicked(View view) {
-		BottomSheetFileDetailsFragment.newInstance(-1).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
-
+		BottomSheetFileDetailsFragment.newInstance(file.getId()).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
 	}
 
 	@OnClick(R.id.back_arrow)
 	void onBackArrowClicked(View view) {
 		finish();
 	}
+
+	RealmObjectChangeListener<File> realmChangeListener = new RealmObjectChangeListener<File>() {
+		@Override
+		public void onChange(File file, ObjectChangeSet objectChangeSet) {
+			Timber.d("file changed");
+			if (objectChangeSet.isDeleted()) {
+				Timber.d("File deleted");
+				Intent intent = new Intent();
+				intent.setAction(Constants.Actions.FILE_DELETED);
+				setResult(RESULT_OK, intent);
+				finish();
+				return;
+			}
+			setupView();
+		}
+	};
 	//</editor-fold>
 }

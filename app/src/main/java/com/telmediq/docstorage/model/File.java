@@ -37,6 +37,10 @@ public class File extends RealmObject {
 		return realm.where(File.class).equalTo("id", new Integer(fileId)).findFirst();
 	}
 
+	public void delete(Realm realm) {
+		this.deleteFromRealm();
+	}
+
 	//<editor-fold desc="Getter and Setters">
 	public Integer getId() {
 		if (id == null) {

@@ -111,6 +111,10 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 		@Nullable
 		@BindView(R.id.listItemFolder_modifiedDate)
 		TextView folderModifiedDate;
+
+		@Nullable
+		@BindView(R.id.listItemFolder_menuIcon)
+		MaterialIconView folderOptionsIcon;
 		// end Folder binds
 
 		// File binds
@@ -165,6 +169,14 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 					listener.onFolderClicked(folder.getId());
 				}
 			});
+
+			folderOptionsIcon.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Timber.d("Folder menu clicked");
+					listener.onFolderOptionClicked(folder.getId());
+				}
+			});
 		}
 
 		void bindFile(final File file, final DirectoryAdapter.Listener listener) {
@@ -203,6 +215,8 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
 	public interface Listener {
 		void onFolderClicked(Integer folderId);
+
+		void onFolderOptionClicked(Integer folderId);
 
 		void onFileClicked(Integer fileId);
 
