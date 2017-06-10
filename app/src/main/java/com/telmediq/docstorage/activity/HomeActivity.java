@@ -147,6 +147,20 @@ public class HomeActivity extends TelmediqActivity {
 		finish();
 	}
 
+	private void showSearch(){
+		//show / hide search bar in toolbar
+
+
+	}
+
+	private void search(String searchString){
+		//iterate through list of files and folders, and copy those that match into new lists to update view contents with
+
+		//pass in new list of files and folders which
+		List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
+		adapter.updateData(directoryHolders);
+	}
+
 	//<editor-fold desc="Menu">
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,6 +176,7 @@ public class HomeActivity extends TelmediqActivity {
 			case R.id.action_gridview:
 				break;
 			case R.id.action_search:
+				showSearch();
 				break;
 			case R.id.action_profile:
 				//Intent intent = new Intent(HomeActivity.this, ProfileViewActivity.class);
