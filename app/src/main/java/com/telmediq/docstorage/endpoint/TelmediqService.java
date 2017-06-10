@@ -42,6 +42,7 @@ public interface TelmediqService {
 	@DELETE("api/folders/{folderId}/")
 	Call<Folder> deleteFolder(
 			@Path("folderId") Integer folderId
+	);
 
 	/* You shouldn't need everything when using the API
 	@POST("/api/files/")
@@ -56,10 +57,17 @@ public interface TelmediqService {
 	);
 	*/
 	@POST("/api/files/")
-	Call<Response> addFile(
+	Call<File> addFile(
 			@Field("name") String name,
 			@Field("folder") Integer folder,
 			@Field("file") File file,
 			@Field("owner") Integer owner
+	);
+
+	@POST("/api/folders/")
+	@FormUrlEncoded
+	Call<Folder> addFolder(
+			@Field("parent") Integer parent,
+            @Field("name") String name
 	);
 }
