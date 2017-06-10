@@ -29,6 +29,10 @@ public class Folder extends RealmObject {
 		return realm.where(Folder.class).equalTo("parent", parent).findAllSorted("name");
 	}
 
+	public static RealmResults<Folder> getFoldersByName(Realm realm, Integer parent, String folderName){
+		return realm.where(Folder.class).equalTo("parent", parent).contains("name", folderName).findAllSorted("name");
+	}
+
 	public static Folder getFolder(Realm realm, Integer folderId) {
 		return realm.where(Folder.class).equalTo("id", folderId).findFirst();
 	}

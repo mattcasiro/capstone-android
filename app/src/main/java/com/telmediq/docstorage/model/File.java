@@ -33,6 +33,10 @@ public class File extends RealmObject {
 		return realm.where(File.class).equalTo("folder", new Integer(folderId)).findAllSorted("name");
 	}
 
+	public static RealmResults<File> getFilesByName(Realm realm, String folderId, String fileName){
+		return realm.where(File.class).equalTo("folder", new Integer(folderId)).contains("name", fileName).findAllSorted("name");
+	}
+
 	public static File getFile(Realm realm, String fileId) {
 		return realm.where(File.class).equalTo("id", new Integer(fileId)).findFirst();
 	}

@@ -101,7 +101,7 @@ public class HomeActivity extends TelmediqActivity {
 
 		//set up search toolbar
 		findViewById(R.id.search_toolbar).setVisibility(View.GONE);
-		iconActionSearch.setOnClickListener(searchIconClickListener);
+		iconActionSearch.setOnClickListener(searchButtonClickListener);
 	}
 
 	private void setupViews() {
@@ -165,11 +165,19 @@ public class HomeActivity extends TelmediqActivity {
 
 	private void search(String searchString){
 		//iterate through list of files and folders, and copy those that match into new lists to update view contents with
+		if(!searchString.equals("")) {
+			RealmResults<File> searchFiles = File.getFilesByName(realm, String.valueOf(parentFolderId), searchString);
+			RealmResults<Folder> searchFolders = Folder.getFoldersByName(realm, parentFolderId, searchString);
 
-
-		//pass in new list of files and folders which
-		List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
-		adapter.updateData(directoryHolders);
+			//pass in new list of files and folders which
+			List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(searchFolders, searchFiles);
+			adapter.updateData(directoryHolders);
+			toggleSearchToolbar();
+			editTextSearch.setText("");
+		} else {
+			List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
+			adapter.updateData(directoryHolders);
+		}
 	}
 
 	//<editor-fold desc="Menu">
@@ -213,7 +221,7 @@ public class HomeActivity extends TelmediqActivity {
 		Snackbar.make(view, "Make me do a thing", Snackbar.LENGTH_LONG).show();
 	}
 
-	View.OnClickListener searchIconClickListener = new View.OnClickListener() {
+	View.OnClickListener searchButtonClickListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			search(editTextSearch.getText().toString());
