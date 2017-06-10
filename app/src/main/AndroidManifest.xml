@@ -23,6 +23,7 @@
 		<activity
 			android:name=".activity.LoginActivity"
 			android:label="@string/login"
+			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme.NoActionBar"/>
 		<activity
 			android:name=".activity.HomeActivity"
