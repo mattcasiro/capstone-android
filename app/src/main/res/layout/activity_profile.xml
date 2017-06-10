@@ -44,9 +44,11 @@
             android:id="@+id/profile_detailsTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/details"
             android:textColor="@color/textSecondary"
-            android:layout_margin="5dp">
-            Details</TextView>
+            android:layout_margin="5dp"
+            android:paddingStart="3dp"
+            android:paddingTop="2dp"/>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
