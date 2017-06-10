@@ -1,5 +1,7 @@
 package com.telmediq.docstorage.activity;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -35,7 +37,7 @@ import timber.log.Timber;
 
 public class ProfileActivity extends TelmediqActivity{
 	//<editor-fold desc="View Initialization">
-	@BindView(R.id.toolbar)
+	@BindView(R.id.profile_toolbar)
     @Nullable
 	Toolbar toolbar;
     /*@BindView(R.id.profile_editButton)
@@ -52,12 +54,15 @@ public class ProfileActivity extends TelmediqActivity{
     TextInputLayout lastNameLayout;
     @BindView(R.id.profile_lastNameText)
     TextView textViewLastName;
-    @BindView(R.id.profile_email)
+    @BindView(R.id.profile_emailLayout)
+    TextInputLayout emailLayout;
+    @BindView(R.id.profile_emailText)
     TextView textViewEmail;
 	//</editor-fold>
 
     RealmResults<Profile> realmProfile;
     Profile profile;
+    boolean edit = false;
 
 
     RealmChangeListener realmChangeListener = new RealmChangeListener() {
@@ -84,7 +89,8 @@ public class ProfileActivity extends TelmediqActivity{
             return;
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(profile.getFirstName());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+        getSupportActionBar().setTitle("Profile");
     }
 
     void getProfile(){
@@ -116,45 +122,36 @@ public class ProfileActivity extends TelmediqActivity{
 
         firstNameLayout.setEnabled(false);
         lastNameLayout.setEnabled(false);
-
-        /*editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onEditButtonClicked(v);
-            }
-        });
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCancelButtonClicked(v);
-            }
-        });
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onConfirmButtonClicked(v);
-            }
-        });*/
+        emailLayout.setEnabled(false);
     }
 
     void swapViews(){
-        if(firstNameLayout.isEnabled()){
-            firstNameLayout.setEnabled(false);
-        } else {
+        if(!edit){
+            edit = true;
             firstNameLayout.setEnabled(true);
-        }
-
-        if(lastNameLayout.isEnabled()){
-            lastNameLayout.setEnabled(false);
-        } else {
             lastNameLayout.setEnabled(true);
+        } else {
+            edit=false;
+            firstNameLayout.setEnabled(false);
+            lastNameLayout.setEnabled(false);
         }
+        invalidateOptionsMenu();
     }
 
     //<editor-fold desc="Menu">
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.profile_menu, menu);
+
+        if(edit){
+            menu.findItem(R.id.profile_confirm).setVisible(true);
+            menu.findItem(R.id.profile_cancel).setVisible(true);
+            menu.findItem(R.id.profile_edit).setVisible(false);
+        } else {
+            menu.findItem(R.id.profile_confirm).setVisible(false);
+            menu.findItem(R.id.profile_cancel).setVisible(false);
+            menu.findItem(R.id.profile_edit).setVisible(true);
+        }
         return true;
     }
 
@@ -165,6 +162,7 @@ public class ProfileActivity extends TelmediqActivity{
         switch (id) {
             case R.id.profile_edit:
                 swapViews();
+
                 break;
             case R.id.profile_confirm:
                 updateProfile();
@@ -184,27 +182,6 @@ public class ProfileActivity extends TelmediqActivity{
     }
     //</editor-fold>
 
-    /*
-    //<editor-fold desc="ButtonMethods">
-    @OnClick(R.id.profile_editButton)
-    void onEditButtonClicked(View view){
-        swapViews();
-    }
-
-    @OnClick(R.id.profile_cancelButton)
-    void onCancelButtonClicked(View view){
-        swapViews();
-        textViewFirstName.setText(profile.getFirstName());
-        textViewLastName.setText(profile.getLastName());
-    }
-
-    @OnClick(R.id.profile_confirmButton)
-    void onConfirmButtonClicked(View view){
-        updateProfile();
-        swapViews();
-    }
-    //</editor-fold>
-    */
     //<editor-fold desc="Callbacks">
     Callback<Profile> profileCallback = new Callback<Profile>() {
         @Override
