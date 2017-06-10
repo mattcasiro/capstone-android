@@ -90,7 +90,11 @@ public class ProfileActivity extends TelmediqActivity{
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
-        getSupportActionBar().setTitle("Profile");
+        if(profile != null) {
+            getSupportActionBar().setTitle(profile.getFirstName());
+        } else {
+            getSupportActionBar().setTitle("Profile");
+        }
     }
 
     void getProfile(){
@@ -203,6 +207,7 @@ public class ProfileActivity extends TelmediqActivity{
                 }
             });
             profile = response.body();
+            getSupportActionBar().setTitle(profile.getFirstName());
         }
 
         @Override
