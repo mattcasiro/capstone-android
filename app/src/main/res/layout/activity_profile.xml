@@ -15,29 +15,7 @@
         android:background="@color/colorPrimary"
         android:elevation="4dp"
         app:titleTextColor="@android:color/white">
-
-        <!--
-        <net.steamcrafted.materialiconlib.MaterialIconView
-            android:id="@+id/profile_back_arrow"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            style="@style/listItemIcon"
-            android:layout_gravity="start"
-            app:materialIcon="arrow_left"
-            app:materialIconSize="@dimen/icon_size"
-            app:materialIconColor="@android:color/white"/>
-
-        <TextView
-            android:id="@+id/profile_title"
-            style="@style/TextAppearance.AppCompat.Body2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:text="@string/profile"
-            android:textColor="@android:color/white"/>
-        <include layout="@"-->
-
+        
     </android.support.v7.widget.Toolbar>
 
         <TextView
