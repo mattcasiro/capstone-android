@@ -35,7 +35,8 @@
 		<activity
 			android:name=".activity.ProfileActivity"
 			android:label="DocStorage"
-			android:theme="@style/AppTheme.NoActionBar"/>
+			android:theme="@style/AppTheme.NoActionBar"
+			android:windowSoftInputMode="stateHidden|adjustResize"/>
 	</application>
 
 </manifest>

@@ -1,21 +1,19 @@
 package com.telmediq.docstorage.activity;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
+import com.telmediq.docstorage.helper.RealmUtils;
 import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.Profile;
 
@@ -23,10 +21,8 @@ import net.steamcrafted.materialiconlib.MaterialMenuInflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,226 +32,241 @@ import timber.log.Timber;
  * Created by Jared on 18/05/17.
  */
 
-public class ProfileActivity extends TelmediqActivity{
+public class ProfileActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
-	@BindView(R.id.profile_toolbar)
-    @Nullable
-	Toolbar toolbar;
-    /*@BindView(R.id.profile_editButton)
-    Button editButton;
-    @BindView(R.id.profile_cancelButton)
-    Button cancelButton;
-    @BindView(R.id.profile_confirmButton)
-    Button confirmButton;*/
-    @BindView(R.id.profile_firstNameLayout)
-    TextInputLayout firstNameLayout;
-    @BindView(R.id.profile_firstNameText)
-    TextView textViewFirstName;
-    @BindView(R.id.profile_lastNameLayout)
-    TextInputLayout lastNameLayout;
-    @BindView(R.id.profile_lastNameText)
-    TextView textViewLastName;
-    @BindView(R.id.profile_emailLayout)
-    TextInputLayout emailLayout;
-    @BindView(R.id.profile_emailText)
-    TextView textViewEmail;
+	@BindView(R.id.profile_toolbar) Toolbar toolbar;
+	@BindView(R.id.profile_firstNameLayout) TextInputLayout firstNameLayout;
+	@BindView(R.id.profile_firstNameText) TextView firstNameEditText;
+	@BindView(R.id.profile_lastNameLayout) TextInputLayout lastNameLayout;
+	@BindView(R.id.profile_lastNameText) TextView lastNameEditText;
+	@BindView(R.id.profile_emailLayout) TextInputLayout emailLayout;
+	@BindView(R.id.profile_emailText) TextView emailEditText;
 	//</editor-fold>
 
-    RealmResults<Profile> realmProfile;
-    Profile profile;
-    boolean edit = false;
+	Profile profile;
+	boolean isInEditMode = false;
+	Dialog progressDialog;
 
+	//<editor-fold desc="Lifecycle">
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_profile);
+		ButterKnife.bind(this);
 
-    RealmChangeListener realmChangeListener = new RealmChangeListener() {
-        @Override
-        public void onChange(Object element) {
-            setupViews();
-        }
-    };
+		getProfile();
+		setupToolbar();
+		setupViews();
+	}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-        ButterKnife.bind(this);
+	@Override
+	protected void onResume() {
+		super.onResume();
+		setupRealmListener(true);
+	}
 
-        getProfile();
-        setupViews();
-        setupToolbar();
-    }
+	@Override
+	protected void onPause() {
+		setupRealmListener(false);
+		super.onPause();
+	}
+	//</editor-fold>
 
-    private void setupToolbar() {
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() == null) {
-            return;
-        }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
-        if(profile != null) {
-            getSupportActionBar().setTitle(profile.getFirstName());
-        } else {
-            getSupportActionBar().setTitle("Profile");
-        }
-    }
+	//<editor-fold desc="View Setup">
+	private void setupToolbar() {
+		setSupportActionBar(toolbar);
+		if (getSupportActionBar() == null) {
+			return;
+		}
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    void getProfile(){
-        realmProfile = Profile.getProfile(realm);
-        realmProfile.addChangeListener(realmChangeListener);
+		if (profile != null) {
+			getSupportActionBar().setTitle(String.format("%s %s", profile.getFirstName(), profile.getLastName()));
+		} else {
+			getSupportActionBar().setTitle("Profile");
+		}
+	}
 
-        Timber.d("get profile contents");
-        Call<Profile> profileCall = getTelmediqService().getProfile();
-        profileCall.enqueue(profileCallback);
-    }
+	private void setupViews() {
+		if (RealmUtils.isManaged(profile)) {
+			firstNameEditText.setText(profile.getFirstName());
+			lastNameEditText.setText(profile.getLastName());
+			emailEditText.setText(profile.getEmail());
+		}
 
-    void updateProfile(){
-        String firstName = textViewFirstName.getText().toString();
-        String lastName = textViewLastName.getText().toString();
-        profile.setFirstName(firstName);
-        profile.setLastName(lastName);
+		setupEditMode(false);
+	}
 
-        Timber.d("set profile contents");
-        Call<Profile> profileUpdateCall = getTelmediqService().putProfile(firstName, lastName);
-        profileUpdateCall.enqueue(profileUpdateCallback);
-    }
+	void setupEditMode(boolean isEditMode) {
+		isInEditMode = isEditMode;
+		firstNameLayout.setEnabled(isEditMode);
+		lastNameLayout.setEnabled(isEditMode);
 
-    private void setupViews(){
-        if(profile != null) {
-            textViewFirstName.setText(profile.getFirstName());
-            textViewLastName.setText(profile.getLastName());
-            textViewEmail.setText(profile.getEmail());
-        }
+		invalidateOptionsMenu();
+	}
 
-        firstNameLayout.setEnabled(false);
-        lastNameLayout.setEnabled(false);
-        emailLayout.setEnabled(false);
-    }
+	void showProgressDialog(boolean show) {
+		if (show) {
+			progressDialog = ProgressDialog.show(this, "Updating Profile", "", true);
+		} else {
+			if (progressDialog != null && progressDialog.isShowing()) {
+				progressDialog.dismiss();
+			}
+		}
+	}
+	//</editor-fold>
 
-    void swapViews(){
-        if(!edit){
-            edit = true;
-            firstNameLayout.setEnabled(true);
-            lastNameLayout.setEnabled(true);
-        } else {
-            edit=false;
-            firstNameLayout.setEnabled(false);
-            lastNameLayout.setEnabled(false);
-        }
-        invalidateOptionsMenu();
-    }
+	void getProfile() {
+		profile = Profile.getProfile(realm);
+		setupRealmListener(true);
 
-    //<editor-fold desc="Menu">
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.profile_menu, menu);
+		Call<Profile> profileCall = getTelmediqService().getProfile();
+		profileCall.enqueue(profileCallback);
+	}
 
-        if(edit){
-            menu.findItem(R.id.profile_confirm).setVisible(true);
-            menu.findItem(R.id.profile_cancel).setVisible(true);
-            menu.findItem(R.id.profile_edit).setVisible(false);
-        } else {
-            menu.findItem(R.id.profile_confirm).setVisible(false);
-            menu.findItem(R.id.profile_cancel).setVisible(false);
-            menu.findItem(R.id.profile_edit).setVisible(true);
-        }
-        return true;
-    }
+	void updateProfile() {
+		String firstName = firstNameEditText.getText().toString();
+		String lastName = lastNameEditText.getText().toString();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+		Timber.d("set profile contents");
+		showProgressDialog(true);
+		Call<Profile> profileUpdateCall = getTelmediqService().putProfile(firstName, lastName);
+		profileUpdateCall.enqueue(profileUpdateCallback);
+	}
 
-        switch (id) {
-            case R.id.profile_edit:
-                swapViews();
+	//<editor-fold desc="Listeners">
+	private void setupRealmListener(boolean enabled) {
+		if (RealmUtils.isManaged(profile)) {
+			profile.removeAllChangeListeners();
+			if (enabled) {
+				profile.addChangeListener(realmChangeListener);
+			}
+		}
+	}
 
-                break;
-            case R.id.profile_confirm:
-                updateProfile();
-                swapViews();
-                break;
-            case R.id.profile_cancel:
-                if(!textViewFirstName.getText().toString().equals(profile.getFirstName()) ||
-                        !textViewLastName.getText().toString().equals(profile.getLastName())){
-                    Utils.buildAlertDialog(
-                            findViewById(R.id.profile_view).getContext(),
-                            R.string.confirm_cancel_edit_title,
-                            R.string.confirm_cancel_edit_message,
-                            R.drawable.ic_warning_black,
-                            new DialogInterface.OnClickListener(){
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    textViewFirstName.setText(profile.getFirstName());
-                                    textViewLastName.setText(profile.getLastName());
-                                    swapViews();
-                                }
-                            }
-                    ).show();
-                } else {
-                    textViewFirstName.setText(profile.getFirstName());
-                    textViewLastName.setText(profile.getLastName());
-                    swapViews();
-                }
-                break;
-            case android.R.id.home:
-                finish();
-                break;
-        }
+	RealmChangeListener realmChangeListener = new RealmChangeListener() {
+		@Override
+		public void onChange(Object element) {
+			setupToolbar();
+			setupViews();
+		}
+	};
+	//</editor-fold>
 
-        return super.onOptionsItemSelected(item);
-    }
-    //</editor-fold>
+	//<editor-fold desc="Menu">
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.profile_menu, menu);
+		return true;
+	}
 
-    //<editor-fold desc="Callbacks">
-    Callback<Profile> profileCallback = new Callback<Profile>() {
-        @Override
-        public void onResponse(Call<Profile> call, final Response<Profile> response) {
-            String error = Utils.checkResponseForError(response);
-            if (error != null) {
-                onFailure(call, new Throwable(error));
-                return;
-            }
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    realm.copyToRealmOrUpdate(response.body());
-                }
-            }, new Realm.Transaction.OnSuccess() {
-                @Override
-                public void onSuccess() {
-                    Timber.d("WOWOW (saved to db)");
-                }
-            });
-            profile = response.body();
-            getSupportActionBar().setTitle(profile.getFirstName());
-        }
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.findItem(R.id.profile_confirm).setVisible(isInEditMode);
+		menu.findItem(R.id.profile_cancel).setVisible(isInEditMode);
+		menu.findItem(R.id.profile_edit).setVisible(!isInEditMode);
+		return super.onPrepareOptionsMenu(menu);
+	}
 
-        @Override
-        public void onFailure(Call<Profile> call, Throwable t) {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
 
-        }
-    };
+		switch (id) {
+			case R.id.profile_edit:
+				setupEditMode(true);
+				break;
+			case R.id.profile_confirm:
+				updateProfile();
+				break;
+			case R.id.profile_cancel:
+				if (!firstNameEditText.getText().toString().equals(profile.getFirstName()) || !lastNameEditText.getText().toString().equals(profile.getLastName())) {
+					Utils.buildAlertDialog(
+							findViewById(R.id.profile_view).getContext(),
+							R.string.confirm_cancel_edit_title,
+							R.string.confirm_cancel_edit_message,
+							R.drawable.ic_warning_black,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									firstNameEditText.setText(profile.getFirstName());
+									lastNameEditText.setText(profile.getLastName());
+									setupEditMode(false);
+								}
+							}
+					).show();
+				} else {
+					firstNameEditText.setText(profile.getFirstName());
+					lastNameEditText.setText(profile.getLastName());
+					setupEditMode(false);
+				}
+				break;
+			case android.R.id.home:
+				finish();
+				break;
+		}
 
-    Callback<Profile> profileUpdateCallback = new Callback<Profile>() {
-        @Override
-        public void onResponse(Call<Profile> call, final Response<Profile> response) {
-            String error = Utils.checkResponseForError(response);
-            if (error != null) {
-                onFailure(call, new Throwable(error));
-                return;
-            }
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    realm.copyToRealmOrUpdate(response.body());
-                }
-            });
-            Toast.makeText(getApplicationContext(), String.format("Profile Updated."), Toast.LENGTH_SHORT).show();
-        }
+		return super.onOptionsItemSelected(item);
+	}
+	//</editor-fold>
 
-        @Override
-        public void onFailure(Call<Profile> call, Throwable t) {
-            Toast.makeText(getApplicationContext(), String.format("Oops!"), Toast.LENGTH_SHORT).show();
-        }
-    };
-    //</editor-fold>
+	//<editor-fold desc="Network Callbacks">
+	Callback<Profile> profileCallback = new Callback<Profile>() {
+		@Override
+		public void onResponse(Call<Profile> call, final Response<Profile> response) {
+			String error = Utils.checkResponseForError(response);
+			if (error != null) {
+				onFailure(call, new Throwable(error));
+				return;
+			}
+			realm.executeTransactionAsync(new Realm.Transaction() {
+				@Override
+				public void execute(Realm realm) {
+					realm.copyToRealmOrUpdate(response.body());
+				}
+			}, new Realm.Transaction.OnSuccess() {
+				@Override
+				public void onSuccess() {
+					if (!RealmUtils.isManaged(profile)) {
+						profile = Profile.getProfile(realm);
+						setupRealmListener(true);
+						setupToolbar();
+						setupViews();
+					}
+				}
+			});
+		}
+
+		@Override
+		public void onFailure(Call<Profile> call, Throwable t) {
+
+		}
+	};
+
+	Callback<Profile> profileUpdateCallback = new Callback<Profile>() {
+		@Override
+		public void onResponse(Call<Profile> call, final Response<Profile> response) {
+			String error = Utils.checkResponseForError(response);
+			if (error != null) {
+				onFailure(call, new Throwable(error));
+				return;
+			}
+
+			showProgressDialog(false);
+			setupEditMode(false);
+			realm.executeTransactionAsync(new Realm.Transaction() {
+				@Override
+				public void execute(Realm realm) {
+					realm.copyToRealmOrUpdate(response.body());
+				}
+			});
+		}
+
+		@Override
+		public void onFailure(Call<Profile> call, Throwable t) {
+			showProgressDialog(false);
+			Toast.makeText(getApplicationContext(), String.format("Oops!"), Toast.LENGTH_SHORT).show();
+		}
+	};
+	//</editor-fold>
 }

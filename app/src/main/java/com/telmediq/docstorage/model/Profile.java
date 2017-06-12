@@ -4,7 +4,6 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
-import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -19,18 +18,34 @@ public class Profile extends RealmObject {
 	private String email;
 	private Date date_joined;
 
-	public static RealmResults<Profile> getProfile(Realm realm) {
-		return realm.where(Profile.class).findAll();
+	public static Profile getProfile(Realm realm) {
+		return realm.where(Profile.class).findFirst();
 	}
 
-	public String getFirstName() {return first_name;}
-	public void setFirstName(String first_name) {this.first_name = first_name;}
+	//<editor-fold desc="Getter and Setters">
+	public String getFirstName() {
+		return first_name;
+	}
 
-	public String getLastName() {return last_name;}
-	public void setLastName(String last_name) {this.last_name = last_name;}
+	public void setFirstName(String first_name) {
+		this.first_name = first_name;
+	}
 
-	public String getEmail() {return email;}
+	public String getLastName() {
+		return last_name;
+	}
 
-	public Date getDateJoined() {return date_joined;}
+	public void setLastName(String last_name) {
+		this.last_name = last_name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public Date getDateJoined() {
+		return date_joined;
+	}
+	//</editor-fold>
 
 }
