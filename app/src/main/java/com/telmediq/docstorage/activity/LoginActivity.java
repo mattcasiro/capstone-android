@@ -1,5 +1,6 @@
 package com.telmediq.docstorage.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -19,6 +21,7 @@ import com.telmediq.docstorage.model.AuthorizationResponse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -100,7 +103,7 @@ public class LoginActivity extends TelmediqActivity {
 		public void onFailure(Call<AuthorizationResponse> call, Throwable t) {
 			Timber.e(t.getMessage());
 			Snackbar snackbar = Snackbar
-					.make(findViewById(R.id.coordinatorLayout),
+					.make(findViewById(R.id.login_coordinatorLayout),
 							"Invalid email or password",
 							Snackbar.LENGTH_LONG);
 			snackbar.getView().setBackgroundColor(Color.RED);
@@ -154,4 +157,10 @@ public class LoginActivity extends TelmediqActivity {
 		return null;
 	}
 	//</editor-fold>
+
+	@OnClick(R.id.login_coordinatorLayout)
+	public void closeKeyboard(){
+		InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+	}
 }
