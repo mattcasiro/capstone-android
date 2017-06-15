@@ -56,8 +56,10 @@ public interface TelmediqService {
 			@Field("owner") Integer owner
 	);
 	*/
-	@POST("/api/files/")
+	@POST("/api/folders/{folderId}/files/")
+	@FormUrlEncoded
 	Call<File> addFile(
+			@Path("folderId") Integer folderId,
 			@Field("name") String name,
 			@Field("folder") Integer folder,
 			@Field("file") File file,
