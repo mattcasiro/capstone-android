@@ -4,10 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
 import com.telmediq.docstorage.fragment.BottomSheetFileDetailsFragment;
@@ -33,9 +38,12 @@ public class FileViewActivity extends TelmediqActivity {
 	TextView fileName;
 	@BindView(R.id.file_options)
 	MaterialIconView fileOptions;
+	@BindView(R.id.progressBar)
+	ProgressBar progressBar;
 
 	private File file;
 
+	//<editor-fold desc="Lifecycle">
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,15 +55,51 @@ public class FileViewActivity extends TelmediqActivity {
 			finish();
 			return;
 		}
-		file.addChangeListener(realmChangeListener);
+
 		setupView();
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		setupRealmListener(true);
+	}
+
+	@Override
+	protected void onPause() {
+		setupRealmListener(false);
+		super.onPause();
+	}
+
+	//</editor-fold>
+
 	private void setupView() {
 		fileName.setText(file.getName());
+		showProgressBar(true);
 		Glide.with(this)
 				.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))
+				.listener(new RequestListener<GlideUrl, GlideDrawable>() {
+					@Override
+					public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+						showProgressBar(false);
+						return false;
+					}
+
+					@Override
+					public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+						showProgressBar(false);
+						return false;
+					}
+				})
 				.into(fileView);
+	}
+
+	private void showProgressBar(boolean show) {
+		if (progressBar == null) {
+			return;
+		}
+
+		progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
 	}
 
 	private boolean getFile() {
@@ -65,7 +109,7 @@ public class FileViewActivity extends TelmediqActivity {
 		}
 
 		file = File.getFile(realm, String.valueOf(fileId));
-
+		setupRealmListener(true);
 		return file != null;
 	}
 
@@ -78,6 +122,15 @@ public class FileViewActivity extends TelmediqActivity {
 	@OnClick(R.id.back_arrow)
 	void onBackArrowClicked(View view) {
 		finish();
+	}
+
+	private void setupRealmListener(boolean enable) {
+		if (file != null && file.isManaged()) {
+			file.removeAllChangeListeners();
+			if (enable) {
+				file.addChangeListener(realmChangeListener);
+			}
+		}
 	}
 
 	RealmObjectChangeListener<File> realmChangeListener = new RealmObjectChangeListener<File>() {
