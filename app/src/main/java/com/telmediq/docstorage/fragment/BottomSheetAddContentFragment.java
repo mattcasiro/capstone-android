@@ -1,19 +1,28 @@
 package com.telmediq.docstorage.fragment;
 
 import android.app.AlertDialog;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.app.Dialog;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
+import android.*;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqApplication;
@@ -28,6 +37,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,6 +65,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	private TelmediqApplication app;
 	private static final int REQUEST_FILE_GET = 1;
 	private static final int REQUEST_FILE_FROM_CAMERA = 2;
+	private static final int PERMISSION_REQUEST_EXTERNAL_STORAGE = 3;
 
 	public static BottomSheetAddContentFragment newInstance(Integer folderId) {
 		BottomSheetAddContentFragment messagesFragment = new BottomSheetAddContentFragment();
@@ -106,10 +119,6 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	};
 	//</editor-fold>
 
-	private void setupView() {
-		throw new UnsupportedOperationException("setupView() has no content, is this needed?");
-	}
-
 	//<editor-fold desc="Listeners">
 	@OnClick({R.id.addFolder, R.id.addFromFile, R.id.addFromCamera})
 	public void onOptionClicked(View view) {
@@ -155,49 +164,67 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	}
 
 	private void addFromFile () {
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
-				.setType("image/*")
-				.addCategory(Intent.CATEGORY_OPENABLE);
-		startActivityForResult(intent, REQUEST_FILE_GET);
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent response) {
-		if (requestCode == REQUEST_FILE_GET && resultCode == RESULT_OK) {
-			Timber.i("Got FILE_GET response");
-			Timber.d(response.getDataString());
-			File file = getFile(response.getData());
-			Call<File> call = app.getTelmediqService().addFile(
-					file.getFolder(),
-					file.getName(),
-					file.getFolder(),
-					file,
-					file.getOwner()
-			);
-			call.enqueue(addFileCallback);
-			Timber.d("temp");
-		}
-
-		if (requestCode == REQUEST_FILE_FROM_CAMERA && resultCode == RESULT_OK) {
-
+		// Verify app has permission to access external storage
+		int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
+				Manifest.permission.READ_EXTERNAL_STORAGE);
+		if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+			// Request permissions, and handle response in onRequestPermissionsResult
+			ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+					PERMISSION_REQUEST_EXTERNAL_STORAGE);
+		} else {
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
+					.setType("image/*")
+					.addCategory(Intent.CATEGORY_OPENABLE);
+			startActivityForResult(intent, REQUEST_FILE_GET);
 		}
 	}
 	//</editor-fold>
 
-	private File getFile(Uri uri) {
-		File file = new File();
-		Cursor cursor = getActivity().getContentResolver()
-				.query(uri, null, null, null, null);
+	private void uploadFile(Uri fileUri) {
+		// Create file part
+		java.io.File file = new java.io.File(getPath(getContext(), fileUri));
+		RequestBody requestFile = RequestBody.create( MediaType.parse("multipart/form-data"), file);
+		MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
-		if (cursor != null && cursor.moveToFirst()) {
-			file.setName(cursor.getString( cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
-		}
-		file.setFolder(folder.getId());
-		file.setFile(uri.getPath());
-		file.setOwner(folder.getOwner());
+		// Create name part
+		Timber.d("FILENAME: %s", file.getName());
+		RequestBody fileName = RequestBody.create(MultipartBody.FORM, file.getName());
 
-		return file;
+		Call<File> call = app.getTelmediqService().addFile(folder.getId(), body, fileName);
+		call.enqueue(addFileCallback);
 	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+	                                       String permissions[], int[] grantResults) {
+		switch (requestCode) {
+			case PERMISSION_REQUEST_EXTERNAL_STORAGE: {
+				// If request is cancelled, the result arrays are empty.
+				if (grantResults.length > 0
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+					//TODO: this is not launching the file picker?
+					addFromFile();
+				} else {
+					//TODO: Toast error to user
+					Timber.e("Don't have permission to access external storage");
+					dismiss();
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent response) {
+		if (resultCode == RESULT_OK) {
+			if (requestCode == REQUEST_FILE_GET || requestCode == REQUEST_FILE_FROM_CAMERA) {
+				uploadFile(response.getData());
+			}
+		} else {
+			Timber.e("onActivityResult: Activity Result Code not OK");
+		}
+		dismiss();
+	}
+
 	//<editor-fold desc="Network Callbacks">
 	Callback<Folder> addFolderCallback = new Callback<Folder>() {
 		@Override
@@ -248,5 +275,150 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 			Timber.e(t.getMessage());
 		}
 	};
+	//</editor-fold>
+
+	//<editor-fold desc="Path Resolver">
+	// Source: https://stackoverflow.com/questions/20067508/get-real-path-from-uri-android-kitkat-new-storage-access-framework/20559175#20559175
+	/**
+	 * Get a file path from a Uri. This will get the the path for Storage Access
+	 * Framework Documents, as well as the _data field for the MediaStore and
+	 * other file-based ContentProviders.
+	 *
+	 * @param context The context.
+	 * @param uri The Uri to query.
+	 * @author paulburke
+	 */
+	public static String getPath(final Context context, final Uri uri) {
+
+		final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+		// DocumentProvider
+		if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+			// ExternalStorageProvider
+			if (isExternalStorageDocument(uri)) {
+				final String docId = DocumentsContract.getDocumentId(uri);
+				final String[] split = docId.split(":");
+				final String type = split[0];
+
+				if ("primary".equalsIgnoreCase(type)) {
+					return Environment.getExternalStorageDirectory() + "/" + split[1];
+				}
+
+				// TODO handle non-primary volumes
+			}
+			// DownloadsProvider
+			else if (isDownloadsDocument(uri)) {
+
+				final String id = DocumentsContract.getDocumentId(uri);
+				final Uri contentUri = ContentUris.withAppendedId(
+						Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+				return getDataColumn(context, contentUri, null, null);
+			}
+			// MediaProvider
+			else if (isMediaDocument(uri)) {
+				final String docId = DocumentsContract.getDocumentId(uri);
+				final String[] split = docId.split(":");
+				final String type = split[0];
+
+				Uri contentUri = null;
+				if ("image".equals(type)) {
+					contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+				} else if ("video".equals(type)) {
+					contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+				} else if ("audio".equals(type)) {
+					contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
+
+				final String selection = "_id=?";
+				final String[] selectionArgs = new String[] {
+						split[1]
+				};
+
+				return getDataColumn(context, contentUri, selection, selectionArgs);
+			}
+		}
+		// MediaStore (and general)
+		else if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+			// Return the remote address
+			if (isGooglePhotosUri(uri))
+				return uri.getLastPathSegment();
+
+			return getDataColumn(context, uri, null, null);
+		}
+		// File
+		else if ("file".equalsIgnoreCase(uri.getScheme())) {
+			return uri.getPath();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the value of the data column for this Uri. This is useful for
+	 * MediaStore Uris, and other file-based ContentProviders.
+	 *
+	 * @param context The context.
+	 * @param uri The Uri to query.
+	 * @param selection (Optional) Filter used in the query.
+	 * @param selectionArgs (Optional) Selection arguments used in the query.
+	 * @return The value of the _data column, which is typically a file path.
+	 */
+	public static String getDataColumn(Context context, Uri uri, String selection,
+	                                   String[] selectionArgs) {
+
+		Cursor cursor = null;
+		final String column = "_data";
+		final String[] projection = {
+				column
+		};
+
+		try {
+			cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+					null);
+			if (cursor != null && cursor.moveToFirst()) {
+				final int index = cursor.getColumnIndexOrThrow(column);
+				return cursor.getString(index);
+			}
+		} finally {
+			if (cursor != null)
+				cursor.close();
+		}
+		return null;
+	}
+
+
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is ExternalStorageProvider.
+	 */
+	public static boolean isExternalStorageDocument(Uri uri) {
+		return "com.android.externalstorage.documents".equals(uri.getAuthority());
+	}
+
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is DownloadsProvider.
+	 */
+	public static boolean isDownloadsDocument(Uri uri) {
+		return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+	}
+
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is MediaProvider.
+	 */
+	public static boolean isMediaDocument(Uri uri) {
+		return "com.android.providers.media.documents".equals(uri.getAuthority());
+	}
+
+	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is Google Photos.
+	 */
+	public static boolean isGooglePhotosUri(Uri uri) {
+		return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+	}
 	//</editor-fold>
 }
