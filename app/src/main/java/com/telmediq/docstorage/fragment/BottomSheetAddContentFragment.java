@@ -14,12 +14,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.renderscript.RSInvalidStateException;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.EditText;
 import android.*;
@@ -32,6 +33,9 @@ import com.telmediq.docstorage.model.File;
 import com.telmediq.docstorage.model.Folder;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,11 +65,13 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	MaterialIconView addFromCamera;
 	//</editor-fold>
 
+	private String mCurrentPhotoPath;
 	private Folder folder;
 	private TelmediqApplication app;
 	private static final int REQUEST_FILE_GET = 1;
-	private static final int REQUEST_FILE_FROM_CAMERA = 2;
+	private static final int REQUEST_IMAGE_CAPTURE = 2;
 	private static final int PERMISSION_REQUEST_EXTERNAL_STORAGE = 3;
+	private static final int PERMISSION_REQUEST_CAMERA = 4;
 
 	public static BottomSheetAddContentFragment newInstance(Integer folderId) {
 		BottomSheetAddContentFragment messagesFragment = new BottomSheetAddContentFragment();
@@ -132,13 +138,10 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 				break;
 			case R.id.addFromCamera:
 				Timber.d("addFromCamera");
+				addFromCamera();
 				break;
 		}
 		Timber.d("Clicked id# %s", view.getId());
-	}
-
-	public void onClick(View view) {
-		throw new UnsupportedOperationException("setupView() has no content, is this needed?");
 	}
 	//</editor-fold>
 
@@ -165,24 +168,78 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 
 	private void addFromFile () {
 		// Verify app has permission to access external storage
-		int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
+		int permissionCheck = ContextCompat.checkSelfPermission(
+				getActivity(),
 				Manifest.permission.READ_EXTERNAL_STORAGE);
 		if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
 			// Request permissions, and handle response in onRequestPermissionsResult
-			ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+			requestPermissions(
+					new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
 					PERMISSION_REQUEST_EXTERNAL_STORAGE);
 		} else {
-			Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
+			Intent addFromFileIntent = new Intent(Intent.ACTION_GET_CONTENT)
 					.setType("image/*")
 					.addCategory(Intent.CATEGORY_OPENABLE);
-			startActivityForResult(intent, REQUEST_FILE_GET);
+			startActivityForResult(addFromFileIntent, REQUEST_FILE_GET);
+		}
+	}
+
+	private void addFromCamera() {
+		Timber.i("Adding file from Camera");
+		Timber.i("NOTE: External Files Dir: %s", getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+		// Verify app has permission to access camera
+		int permissionCheck = ContextCompat.checkSelfPermission(
+				getActivity(),
+				Manifest.permission.CAMERA);
+		if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+			Timber.i("Making permission request for Camera");
+			// Request permissions, and handle response in onRequestPermissionsResult
+			requestPermissions(
+					new String[] { Manifest.permission.CAMERA },
+					PERMISSION_REQUEST_CAMERA);
+		} else {
+			Timber.i("Camera permission OK");
+			Intent addFromCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+			// Ensure a valid app exists to handle the intent before starting it
+			if (addFromCameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+				java.io.File imageFile = null;
+				try {
+					imageFile = createImageFile();
+					Uri imageURI = FileProvider.getUriForFile(
+							getActivity(),
+							"com.telmediq.docstorage.fileprovider",
+							imageFile);
+
+					addFromCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI);
+					startActivityForResult(addFromCameraIntent, REQUEST_IMAGE_CAPTURE);
+				} catch (java.io.IOException ex) {
+					Timber.e("Device was unable to create a temporary image file");
+					//TODO: Toast user unable to create file
+					dismiss();
+				}
+			} else {
+				//TODO: Toast user that no camera app exists
+				dismiss();
+			}
 		}
 	}
 	//</editor-fold>
 
-	private void uploadFile(Uri fileUri) {
+	private void uploadFile(Uri fileUri, Integer requestCode) {
 		// Create file part
-		java.io.File file = new java.io.File(getPath(getContext(), fileUri));
+		java.io.File file;
+		switch (requestCode) {
+			case REQUEST_FILE_GET:
+				file = new java.io.File(getPath(getContext(), fileUri));
+				break;
+			case REQUEST_IMAGE_CAPTURE:
+				file = new java.io.File(mCurrentPhotoPath);
+				break;
+			default:
+				throw new IllegalStateException("Unknown request code.");
+		}
+
 		RequestBody requestFile = RequestBody.create( MediaType.parse("multipart/form-data"), file);
 		MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
@@ -194,6 +251,21 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 		call.enqueue(addFileCallback);
 	}
 
+	private java.io.File createImageFile() throws java.io.IOException {
+		// Create collision-resistant image name
+		String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String imagePrefix = "JPEG_" + time + "_";
+		java.io.File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+		java.io.File image = java.io.File.createTempFile(
+				imagePrefix,  /* prefix */
+				".jpg",         /* suffix */
+				storageDir      /* directory */
+		);
+
+		mCurrentPhotoPath = image.getAbsolutePath();
+		return image;
+	}
+
 	@Override
 	public void onRequestPermissionsResult(int requestCode,
 	                                       String permissions[], int[] grantResults) {
@@ -202,8 +274,18 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 				// If request is cancelled, the result arrays are empty.
 				if (grantResults.length > 0
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-					//TODO: this is not launching the file picker?
 					addFromFile();
+				} else {
+					//TODO: Toast error to user
+					Timber.e("Don't have permission to access external storage");
+					dismiss();
+				}
+				break;
+			}
+			case PERMISSION_REQUEST_CAMERA: {
+				if (grantResults.length > 0
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+					addFromCamera();
 				} else {
 					//TODO: Toast error to user
 					Timber.e("Don't have permission to access external storage");
@@ -216,8 +298,8 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent response) {
 		if (resultCode == RESULT_OK) {
-			if (requestCode == REQUEST_FILE_GET || requestCode == REQUEST_FILE_FROM_CAMERA) {
-				uploadFile(response.getData());
+			if (requestCode == REQUEST_FILE_GET || requestCode == REQUEST_IMAGE_CAPTURE) {
+				uploadFile(response.getData(), requestCode);
 			}
 		} else {
 			Timber.e("onActivityResult: Activity Result Code not OK");
