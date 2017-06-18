@@ -84,10 +84,6 @@ public class HomeActivity extends TelmediqActivity {
 			finish();
 			return;
 		}
-		searchString = getIntent().getStringExtra(Constants.Extras.SEARCH_STRING);
-		if( searchString != null) {
-			search(searchString);
-		}
 
 		getFolderList();
 		getFileList();
@@ -122,6 +118,13 @@ public class HomeActivity extends TelmediqActivity {
 			recyclerView.setAdapter(adapter);
 		} else {
 			adapter.updateData(directoryHolders);
+		}
+
+		searchString = getIntent().getStringExtra(Constants.Extras.SEARCH_STRING);
+		if( searchString != null) {
+			search(searchString);
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			getSupportActionBar().setTitle("\""+searchString+"\"");
 		}
 	}
 
@@ -164,8 +167,6 @@ public class HomeActivity extends TelmediqActivity {
 	}
 
 	private void search(String searchString){
-		Menu menu = toolbar.getMenu();
-
 		//iterate through list of files and folders, and copy those that match into new lists to update view contents with
 		if(!(searchString == null || searchString.equals("") )) {
 			RealmResults<File> searchFiles = File.getFilesByName(realm, String.valueOf(parentFolderId), searchString);
@@ -174,13 +175,9 @@ public class HomeActivity extends TelmediqActivity {
 			//pass in new list of files and folders which
 			List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(searchFolders, searchFiles);
 			adapter.updateData(directoryHolders);
-			menu.findItem(R.id.action_exitsearch).setVisible(true);
-			menu.findItem(R.id.action_search).setVisible(false);
 		} else {
 			List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
 			adapter.updateData(directoryHolders);
-			menu.findItem(R.id.action_exitsearch).setVisible(false);
-			menu.findItem(R.id.action_search).setVisible(true);
 		}
 	}
 
@@ -189,6 +186,11 @@ public class HomeActivity extends TelmediqActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.main, menu);
 		setupSearch(menu);
+
+		searchString = getIntent().getStringExtra(Constants.Extras.SEARCH_STRING);
+		if( searchString != null) {
+			menu.findItem(R.id.action_search).setVisible(false);
+		}
 		return true;
 	}
 
@@ -199,11 +201,7 @@ public class HomeActivity extends TelmediqActivity {
 		switch (id) {
 			case R.id.action_gridview:
 				break;
-			case R.id.action_exitsearch:
-				search("");
-				break;
 			case R.id.action_search:
-				//toggleSearchToolbar();
 				break;
 			case R.id.action_profile:
 				Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
@@ -269,10 +267,10 @@ public class HomeActivity extends TelmediqActivity {
 	SearchView.OnQueryTextListener searchListener = new SearchView.OnQueryTextListener() {
 		@Override
 		public boolean onQueryTextSubmit(String query) {
-			search(query);
-			//Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
-			//intent.putExtra(Constants.Extras.SEARCH_STRING, query);
-			//startActivity(intent);
+			Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
+			intent.putExtra(Constants.Extras.FOLDER_ID, parentFolderId);
+			intent.putExtra(Constants.Extras.SEARCH_STRING, query);
+			startActivity(intent);
 			searchItem.collapseActionView();
 			return false;
 		}

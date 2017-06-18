@@ -9,13 +9,6 @@
 		app:showAsAction="always"/>
 
 	<item
-	android:id="@+id/action_exitsearch"
-	android:title="@string/cancel"
-	app:materialIcon="close"
-	app:showAsAction="always"
-	android:visible="false"/>
-
-	<item
 		android:id="@+id/action_search"
 		android:title="@string/action_search"
 		app:materialIcon="magnify"
