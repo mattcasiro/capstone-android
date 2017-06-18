@@ -18,39 +18,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
 			android:background="?attr/colorPrimary"
-			app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-		<android.support.v7.widget.Toolbar
-			android:id="@+id/search_toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="?attr/actionBarSize"
-			android:background="?attr/colorPrimary"
-			app:popupTheme="@style/AppTheme.PopupOverlay">
-
-			<RelativeLayout
-				android:layout_width="match_parent"
-				android:layout_height="match_parent">
-				<EditText
-					android:id="@+id/search_editText"
-					android:layout_width="match_parent"
-					android:layout_height="match_parent"
-					android:layout_alignParentStart="true"
-					android:hint="@string/action_search"
-					android:paddingStart="10dp"
-					android:paddingEnd="10dp"
-					android:layout_marginEnd="60dp"/>
-
-				<net.steamcrafted.materialiconlib.MaterialIconView
-					android:id="@+id/icon_actionSearch"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_alignParentEnd="true"
-					android:padding="3dp"
-					app:materialIcon="arrow_right"
-					app:materialIconColor="@android:color/white"/>
-			</RelativeLayout>
-
-		</android.support.v7.widget.Toolbar>
+			app:popupTheme="@style/AppTheme.PopupOverlay"/>x
 
 	</android.support.design.widget.AppBarLayout>
 

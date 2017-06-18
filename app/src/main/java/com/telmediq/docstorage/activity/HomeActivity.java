@@ -28,6 +28,8 @@ import com.telmediq.docstorage.views.EmptyRecyclerView;
 import net.steamcrafted.materialiconlib.MaterialIconView;
 import net.steamcrafted.materialiconlib.MaterialMenuInflater;
 
+import android.support.v7.widget.SearchView;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,16 +53,18 @@ public class HomeActivity extends TelmediqActivity {
 	EmptyRecyclerView recyclerView;
 	@BindView(R.id.listItem_empty)
 	View emptyView;
-	@BindView(R.id.search_editText)
-	EditText editTextSearch;
-	@BindView(R.id.icon_actionSearch)
-	MaterialIconView iconActionSearch;
 	//</editor-fold>
+
+	SearchView searchView;
+	MenuItem searchItem;
 
 	DirectoryAdapter adapter;
 
 	RealmResults<Folder> folders;
 	RealmResults<File> files;
+
+	@Nullable
+	String searchString;
 
 	@Nullable
 	Folder parentFolder;
@@ -80,6 +84,10 @@ public class HomeActivity extends TelmediqActivity {
 			finish();
 			return;
 		}
+		searchString = getIntent().getStringExtra(Constants.Extras.SEARCH_STRING);
+		if( searchString != null) {
+			search(searchString);
+		}
 
 		getFolderList();
 		getFileList();
@@ -98,10 +106,6 @@ public class HomeActivity extends TelmediqActivity {
 		if (parentFolder != null) {
 			getSupportActionBar().setTitle(parentFolder.getName());
 		}
-
-		//set up search toolbar
-		findViewById(R.id.search_toolbar).setVisibility(View.GONE);
-		iconActionSearch.setOnClickListener(searchButtonClickListener);
 	}
 
 	private void setupViews() {
@@ -153,30 +157,30 @@ public class HomeActivity extends TelmediqActivity {
 		finish();
 	}
 
-	private void toggleSearchToolbar(){
-		//show / hide search bar in toolbar
-		if(findViewById(R.id.search_toolbar).getVisibility() == View.VISIBLE) {
-			findViewById(R.id.search_toolbar).setVisibility(View.GONE);
-		} else {
-			findViewById(R.id.search_toolbar).setVisibility(View.VISIBLE);
-		}
-
+	private void setupSearch(Menu menu){
+		searchItem = menu.findItem(R.id.action_search);
+		searchView = (SearchView) searchItem.getActionView();
+		searchView.setOnQueryTextListener(searchListener);
 	}
 
 	private void search(String searchString){
+		Menu menu = toolbar.getMenu();
+
 		//iterate through list of files and folders, and copy those that match into new lists to update view contents with
-		if(!searchString.equals("")) {
+		if(!(searchString == null || searchString.equals("") )) {
 			RealmResults<File> searchFiles = File.getFilesByName(realm, String.valueOf(parentFolderId), searchString);
 			RealmResults<Folder> searchFolders = Folder.getFoldersByName(realm, parentFolderId, searchString);
 
 			//pass in new list of files and folders which
 			List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(searchFolders, searchFiles);
 			adapter.updateData(directoryHolders);
-			toggleSearchToolbar();
-			editTextSearch.setText("");
+			menu.findItem(R.id.action_exitsearch).setVisible(true);
+			menu.findItem(R.id.action_search).setVisible(false);
 		} else {
 			List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
 			adapter.updateData(directoryHolders);
+			menu.findItem(R.id.action_exitsearch).setVisible(false);
+			menu.findItem(R.id.action_search).setVisible(true);
 		}
 	}
 
@@ -184,6 +188,7 @@ public class HomeActivity extends TelmediqActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.main, menu);
+		setupSearch(menu);
 		return true;
 	}
 
@@ -194,8 +199,11 @@ public class HomeActivity extends TelmediqActivity {
 		switch (id) {
 			case R.id.action_gridview:
 				break;
+			case R.id.action_exitsearch:
+				search("");
+				break;
 			case R.id.action_search:
-				toggleSearchToolbar();
+				//toggleSearchToolbar();
 				break;
 			case R.id.action_profile:
 				Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
@@ -220,13 +228,6 @@ public class HomeActivity extends TelmediqActivity {
 	public void onFabClicked(View view) {
 		Snackbar.make(view, "Make me do a thing", Snackbar.LENGTH_LONG).show();
 	}
-
-	View.OnClickListener searchButtonClickListener = new View.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			search(editTextSearch.getText().toString());
-		}
-	};
 
 	DirectoryAdapter.Listener directoryListener = new DirectoryAdapter.Listener() {
 		@Override
@@ -264,6 +265,24 @@ public class HomeActivity extends TelmediqActivity {
 			setupRecyclerView();
 		}
 	};
+
+	SearchView.OnQueryTextListener searchListener = new SearchView.OnQueryTextListener() {
+		@Override
+		public boolean onQueryTextSubmit(String query) {
+			search(query);
+			//Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
+			//intent.putExtra(Constants.Extras.SEARCH_STRING, query);
+			//startActivity(intent);
+			searchItem.collapseActionView();
+			return false;
+		}
+		@Override
+		public boolean onQueryTextChange(String s) {
+			// UserFeedback.show( "SearchOnQueryTextChanged: " + s);
+			return false;
+		}
+	};
+
 	//</editor-fold>
 
 	//<editor-fold desc="Activity Results">
