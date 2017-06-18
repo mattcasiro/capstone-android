@@ -165,8 +165,8 @@ public class HomeActivity extends TelmediqActivity {
 			case R.id.action_search:
 				break;
 			case R.id.action_profile:
-				//Intent intent = new Intent(HomeActivity.this, ProfileViewActivity.class);
-				//startActivity(intent);
+				Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
+				startActivity(intent);
 				break;
 			case R.id.action_settings:
 				break;
