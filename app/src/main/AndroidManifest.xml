@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.telmediq.docstorage">
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+	<!-- WRITE_EXTERNAL_STORAGE for camera pictures is only required prior to Android v4.4 -->
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+	                 android:maxSdkVersion="18" />
+	<uses-permission android:name="android.permission.CAMERA"/>
+	<uses-feature android:name="android.hardware.camera"
+	              android:required="false" />
 
 	<application
 		android:name=".TelmediqApplication"
@@ -39,6 +46,14 @@
 			android:label="DocStorage"
 			android:theme="@style/AppTheme.NoActionBar"
 			android:windowSoftInputMode="stateHidden|adjustResize"/>
+		<provider
+			android:name="android.support.v4.content.FileProvider"
+			android:authorities="com.telmediq.docstorage.fileprovider"
+			android:exported="false"
+			android:grantUriPermissions="true">
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/file_paths"></meta-data>
+		</provider>
 	</application>
-
 </manifest>

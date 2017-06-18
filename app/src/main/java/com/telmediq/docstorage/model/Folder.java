@@ -37,7 +37,6 @@ public class Folder extends RealmObject {
 		this.deleteFromRealm();
 	}
 
-
 	public Integer getId() {
 		return id;
 	}

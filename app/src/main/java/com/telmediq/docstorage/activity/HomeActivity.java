@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
 import com.telmediq.docstorage.adapter.DirectoryAdapter;
+import com.telmediq.docstorage.fragment.BottomSheetAddContentFragment;
 import com.telmediq.docstorage.fragment.BottomSheetFileDetailsFragment;
 import com.telmediq.docstorage.fragment.BottomSheetFolderDetailsFragment;
 import com.telmediq.docstorage.helper.AppValues;
@@ -184,7 +185,7 @@ public class HomeActivity extends TelmediqActivity {
 	//<editor-fold desc="Listeners">
 	@OnClick(R.id.fab)
 	public void onFabClicked(View view) {
-		Snackbar.make(view, "Make me do a thing", Snackbar.LENGTH_LONG).show();
+		BottomSheetAddContentFragment.newInstance(getIntent().getIntExtra(Constants.Extras.FOLDER_ID, -1)).show(getSupportFragmentManager(), BottomSheetAddContentFragment.class.getSimpleName());
 	}
 
 	DirectoryAdapter.Listener directoryListener = new DirectoryAdapter.Listener() {

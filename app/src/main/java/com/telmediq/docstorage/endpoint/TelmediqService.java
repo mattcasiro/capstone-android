@@ -1,5 +1,7 @@
 package com.telmediq.docstorage.endpoint;
 
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.JsonAdapter;
 import com.telmediq.docstorage.model.AuthorizationResponse;
 import com.telmediq.docstorage.model.File;
 import com.telmediq.docstorage.model.Profile;
@@ -8,12 +10,17 @@ import com.telmediq.docstorage.model.Folder;
 import java.util.Dictionary;
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
@@ -54,5 +61,20 @@ public interface TelmediqService {
 	@DELETE("api/folders/{folderId}/")
 	Call<Folder> deleteFolder(
 			@Path("folderId") Integer folderId
+	);
+
+	@Multipart
+	@POST("/api/folders/{folderId}/files/")
+	Call<File> addFile(
+			@Path("folderId") Integer folderId,
+			@Part MultipartBody.Part file,
+			@Part("name") RequestBody fileName
+	);
+
+	@POST("/api/folders/")
+	@FormUrlEncoded
+	Call<Folder> addFolder(
+			@Field("parent") Integer parent,
+            @Field("name") String name
 	);
 }
