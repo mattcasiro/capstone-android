@@ -45,6 +45,13 @@ public class DirectoryHolder {
 		for (File file : files) {
 			holders.add(new DirectoryHolder(file));
 		}
+
+		// Shitty hack for padding at bottom of recycler view :)
+		if (holders.size() > 0) {
+			holders.add(new DirectoryHolder(""));
+			holders.add(new DirectoryHolder(""));
+		}
+
 		return holders;
 	}
 
