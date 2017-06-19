@@ -2,6 +2,7 @@ package com.telmediq.docstorage.model;
 
 import java.util.Date;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
@@ -17,30 +18,26 @@ public class Folder extends RealmObject {
 	private Integer owner;
 	private Integer parent;
 
-	public static RealmResults<Folder> getAllFolders(Realm realm) {
-		return realm.where(Folder.class).findAllSorted("name");
-	}
-
-	public static Folder getRootFolder(Realm realm) {
-		return realm.where(Folder.class).isNull("parent").findFirst();
-	}
-
+	//<editor-fold desc="Fetching">
 	public static RealmResults<Folder> getFoldersByParent(Realm realm, Integer parent) {
 		return realm.where(Folder.class).equalTo("parent", parent).findAllSorted("name");
 	}
 
-	public static RealmResults<Folder> getFoldersByName(Realm realm, Integer parent, String folderName){
-		return realm.where(Folder.class).equalTo("parent", parent).contains("name", folderName).findAllSorted("name");
+	public static RealmResults<Folder> getFolderByParent(Realm realm, Integer parent, String searchQuery) {
+		return realm.where(Folder.class)
+				.equalTo("parent", parent)
+				.contains("name", searchQuery, Case.INSENSITIVE)
+				.findAllSorted("name");
 	}
 
 	public static Folder getFolder(Realm realm, Integer folderId) {
 		return realm.where(Folder.class).equalTo("id", folderId).findFirst();
 	}
+	//</editor-fold>
 
 	public void delete(Realm realm) {
 		this.deleteFromRealm();
 	}
-
 
 	public Integer getId() {
 		return id;
