@@ -32,4 +32,5 @@
 	<string name="delete_file_notification">File successfully deleted</string>
 	<string name="delete_folder_notification">Folder successfully deleted</string>
 	<string name="details">Details</string>
+	<string name="implement_later">Telmediq will implement later</string>
 </resources>

@@ -179,6 +179,7 @@ public class HomeActivity extends TelmediqActivity {
 
 		switch (id) {
 			case R.id.action_gridview:
+				Toast.makeText(this, R.string.implement_later, Toast.LENGTH_LONG).show();
 				break;
 			case R.id.action_search:
 				break;
@@ -187,6 +188,7 @@ public class HomeActivity extends TelmediqActivity {
 				startActivity(intent);
 				break;
 			case R.id.action_settings:
+				Toast.makeText(this, R.string.implement_later, Toast.LENGTH_LONG).show();
 				break;
 			case R.id.action_logout:
 				logout();
