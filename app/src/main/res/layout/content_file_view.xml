@@ -6,6 +6,20 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical">
 
+	<android.support.design.widget.AppBarLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/blackTransparent"
+		android:theme="@style/AppTheme.AppBarOverlay">
+
+		<android.support.v7.widget.Toolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+	</android.support.design.widget.AppBarLayout>
+
 	<com.github.chrisbanes.photoview.PhotoView
 		android:id="@+id/fileViewActivity_fileView"
 		android:layout_width="match_parent"
@@ -13,44 +27,6 @@
 		android:background="@android:color/black"
 		android:scaleType="centerInside"
 		android:src="@drawable/frog"/>
-
-	<android.support.v7.widget.Toolbar
-		xmlns:app="http://schemas.android.com/apk/res-auto"
-		android:id="@+id/file_menu_bar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@color/blackTransparent"
-		android:elevation="4dp">
-
-		<net.steamcrafted.materialiconlib.MaterialIconView
-			android:id="@+id/back_arrow"
-			style="@style/listItemIcon"
-			android:layout_gravity="start"
-			android:background="?attr/selectableItemBackgroundBorderless"
-			app:materialIcon="arrow_left"
-			app:materialIconColor="@android:color/white"
-			app:materialIconSize="@dimen/icon_size"/>
-
-		<TextView
-			android:id="@+id/fileName"
-			style="@style/TextAppearance.AppCompat.Body2"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:ellipsize="end"
-			android:gravity="center_vertical"
-			android:maxLines="1"
-			android:text="An Image"
-			android:textColor="@android:color/white"/>
-
-		<net.steamcrafted.materialiconlib.MaterialIconView
-			android:id="@+id/file_options"
-			style="@style/listItemIcon"
-			android:layout_gravity="end"
-			android:background="?attr/selectableItemBackgroundBorderless"
-			app:materialIcon="dots_vertical"
-			app:materialIconColor="@android:color/white"
-			app:materialIconSize="24dp"/>
-	</android.support.v7.widget.Toolbar>
 
 	<ProgressBar
 		android:id="@+id/progressBar"

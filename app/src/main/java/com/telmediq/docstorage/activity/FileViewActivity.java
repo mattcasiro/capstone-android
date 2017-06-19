@@ -2,10 +2,12 @@ package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -20,11 +22,10 @@ import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.UrlHelper;
 import com.telmediq.docstorage.model.File;
 
-import net.steamcrafted.materialiconlib.MaterialIconView;
+import net.steamcrafted.materialiconlib.MaterialMenuInflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.realm.ObjectChangeSet;
 import io.realm.RealmObjectChangeListener;
 import timber.log.Timber;
@@ -32,14 +33,10 @@ import timber.log.Timber;
 public class FileViewActivity extends TelmediqActivity {
 	@BindView(R.id.fileViewActivity_fileView)
 	ImageView fileView;
-	@BindView(R.id.back_arrow)
-	MaterialIconView backArrow;
-	@BindView(R.id.fileName)
-	TextView fileName;
-	@BindView(R.id.file_options)
-	MaterialIconView fileOptions;
 	@BindView(R.id.progressBar)
 	ProgressBar progressBar;
+	@BindView(R.id.toolbar)
+	Toolbar toolbar;
 
 	private File file;
 
@@ -56,6 +53,7 @@ public class FileViewActivity extends TelmediqActivity {
 			return;
 		}
 
+		setupToolbar();
 		setupView();
 	}
 
@@ -72,9 +70,7 @@ public class FileViewActivity extends TelmediqActivity {
 	}
 
 	//</editor-fold>
-
 	private void setupView() {
-		fileName.setText(file.getName());
 		showProgressBar(true);
 		Glide.with(this)
 				.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))
@@ -94,12 +90,27 @@ public class FileViewActivity extends TelmediqActivity {
 				.into(fileView);
 	}
 
+	private void setupToolbar() {
+		setSupportActionBar(toolbar);
+		if (getSupportActionBar() == null) {
+			return;
+		}
+		getSupportActionBar().setTitle(file.getName());
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+
 	private void showProgressBar(boolean show) {
 		if (progressBar == null) {
 			return;
 		}
 
 		progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+	}
+
+	@Override
+	public boolean onSupportNavigateUp() {
+		onBackPressed();
+		return true;
 	}
 
 	private boolean getFile() {
@@ -113,17 +124,29 @@ public class FileViewActivity extends TelmediqActivity {
 		return file != null;
 	}
 
+	//<editor-fold desc="Menu">
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.file_view_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+
+		switch (id) {
+			case R.id.fileView_menu:
+			default:
+				BottomSheetFileDetailsFragment.newInstance(file.getId()).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
+				break;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+	//</editor-fold>
+
 	//<editor-fold desc="Listeners">
-	@OnClick(R.id.file_options)
-	void onFileOptionClicked(View view) {
-		BottomSheetFileDetailsFragment.newInstance(file.getId()).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
-	}
-
-	@OnClick(R.id.back_arrow)
-	void onBackArrowClicked(View view) {
-		finish();
-	}
-
 	private void setupRealmListener(boolean enable) {
 		if (file != null && file.isManaged()) {
 			file.removeAllChangeListeners();
@@ -148,5 +171,6 @@ public class FileViewActivity extends TelmediqActivity {
 			setupView();
 		}
 	};
+
 	//</editor-fold>
 }
