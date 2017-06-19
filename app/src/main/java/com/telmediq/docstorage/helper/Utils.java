@@ -3,7 +3,6 @@ package com.telmediq.docstorage.helper;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.Icon;
 
 import com.telmediq.docstorage.R;
 

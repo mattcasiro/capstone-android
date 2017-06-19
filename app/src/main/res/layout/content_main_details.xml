@@ -2,21 +2,21 @@
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
 
-    <LinearLayout
-	    style="@style/simpleListItem">
+	<LinearLayout
+		style="@style/simpleListItem">
 
-	    <TextView
-		    style="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"
-		    android:paddingLeft="20dp"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:maxLines="1"
-	        android:text="New"/>
-    </LinearLayout>
+		<TextView
+			style="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:maxLines="1"
+			android:paddingLeft="20dp"
+			android:text="New"/>
+	</LinearLayout>
 
 	<ImageView style="@style/divider"/>
 
@@ -49,7 +49,7 @@
 
 		<TextView
 			style="@style/gridItemText"
-		    android:text="Folder"/>
+			android:text="Folder"/>
 
 		<TextView
 			style="@style/gridItemText"

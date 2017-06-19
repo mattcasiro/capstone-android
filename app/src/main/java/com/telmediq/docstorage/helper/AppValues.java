@@ -52,7 +52,7 @@ public class AppValues {
 		return sharedPrefs().getInt(Constants.Preference.ROOT_FOLDER_ID, 0);
 	}
 
-	public static void clear(){
+	public static void clear() {
 		sharedPrefs().getAll().clear();
 	}
 }

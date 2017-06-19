@@ -209,7 +209,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 					// occurs (eg. deleting a file from HomeActivity). Otherwise snackbar will be
 					// shown onActivityResult. This could be completely wrong, but it works. Should
 					// probably find a better way.
-					if (getActivity().findViewById(R.id.activityMain_coordinatorLayout) != null){
+					if (getActivity().findViewById(R.id.activityMain_coordinatorLayout) != null) {
 						CoordinatorLayout rootLayout = (CoordinatorLayout) getActivity().findViewById(R.id.activityMain_coordinatorLayout);
 						Snackbar.make(rootLayout, R.string.delete_file_notification, Snackbar.LENGTH_LONG).show();
 					}
