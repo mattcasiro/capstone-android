@@ -95,7 +95,11 @@ public class HomeActivity extends TelmediqActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(parentFolderId != AppValues.getRootFolderId());
 
 		if (parentFolder != null) {
-			getSupportActionBar().setTitle(parentFolder.getName());
+			if (parentFolder.getParent() == null) {
+				getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+			} else {
+				getSupportActionBar().setTitle(parentFolder.getName());
+			}
 		}
 	}
 
