@@ -11,7 +11,7 @@
 		style="@style/simpleListItem"
 		android:layout_alignParentBottom="true"
 		android:layout_below="@+id/imageView2"
-		android:background="@android:color/transparent"
+		android:background="@android:color/white"
 		android:gravity="center">
 
 		<ImageView
