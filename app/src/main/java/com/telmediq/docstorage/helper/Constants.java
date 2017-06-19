@@ -17,6 +17,7 @@ public class Constants {
 	public interface Extras {
 		String FILE_ID = BuildConfig.APPLICATION_ID + ".fileId";
 		String FOLDER_ID = BuildConfig.APPLICATION_ID + ".folderId";
+		String SEARCH_STRING = BuildConfig.APPLICATION_ID + ".searchString";
 	}
 
 	public interface Actions {

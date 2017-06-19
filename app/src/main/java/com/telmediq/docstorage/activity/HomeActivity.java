@@ -1,18 +1,15 @@
 package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.view.menu.ActionMenuItemView;
-import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
@@ -63,9 +60,11 @@ public class HomeActivity extends TelmediqActivity {
 
 	@Nullable
 	Folder parentFolder;
-
 	int parentFolderId = -1;
 
+	private String searchText = "";
+
+	//<editor-fold desc="Lifecycle">
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -80,12 +79,26 @@ public class HomeActivity extends TelmediqActivity {
 			return;
 		}
 
-		getFolderList();
-		getFileList();
+		fetchFilesAndFolders();
+		getFilesAndFolders();
 		setupToolbar();
 		setupViews();
 	}
 
+	@Override
+	protected void onPause() {
+		setupRealmListeners(false);
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		setupRealmListeners(true);
+	}
+	//</editor-fold>
+
+	//<editor-fold desc="View Setup">
 	private void setupToolbar() {
 		setSupportActionBar(toolbar);
 		if (getSupportActionBar() == null) {
@@ -119,31 +132,31 @@ public class HomeActivity extends TelmediqActivity {
 			adapter.updateData(directoryHolders);
 		}
 	}
+	//</editor-fold>
 
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
+	@DebugLog
+	private void getFilesAndFolders() {
+		if (searchText.isEmpty()) {
+			folders = Folder.getFoldersByParent(realm, parentFolderId);
+			files = File.getFilesByFolder(realm, String.valueOf(parentFolderId));
+		} else {
+			folders = Folder.getFolderByParent(realm, parentFolderId, searchText);
+			files = File.getFilesByFolder(realm, String.valueOf(parentFolderId), searchText);
+		}
+
+		setupRealmListeners(true);
 	}
 
 	@DebugLog
-	private void getFolderList() {
-		folders = Folder.getFoldersByParent(realm, parentFolderId);
-		folders.addChangeListener(realmChangeListener);
-
+	private void fetchFilesAndFolders() {
 		Call<List<Folder>> userFolderCall = getTelmediqService().getFolders();
 		userFolderCall.enqueue(userFolderCallback);
-	}
-
-	@DebugLog
-	public void getFileList() {
-		files = File.getFilesByFolder(realm, String.valueOf(parentFolderId));
-		files.addChangeListener(realmChangeListener);
 
 		Call<List<File>> userFileCall = getTelmediqService().getFiles();
 		userFileCall.enqueue(userFileCallback);
 	}
 
-	private void logout(){
+	private void logout() {
 		AppValues.clear();
 
 		Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
@@ -152,10 +165,11 @@ public class HomeActivity extends TelmediqActivity {
 		finish();
 	}
 
-	//<editor-fold desc="Menu">
+	//<editor-fold desc="Option Menu">
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.main, menu);
+		((SearchView) menu.findItem(R.id.action_search).getActionView()).setOnQueryTextListener(searchListener);
 		return true;
 	}
 
@@ -221,6 +235,39 @@ public class HomeActivity extends TelmediqActivity {
 			BottomSheetFolderDetailsFragment.newInstance(folderId).show(getSupportFragmentManager(), BottomSheetFolderDetailsFragment.class.getSimpleName());
 		}
 	};
+
+	SearchView.OnQueryTextListener searchListener = new SearchView.OnQueryTextListener() {
+		@Override
+		public boolean onQueryTextSubmit(String query) {
+			return false;
+		}
+
+		@Override
+		public boolean onQueryTextChange(String newText) {
+			if (adapter != null) {
+				searchText = newText;
+				getFilesAndFolders();
+				setupRecyclerView();
+			}
+			return true;
+		}
+	};
+
+	private void setupRealmListeners(boolean enable) {
+		if (folders != null && folders.isManaged()) {
+			folders.removeAllChangeListeners();
+			if (enable) {
+				folders.addChangeListener(realmChangeListener);
+			}
+		}
+
+		if (files != null && files.isManaged()) {
+			files.removeAllChangeListeners();
+			if (enable) {
+				files.addChangeListener(realmChangeListener);
+			}
+		}
+	}
 
 	RealmChangeListener realmChangeListener = new RealmChangeListener() {
 		@Override

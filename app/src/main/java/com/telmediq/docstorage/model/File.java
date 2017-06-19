@@ -2,6 +2,7 @@ package com.telmediq.docstorage.model;
 
 import java.util.Date;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
@@ -24,18 +25,30 @@ public class File extends RealmObject {
 	private String file;
 	private Integer owner;
 
-	public static RealmResults<File> getFiles(Realm realm) {
-		return realm.where(File.class).findAllSorted("name");
+	//<editor-fold desc="Fetching">
+	public static File getFile(Realm realm, String fileId) {
+		return realm.where(File.class).equalTo("id", Integer.valueOf(fileId)).findFirst();
 	}
 
 	public static RealmResults<File> getFilesByFolder(Realm realm, String folderId) {
 		// TODO: convert ID to UUID and remove casting (stretch goal)
-		return realm.where(File.class).equalTo("folder", new Integer(folderId)).findAllSorted("name");
+		return realm.where(File.class).equalTo("folder", Integer.valueOf(folderId)).findAllSorted("name");
 	}
 
-	public static File getFile(Realm realm, String fileId) {
-		return realm.where(File.class).equalTo("id", new Integer(fileId)).findFirst();
+	public static RealmResults<File> getFilesByFolder(Realm realm, String folderId, String searchQuery) {
+		// TODO: convert ID to UUID and remove casting (stretch goal)
+		return realm.where(File.class)
+				.equalTo("folder", Integer.valueOf(folderId))
+				.contains("name", searchQuery, Case.INSENSITIVE)
+				.or()
+				.equalTo("folder", Integer.valueOf(folderId))
+				.contains("original_name", searchQuery, Case.INSENSITIVE)
+				.or()
+				.equalTo("folder", Integer.valueOf(folderId))
+				.contains("mime_type", searchQuery, Case.INSENSITIVE)
+				.findAllSorted("name");
 	}
+	//</editor-fold>
 
 	public void delete(Realm realm) {
 		this.deleteFromRealm();

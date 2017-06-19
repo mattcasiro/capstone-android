@@ -12,7 +12,8 @@
 		android:id="@+id/action_search"
 		android:title="@string/action_search"
 		app:materialIcon="magnify"
-		app:showAsAction="always"/>
+		app:showAsAction="always|collapseActionView"
+		app:actionViewClass="android.support.v7.widget.SearchView"/>
 
 	<item
 		android:id="@+id/action_profile"
