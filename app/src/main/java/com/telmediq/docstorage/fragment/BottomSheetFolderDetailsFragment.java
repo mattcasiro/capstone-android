@@ -71,7 +71,7 @@ public class BottomSheetFolderDetailsFragment extends BottomSheetDialogFragment 
 		setupBehavior(contentView);
 
 		if (!getFolder()) {
-			Toast.makeText(getContext(), R.string.unable_to_get_folder_details, Toast.LENGTH_LONG).show();
+			Toast.makeText(getContext(), R.string.unable_to_get_folder_details, Toast.LENGTH_SHORT).show();
 			dismiss();
 			return;
 		}
@@ -135,16 +135,16 @@ public class BottomSheetFolderDetailsFragment extends BottomSheetDialogFragment 
 
 		switch (view.getId()) {
 			case R.id.fileInfo:
-				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_LONG).show();
+				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.addPeopleListItem:
-				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_LONG).show();
+				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.shareLinkListItem:
-				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_LONG).show();
+				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.moveListItem:
-				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_LONG).show();
+				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.starListItem:
 				starSwitch.toggle();
@@ -182,7 +182,7 @@ public class BottomSheetFolderDetailsFragment extends BottomSheetDialogFragment 
 
 		switch (button.getId()) {
 			case R.id.starSwitch:
-				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_LONG).show();
+				Toast.makeText(getContext(), R.string.implement_later, Toast.LENGTH_SHORT).show();
 				break;
 		}
 
