@@ -159,24 +159,15 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 				starSwitch.toggle();
 				break;
 			case R.id.renameListItem:
-				/*Timber.d("renaming file");
+				Timber.d("renaming file");
 
 				final EditText fileName = new EditText(getContext());
 
 				DialogInterface.OnClickListener renameListener = new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						java.io.File ioFile;
-						ioFile = new java.io.File(BottomSheetAddContentFragment.getPath(getContext(), fileUri));
-						RequestBody requestFile = RequestBody.create( MediaType.parse("multipart/form-data"), ioFile);
-						MultipartBody.Part fileBody = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
-						// Create name part
-						Timber.d("FILENAME: %s", file.getName());
-						RequestBody fileBodyName = RequestBody.create(MultipartBody.FORM, file.getName());
-						RequestBody fileRequestBody = RequestBody.create(MultipartBody.FORM, file.getName());
-
-						Call<File> call = app.getTelmediqService().renameFile(file.getFolder(), file.getId(), fileBody, fileName.getText().toString());
+						Call<File> call = app.getTelmediqService().renameFile(file.getFolder(), file.getId(), fileName.getText().toString());
 						call.enqueue(renameFileCallback);
 					}
 				};
@@ -188,7 +179,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 						.setNegativeButton("Cancel", null)
 						.create()
 						.show();
-				*/
+
 				break;
 			case R.id.removeListItem:
 				Timber.d("removing file");

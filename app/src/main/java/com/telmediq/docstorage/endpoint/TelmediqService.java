@@ -78,13 +78,11 @@ public interface TelmediqService {
             @Field("name") String name
 	);
 
-	@Multipart
 	@PUT("/api/folders/{folderId}/files/{fileId}/")
 	@FormUrlEncoded
 	Call<File> renameFile(
 			@Path("folderId") Integer folderId,
 			@Path("fileId") Integer fileId,
-			@Part MultipartBody.Part file,
 	        @Field("name") String name
 	);
 
