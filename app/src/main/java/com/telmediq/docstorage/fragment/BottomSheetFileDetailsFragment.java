@@ -1,5 +1,6 @@
 package com.telmediq.docstorage.fragment;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.telmediq.docstorage.TelmediqApplication;
 import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.File;
+import com.telmediq.docstorage.model.Folder;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
@@ -27,10 +30,15 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import io.realm.Realm;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
+
+import static android.R.attr.name;
 
 /**
  * Created by sean1 on 5/11/2017.
@@ -49,6 +57,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 	//</editor-fold>
 
 	private File file;
+	private Folder folder;
 	private TelmediqApplication app;
 	private boolean isUserInteraction = true; // boolean to make sure programmatic changes don't trigger listeners
 
@@ -150,7 +159,36 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 				starSwitch.toggle();
 				break;
 			case R.id.renameListItem:
+				/*Timber.d("renaming file");
 
+				final EditText fileName = new EditText(getContext());
+
+				DialogInterface.OnClickListener renameListener = new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						java.io.File ioFile;
+						ioFile = new java.io.File(BottomSheetAddContentFragment.getPath(getContext(), fileUri));
+						RequestBody requestFile = RequestBody.create( MediaType.parse("multipart/form-data"), ioFile);
+						MultipartBody.Part fileBody = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+
+						// Create name part
+						Timber.d("FILENAME: %s", file.getName());
+						RequestBody fileBodyName = RequestBody.create(MultipartBody.FORM, file.getName());
+						RequestBody fileRequestBody = RequestBody.create(MultipartBody.FORM, file.getName());
+
+						Call<File> call = app.getTelmediqService().renameFile(file.getFolder(), file.getId(), fileBody, fileName.getText().toString());
+						call.enqueue(renameFileCallback);
+					}
+				};
+
+				new AlertDialog.Builder(getContext())
+						.setTitle(("Rename File"))
+						.setView(fileName)
+						.setPositiveButton("OK", renameListener)
+						.setNegativeButton("Cancel", null)
+						.create()
+						.show();
+				*/
 				break;
 			case R.id.removeListItem:
 				Timber.d("removing file");
@@ -221,6 +259,29 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 		@Override
 		public void onFailure(Call<File> call, Throwable t) {
 			Timber.d("failed to delete file");
+		}
+	};
+	Callback<File> renameFileCallback = new Callback<File>() {
+		@Override
+		public void onResponse(Call<File> call, final Response<File> response) {
+			String error = Utils.checkResponseForError(response);
+			if (error != null) {
+				onFailure(call, new Throwable(error));
+				return;
+			}
+			Realm realm = Realm.getDefaultInstance();
+			realm.executeTransaction(new Realm.Transaction() {
+				@Override
+				public void execute(Realm realm) {
+					realm.copyToRealmOrUpdate(response.body());
+				}
+			});
+			dismiss();
+		}
+
+		@Override
+		public void onFailure(Call<File> call, Throwable t) {
+			Timber.d("failed to rename file");
 		}
 	};
 	//</editor-fold>
