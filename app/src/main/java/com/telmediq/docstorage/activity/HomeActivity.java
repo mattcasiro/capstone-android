@@ -1,10 +1,14 @@
 package com.telmediq.docstorage.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -26,6 +30,7 @@ import com.telmediq.docstorage.model.File;
 import com.telmediq.docstorage.model.Folder;
 import com.telmediq.docstorage.views.EmptyRecyclerView;
 
+import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 import net.steamcrafted.materialiconlib.MaterialMenuInflater;
 
 import java.util.List;
@@ -43,6 +48,8 @@ import retrofit2.Response;
 
 public class HomeActivity extends TelmediqActivity {
 	private static final int FILE_DETAIL_REQUEST_CODE = 2432;
+	public static final int GRID_LAYOUT = 0;
+	public static final int LIST_LAYOUT = 1;
 
 	//<editor-fold desc="View Initialization">
 	@BindView(R.id.toolbar)
@@ -54,6 +61,7 @@ public class HomeActivity extends TelmediqActivity {
 	//</editor-fold>
 
 	DirectoryAdapter adapter;
+	Integer layoutMode = HomeActivity.LIST_LAYOUT;
 
 	RealmResults<Folder> folders;
 	RealmResults<File> files;
@@ -79,6 +87,7 @@ public class HomeActivity extends TelmediqActivity {
 			return;
 		}
 
+		layoutMode = AppValues.getDirectoryLayoutMode();
 		fetchFilesAndFolders();
 		getFilesAndFolders();
 		setupToolbar();
@@ -95,6 +104,8 @@ public class HomeActivity extends TelmediqActivity {
 	protected void onResume() {
 		super.onResume();
 		setupRealmListeners(true);
+		layoutMode = AppValues.getDirectoryLayoutMode();
+		setupViews();
 	}
 	//</editor-fold>
 
@@ -124,14 +135,49 @@ public class HomeActivity extends TelmediqActivity {
 	private void setupRecyclerView() {
 		List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
 
-		if (recyclerView.getAdapter() == null) {
-			adapter = new DirectoryAdapter(directoryHolders, directoryListener);
-			recyclerView.setLayoutManager(new LinearLayoutManager(this));
+		recyclerView.setLayoutManager(getLayoutManager());
+
+		if (recyclerView.getAdapter() == null || adapter.getLayoutMode() != layoutMode) {
+			adapter = new DirectoryAdapter(directoryHolders, directoryListener, layoutMode);
 			recyclerView.setAdapter(adapter);
 		} else {
 			adapter.updateData(directoryHolders);
 		}
+
 	}
+
+	private RecyclerView.LayoutManager getLayoutManager(){
+
+		LinearLayoutManager layoutManager;
+
+		switch(layoutMode){
+			case GRID_LAYOUT:
+
+				GridLayoutManager glayoutManager = new GridLayoutManager(this, 2);
+				glayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+					@Override
+					public int getSpanSize(int position){
+						switch (adapter.getItemViewType(position)){
+							case DirectoryHolder.HEADER:
+								return 2;
+							case DirectoryHolder.FILE:
+							case DirectoryHolder.FOLDER:
+							default:
+								return 1;
+						}
+					}
+				});
+				layoutManager = glayoutManager;
+				break;
+			case LIST_LAYOUT:
+			default:
+				layoutManager = new LinearLayoutManager(this);
+				break;
+		}
+
+		return layoutManager;
+	}
+
 	//</editor-fold>
 
 	@DebugLog
@@ -165,11 +211,29 @@ public class HomeActivity extends TelmediqActivity {
 		finish();
 	}
 
+	private void toggleLayoutMode(){
+		layoutMode = (layoutMode == LIST_LAYOUT) ? GRID_LAYOUT : LIST_LAYOUT;
+		AppValues.setDirectoryLayoutMode(layoutMode);
+		setupViews();
+	}
+
+	private void setLayoutModeIcon(MenuItem item){
+		Drawable icon = MaterialDrawableBuilder.with(this) // provide a context
+				.setIcon(layoutMode == LIST_LAYOUT ? MaterialDrawableBuilder.IconValue.VIEW_MODULE : MaterialDrawableBuilder.IconValue.VIEW_LIST) // provide an icon
+				.setColor(Color.WHITE) // set the icon color
+				.setToActionbarSize() // set the icon size
+				.build();
+		item.setIcon(icon);
+	}
+
 	//<editor-fold desc="Option Menu">
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MaterialMenuInflater.with(this).setDefaultColorResource(android.R.color.white).inflate(R.menu.main, menu);
 		((SearchView) menu.findItem(R.id.action_search).getActionView()).setOnQueryTextListener(searchListener);
+
+		// set layoutMode icon to correct initial state
+		setLayoutModeIcon(menu.findItem(R.id.action_gridview));
 		return true;
 	}
 
@@ -179,6 +243,8 @@ public class HomeActivity extends TelmediqActivity {
 
 		switch (id) {
 			case R.id.action_gridview:
+				toggleLayoutMode();
+				setLayoutModeIcon(item);
 				break;
 			case R.id.action_search:
 				break;
