@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqApplication;
+import com.telmediq.docstorage.activity.FileViewActivity;
 import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.File;
@@ -180,6 +181,7 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 						.create()
 						.show();
 
+				//Activity currentActivity = ((TelmediqApplication) getContext().getApplicationContext().getCurrentActivity() )
 				break;
 			case R.id.removeListItem:
 				Timber.d("removing file");
@@ -267,6 +269,9 @@ public class BottomSheetFileDetailsFragment extends BottomSheetDialogFragment {
 					realm.copyToRealmOrUpdate(response.body());
 				}
 			});
+			if( getActivity().getClass() == FileViewActivity.class){
+				getActivity().recreate();
+			}
 			dismiss();
 		}
 
