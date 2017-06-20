@@ -47,11 +47,11 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 		return data.get(position).getType();
 	}
 
-	public void setLayoutMode(Integer layoutMode){
+	public void setLayoutMode(Integer layoutMode) {
 		this.layoutMode = layoutMode;
 	}
 
-	public int getLayoutMode(){
+	public int getLayoutMode() {
 		return layoutMode;
 	}
 
@@ -63,7 +63,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 		switch (viewType) {
 			case DirectoryHolder.FOLDER:
 				contentView = LayoutInflater.from(parent.getContext())
-						.inflate(layoutMode == HomeActivity.LIST_LAYOUT ? R.layout.listitem_folder: R.layout.gridview_folder, parent, false);
+						.inflate(layoutMode == HomeActivity.LIST_LAYOUT ? R.layout.listitem_folder : R.layout.gridview_folder, parent, false);
 				break;
 			case DirectoryHolder.FILE:
 				contentView = LayoutInflater.from(parent.getContext())
@@ -170,7 +170,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 			DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
 			folderTitleText.setText(folder.getName());
 
-			if(folderModifiedDate != null){
+			if (folderModifiedDate != null) {
 				folderModifiedDate.setText(df.format(folder.getModified()));
 			}
 
@@ -201,7 +201,7 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 			DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
 			filename.setText(file.getName());
 
-			if(fileModifiedDate != null){
+			if (fileModifiedDate != null) {
 				fileModifiedDate.setText(df.format(file.getModified()));
 			}
 

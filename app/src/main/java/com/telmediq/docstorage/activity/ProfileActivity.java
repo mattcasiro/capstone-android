@@ -34,13 +34,20 @@ import timber.log.Timber;
 
 public class ProfileActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
-	@BindView(R.id.profile_toolbar) Toolbar toolbar;
-	@BindView(R.id.profile_firstNameLayout) TextInputLayout firstNameLayout;
-	@BindView(R.id.profile_firstNameText) TextView firstNameEditText;
-	@BindView(R.id.profile_lastNameLayout) TextInputLayout lastNameLayout;
-	@BindView(R.id.profile_lastNameText) TextView lastNameEditText;
-	@BindView(R.id.profile_emailLayout) TextInputLayout emailLayout;
-	@BindView(R.id.profile_emailText) TextView emailEditText;
+	@BindView(R.id.profile_toolbar)
+	Toolbar toolbar;
+	@BindView(R.id.profile_firstNameLayout)
+	TextInputLayout firstNameLayout;
+	@BindView(R.id.profile_firstNameText)
+	TextView firstNameEditText;
+	@BindView(R.id.profile_lastNameLayout)
+	TextInputLayout lastNameLayout;
+	@BindView(R.id.profile_lastNameText)
+	TextView lastNameEditText;
+	@BindView(R.id.profile_emailLayout)
+	TextInputLayout emailLayout;
+	@BindView(R.id.profile_emailText)
+	TextView emailEditText;
 	//</editor-fold>
 
 	Profile profile;

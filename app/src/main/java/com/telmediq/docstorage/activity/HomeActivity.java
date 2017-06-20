@@ -146,18 +146,18 @@ public class HomeActivity extends TelmediqActivity {
 
 	}
 
-	private RecyclerView.LayoutManager getLayoutManager(){
+	private RecyclerView.LayoutManager getLayoutManager() {
 
 		LinearLayoutManager layoutManager;
 
-		switch(layoutMode){
+		switch (layoutMode) {
 			case GRID_LAYOUT:
 
 				GridLayoutManager glayoutManager = new GridLayoutManager(this, 2);
-				glayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+				glayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 					@Override
-					public int getSpanSize(int position){
-						switch (adapter.getItemViewType(position)){
+					public int getSpanSize(int position) {
+						switch (adapter.getItemViewType(position)) {
 							case DirectoryHolder.HEADER:
 								return 2;
 							case DirectoryHolder.FILE:
@@ -211,13 +211,13 @@ public class HomeActivity extends TelmediqActivity {
 		finish();
 	}
 
-	private void toggleLayoutMode(){
+	private void toggleLayoutMode() {
 		layoutMode = (layoutMode == LIST_LAYOUT) ? GRID_LAYOUT : LIST_LAYOUT;
 		AppValues.setDirectoryLayoutMode(layoutMode);
 		setupViews();
 	}
 
-	private void setLayoutModeIcon(MenuItem item){
+	private void setLayoutModeIcon(MenuItem item) {
 		Drawable icon = MaterialDrawableBuilder.with(this) // provide a context
 				.setIcon(layoutMode == LIST_LAYOUT ? MaterialDrawableBuilder.IconValue.VIEW_MODULE : MaterialDrawableBuilder.IconValue.VIEW_LIST) // provide an icon
 				.setColor(Color.WHITE) // set the icon color
