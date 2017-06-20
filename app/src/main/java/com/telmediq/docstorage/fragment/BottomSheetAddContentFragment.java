@@ -25,6 +25,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.*;
 
+import com.kbeanie.multipicker.api.ImagePicker;
+import com.kbeanie.multipicker.api.Picker;
+import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenImage;
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqApplication;
 import com.telmediq.docstorage.helper.Constants;
@@ -36,6 +40,7 @@ import net.steamcrafted.materialiconlib.MaterialIconView;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +73,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	private String mCurrentPhotoPath;
 	private Folder folder;
 	private TelmediqApplication app;
+	private ImagePicker imagePicker;
 	private static final int REQUEST_FILE_GET = 1;
 	private static final int REQUEST_IMAGE_CAPTURE = 2;
 	private static final int PERMISSION_REQUEST_EXTERNAL_STORAGE = 3;
@@ -166,7 +172,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 				.show();
 	}
 
-	private void addFromFile () {
+	private void addFromFile() {
 		// Verify app has permission to access external storage
 		int permissionCheck = ContextCompat.checkSelfPermission(
 				getActivity(),
@@ -174,13 +180,23 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 		if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
 			// Request permissions, and handle response in onRequestPermissionsResult
 			requestPermissions(
-					new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+					new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
 					PERMISSION_REQUEST_EXTERNAL_STORAGE);
 		} else {
+			/* This code was not very device agnostic (issues on Samsung S7)
 			Intent addFromFileIntent = new Intent(Intent.ACTION_GET_CONTENT)
 					.setType("image/*")
 					.addCategory(Intent.CATEGORY_OPENABLE);
 			startActivityForResult(addFromFileIntent, REQUEST_FILE_GET);
+			*/
+
+			// Using Multipicker
+			imagePicker = new ImagePicker(this);
+			imagePicker.setImagePickerCallback(imagePickerCallback);
+			imagePicker.shouldGenerateMetadata(false);
+			imagePicker.shouldGenerateThumbnails(false);
+			imagePicker.pickImage();
+			Timber.i("WE PICKED AN IMAGE");
 		}
 	}
 
@@ -195,7 +211,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 			Timber.i("Making permission request for Camera");
 			// Request permissions, and handle response in onRequestPermissionsResult
 			requestPermissions(
-					new String[] { Manifest.permission.CAMERA },
+					new String[]{Manifest.permission.CAMERA},
 					PERMISSION_REQUEST_CAMERA);
 		} else {
 			Timber.i("Camera permission OK");
@@ -226,12 +242,12 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	}
 	//</editor-fold>
 
-	private void uploadFile(Uri fileUri, Integer requestCode) {
+	private void uploadFile(String fileUri, Integer requestCode) {
 		// Create file part
 		java.io.File file;
 		switch (requestCode) {
 			case REQUEST_FILE_GET:
-				file = new java.io.File(getPath(getContext(), fileUri));
+				file = new java.io.File(fileUri);
 				break;
 			case REQUEST_IMAGE_CAPTURE:
 				file = new java.io.File(mCurrentPhotoPath);
@@ -240,7 +256,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 				throw new IllegalStateException("Unknown request code.");
 		}
 
-		RequestBody requestFile = RequestBody.create( MediaType.parse("multipart/form-data"), file);
+		RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 		MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
 		// Create name part
@@ -266,6 +282,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 		return image;
 	}
 
+	//<editor-fold desc="On Results">
 	@Override
 	public void onRequestPermissionsResult(int requestCode,
 	                                       String permissions[], int[] grantResults) {
@@ -297,15 +314,40 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent response) {
+		Timber.i("WE ARE IN ACTIVITY RESULT");
 		if (resultCode == RESULT_OK) {
+			/* Old image selection code
 			if (requestCode == REQUEST_FILE_GET || requestCode == REQUEST_IMAGE_CAPTURE) {
 				uploadFile(response.getData(), requestCode);
+			}
+			*/
+			if (requestCode == Picker.PICK_IMAGE_DEVICE) {
+				if (imagePicker == null) {
+					imagePicker = new ImagePicker(getActivity());
+				}
+				imagePicker.submit(response);
 			}
 		} else {
 			Timber.e("onActivityResult: Activity Result Code not OK");
 		}
 		dismiss();
 	}
+	//</editor-fold>
+
+	//<editor-fold desc="Content Callbacks">
+	ImagePickerCallback imagePickerCallback = new ImagePickerCallback() {
+		@Override
+		public void onImagesChosen(List<ChosenImage> list) {
+			Timber.i("test");
+			uploadFile(list.get(0).getOriginalPath(), REQUEST_FILE_GET);
+		}
+
+		@Override
+		public void onError(String s) {
+
+		}
+	};
+	//</editor-fold>
 
 	//<editor-fold desc="Network Callbacks">
 	Callback<Folder> addFolderCallback = new Callback<Folder>() {
@@ -361,13 +403,14 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 
 	//<editor-fold desc="Path Resolver">
 	// Source: https://stackoverflow.com/questions/20067508/get-real-path-from-uri-android-kitkat-new-storage-access-framework/20559175#20559175
+
 	/**
 	 * Get a file path from a Uri. This will get the the path for Storage Access
 	 * Framework Documents, as well as the _data field for the MediaStore and
 	 * other file-based ContentProviders.
 	 *
 	 * @param context The context.
-	 * @param uri The Uri to query.
+	 * @param uri     The Uri to query.
 	 * @author paulburke
 	 */
 	public static String getPath(final Context context, final Uri uri) {
@@ -413,7 +456,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 				}
 
 				final String selection = "_id=?";
-				final String[] selectionArgs = new String[] {
+				final String[] selectionArgs = new String[]{
 						split[1]
 				};
 
@@ -441,9 +484,9 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	 * Get the value of the data column for this Uri. This is useful for
 	 * MediaStore Uris, and other file-based ContentProviders.
 	 *
-	 * @param context The context.
-	 * @param uri The Uri to query.
-	 * @param selection (Optional) Filter used in the query.
+	 * @param context       The context.
+	 * @param uri           The Uri to query.
+	 * @param selection     (Optional) Filter used in the query.
 	 * @param selectionArgs (Optional) Selection arguments used in the query.
 	 * @return The value of the _data column, which is typically a file path.
 	 */
