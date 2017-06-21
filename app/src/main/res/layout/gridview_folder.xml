@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/listItem_rootView"
+	android:layout_width="match_parent"
+	android:layout_height="70dp"
+	android:layout_weight="1"
+	android:background="?attr/selectableItemBackground"
+	android:padding="4dp">
+
+	<LinearLayout
+		style="@style/simpleListItem"
+		android:layout_alignParentBottom="true"
+		android:background="@android:color/white"
+		android:gravity="center">
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/listItemFolder_folderIcon"
+			style="@style/listItemIcon"
+			android:background="?attr/selectableItemBackgroundBorderless"
+			app:materialIcon="folder"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="24dp"/>
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/listItemFolder_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:ellipsize="middle"
+				android:maxLines="1"
+				android:text="File1"
+				android:textColor="@android:color/black"
+				android:textSize="16sp"/>
+
+		</LinearLayout>
+
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/listItemFolder_menuIcon"
+			style="@style/listItemIcon"
+			android:background="?attr/selectableItemBackgroundBorderless"
+			app:materialIcon="dots_vertical"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="24dp"/>
+
+	</LinearLayout>
+
+</RelativeLayout>

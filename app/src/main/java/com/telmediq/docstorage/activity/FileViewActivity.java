@@ -137,8 +137,9 @@ public class FileViewActivity extends TelmediqActivity {
 
 		switch (id) {
 			case R.id.fileView_menu:
-			default:
 				BottomSheetFileDetailsFragment.newInstance(file.getId()).show(getSupportFragmentManager(), BottomSheetFileDetailsFragment.class.getSimpleName());
+				break;
+			default:
 				break;
 		}
 

@@ -14,6 +14,8 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
+import android.*;
+import android.widget.Toast;
 
 import com.kbeanie.multipicker.api.CacheLocation;
 import com.kbeanie.multipicker.api.CameraImagePicker;
@@ -236,7 +238,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					addFromFile();
 				} else {
-					//TODO: Toast error to user
+					Toast.makeText(getContext(), R.string.denied_access_to_external_storage, Toast.LENGTH_SHORT).show();
 					Timber.e("Don't have permission to access external storage");
 					dismiss();
 				}
@@ -247,8 +249,8 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					addFromCamera();
 				} else {
-					//TODO: Toast error to user
-					Timber.e("Don't have permission to access external storage");
+					Toast.makeText(getContext(), R.string.denied_access_to_camera, Toast.LENGTH_SHORT).show();
+					Timber.e("Don't have permission to access camera");
 					dismiss();
 				}
 			}

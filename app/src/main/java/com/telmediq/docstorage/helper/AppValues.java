@@ -3,6 +3,7 @@ package com.telmediq.docstorage.helper;
 import android.content.SharedPreferences;
 
 import com.telmediq.docstorage.TelmediqApplication;
+import com.telmediq.docstorage.activity.HomeActivity;
 import com.telmediq.docstorage.model.AuthorizationResponse;
 
 import java.util.Map;
@@ -51,6 +52,18 @@ public class AppValues {
 	public static Integer getRootFolderId() {
 		return sharedPrefs().getInt(Constants.Preference.ROOT_FOLDER_ID, 0);
 	}
+
+	public static void setDirectoryLayoutMode(Integer listMode){
+		if (listMode == null){
+			listMode = HomeActivity.LIST_LAYOUT;
+		}
+		sharedPrefs().edit().putInt(Constants.Preference.DIRECTORY_LAYOUT_MODE, listMode).apply();
+	}
+
+	public static Integer getDirectoryLayoutMode(){
+		return sharedPrefs().getInt(Constants.Preference.DIRECTORY_LAYOUT_MODE, HomeActivity.LIST_LAYOUT);
+	}
+
 
 	public static void clear(){
 		sharedPrefs().edit().clear().apply();
