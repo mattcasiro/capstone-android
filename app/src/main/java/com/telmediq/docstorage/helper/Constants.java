@@ -12,6 +12,7 @@ public class Constants {
 	public interface Preference {
 		String ACCESS_TOKEN = BuildConfig.APPLICATION_ID + ".accessToken";
 		String ROOT_FOLDER_ID = BuildConfig.APPLICATION_ID + ".rootFolderId";
+		String DIRECTORY_LAYOUT_MODE = BuildConfig.APPLICATION_ID + ".directoryLayoutMode";
 	}
 
 	public interface Extras {
