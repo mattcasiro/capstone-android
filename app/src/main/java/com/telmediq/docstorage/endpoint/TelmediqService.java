@@ -77,4 +77,19 @@ public interface TelmediqService {
 			@Field("parent") Integer parent,
             @Field("name") String name
 	);
+
+	@PUT("/api/folders/{folderId}/files/{fileId}/")
+	@FormUrlEncoded
+	Call<File> renameFile(
+			@Path("folderId") Integer folderId,
+			@Path("fileId") Integer fileId,
+	        @Field("name") String name
+	);
+
+	@PUT("api/folders/{folderId}/")
+	@FormUrlEncoded
+	Call<Folder> renameFolder(
+			@Path("folderId") Integer folderId,
+			@Field("name") String s
+	);
 }

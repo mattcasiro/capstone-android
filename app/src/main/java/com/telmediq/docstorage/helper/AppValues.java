@@ -66,6 +66,6 @@ public class AppValues {
 
 
 	public static void clear(){
-		sharedPrefs().getAll().clear();
+		sharedPrefs().edit().clear().apply();
 	}
 }

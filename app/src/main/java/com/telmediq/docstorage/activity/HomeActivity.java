@@ -134,7 +134,6 @@ public class HomeActivity extends TelmediqActivity {
 
 	private void setupRecyclerView() {
 		List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
-
 		recyclerView.setLayoutManager(getLayoutManager());
 
 		if (recyclerView.getAdapter() == null || adapter.getLayoutMode() != layoutMode) {
@@ -205,7 +204,8 @@ public class HomeActivity extends TelmediqActivity {
 	private void logout() {
 		AppValues.clear();
 
-		Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+		// Redirecting to main activity will make it more obvious when logout fails
+		Intent intent = new Intent(HomeActivity.this, MainActivity.class);
 		startActivity(intent);
 
 		finish();
