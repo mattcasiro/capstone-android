@@ -36,11 +36,12 @@
 				android:layout_height="match_parent"
 				android:layout_weight="1"
 				android:paddingLeft="16dp"
+				android:maxLines="2"
+				android:ellipsize="middle"
 				android:text="boop"
 				android:textColor="@android:color/black"
 				android:textSize="16sp"/>
-
-
+			
 			<net.steamcrafted.materialiconlib.MaterialIconView
 				android:id="@+id/listItemFile_menu"
 				android:layout_width="wrap_content"

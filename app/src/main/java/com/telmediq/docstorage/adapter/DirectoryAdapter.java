@@ -55,7 +55,6 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 		return layoutMode;
 	}
 
-
 	@Override
 	public DirectoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View contentView;
