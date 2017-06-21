@@ -46,9 +46,9 @@ public interface TelmediqService {
 	@FormUrlEncoded
 	Call<Profile> putProfile(
 			@Field("first_name") String firstName,
-	        @Field("last_name") String lastName
+			@Field("last_name") String lastName
 	);
-	
+
 	@GET("api/folders/")
 	Call<List<Folder>> getFolders();
 
@@ -75,7 +75,7 @@ public interface TelmediqService {
 	@FormUrlEncoded
 	Call<Folder> addFolder(
 			@Field("parent") Integer parent,
-            @Field("name") String name
+			@Field("name") String name
 	);
 
 	@PUT("/api/folders/{folderId}/files/{fileId}/")

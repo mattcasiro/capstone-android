@@ -24,6 +24,7 @@ import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.EditText;
 import android.*;
+import android.widget.Toast;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqApplication;
@@ -215,11 +216,13 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 					startActivityForResult(addFromCameraIntent, REQUEST_IMAGE_CAPTURE);
 				} catch (java.io.IOException ex) {
 					Timber.e("Device was unable to create a temporary image file");
-					//TODO: Toast user unable to create file
+					Toast.makeText(getContext(), R.string.unable_to_create_file, Toast.LENGTH_SHORT).show();
+
 					dismiss();
 				}
 			} else {
-				//TODO: Toast user that no camera app exists
+				Toast.makeText(getContext(), R.string.no_camera, Toast.LENGTH_SHORT).show();
+
 				dismiss();
 			}
 		}
@@ -276,7 +279,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					addFromFile();
 				} else {
-					//TODO: Toast error to user
+					Toast.makeText(getContext(), R.string.denied_access_to_external_storage, Toast.LENGTH_SHORT).show();
 					Timber.e("Don't have permission to access external storage");
 					dismiss();
 				}
@@ -287,8 +290,8 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					addFromCamera();
 				} else {
-					//TODO: Toast error to user
-					Timber.e("Don't have permission to access external storage");
+					Toast.makeText(getContext(), R.string.denied_access_to_camera, Toast.LENGTH_SHORT).show();
+					Timber.e("Don't have permission to access camera");
 					dismiss();
 				}
 			}

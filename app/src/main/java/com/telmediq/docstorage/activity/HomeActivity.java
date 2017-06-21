@@ -253,6 +253,7 @@ public class HomeActivity extends TelmediqActivity {
 				startActivity(intent);
 				break;
 			case R.id.action_settings:
+				Toast.makeText(this, R.string.implement_later, Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.action_logout:
 				logout();
