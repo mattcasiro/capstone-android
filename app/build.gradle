@@ -54,6 +54,9 @@ dependencies {
 	//PhotoView - https://github.com/chrisbanes/PhotoView
 	compile 'com.github.chrisbanes:PhotoView:2.0.0'
 
+	//Multipicker - https://github.com/coomar2841/android-multipicker-library
+	compile 'com.kbeanie:multipicker:1.1.31@aar'
+
 	//Test
 	androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
 		exclude group: 'com.android.support', module: 'support-annotations'

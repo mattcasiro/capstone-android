@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.telmediq.docstorage">
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-	<!-- WRITE_EXTERNAL_STORAGE for camera pictures is only required prior to Android v4.4 -->
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-	                 android:maxSdkVersion="18" />
+
+	<!-- WRITE_EXTERNAL_STORAGE and READ_CONTACTS for Multipicker library -->
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.READ_CONTACTS"/>
+
 	<uses-permission android:name="android.permission.CAMERA"/>
+
 	<uses-feature android:name="android.hardware.camera"
 	              android:required="false" />
 
