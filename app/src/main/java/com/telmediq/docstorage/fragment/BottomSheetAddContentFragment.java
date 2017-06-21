@@ -167,7 +167,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 				.show();
 	}
 
-	private void addFromFile () {
+	private void addFromFile() {
 		// Verify app has permission to access external storage
 		int permissionCheck = ContextCompat.checkSelfPermission(
 				getActivity(),
@@ -175,7 +175,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 		if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
 			// Request permissions, and handle response in onRequestPermissionsResult
 			requestPermissions(
-					new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+					new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
 					PERMISSION_REQUEST_EXTERNAL_STORAGE);
 		} else {
 			Intent addFromFileIntent = new Intent(Intent.ACTION_GET_CONTENT)
@@ -196,7 +196,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 			Timber.i("Making permission request for Camera");
 			// Request permissions, and handle response in onRequestPermissionsResult
 			requestPermissions(
-					new String[] { Manifest.permission.CAMERA },
+					new String[]{Manifest.permission.CAMERA},
 					PERMISSION_REQUEST_CAMERA);
 		} else {
 			Timber.i("Camera permission OK");
@@ -243,7 +243,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 				throw new IllegalStateException("Unknown request code.");
 		}
 
-		RequestBody requestFile = RequestBody.create( MediaType.parse("multipart/form-data"), file);
+		RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 		MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
 		// Create name part
@@ -364,13 +364,14 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 
 	//<editor-fold desc="Path Resolver">
 	// Source: https://stackoverflow.com/questions/20067508/get-real-path-from-uri-android-kitkat-new-storage-access-framework/20559175#20559175
+
 	/**
 	 * Get a file path from a Uri. This will get the the path for Storage Access
 	 * Framework Documents, as well as the _data field for the MediaStore and
 	 * other file-based ContentProviders.
 	 *
 	 * @param context The context.
-	 * @param uri The Uri to query.
+	 * @param uri     The Uri to query.
 	 * @author paulburke
 	 */
 	public static String getPath(final Context context, final Uri uri) {
@@ -416,7 +417,7 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 				}
 
 				final String selection = "_id=?";
-				final String[] selectionArgs = new String[] {
+				final String[] selectionArgs = new String[]{
 						split[1]
 				};
 
@@ -444,9 +445,9 @@ public class BottomSheetAddContentFragment extends BottomSheetDialogFragment {
 	 * Get the value of the data column for this Uri. This is useful for
 	 * MediaStore Uris, and other file-based ContentProviders.
 	 *
-	 * @param context The context.
-	 * @param uri The Uri to query.
-	 * @param selection (Optional) Filter used in the query.
+	 * @param context       The context.
+	 * @param uri           The Uri to query.
+	 * @param selection     (Optional) Filter used in the query.
 	 * @param selectionArgs (Optional) Selection arguments used in the query.
 	 * @return The value of the _data column, which is typically a file path.
 	 */

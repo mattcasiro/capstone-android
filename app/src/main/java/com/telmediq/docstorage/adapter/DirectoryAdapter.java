@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.telmediq.docstorage.R;
+import com.telmediq.docstorage.activity.HomeActivity;
 import com.telmediq.docstorage.helper.UrlHelper;
 import com.telmediq.docstorage.model.DirectoryHolder;
 import com.telmediq.docstorage.model.File;
@@ -33,10 +34,12 @@ import timber.log.Timber;
 public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.ViewHolder> {
 	private List<DirectoryHolder> data;
 	private Listener listener;
+	private Integer layoutMode;
 
-	public DirectoryAdapter(List<DirectoryHolder> data, Listener listener) {
+	public DirectoryAdapter(List<DirectoryHolder> data, Listener listener, Integer layoutMode) {
 		this.data = data;
 		this.listener = listener;
+		this.layoutMode = layoutMode;
 	}
 
 	@Override
@@ -44,6 +47,13 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 		return data.get(position).getType();
 	}
 
+	public void setLayoutMode(Integer layoutMode) {
+		this.layoutMode = layoutMode;
+	}
+
+	public int getLayoutMode() {
+		return layoutMode;
+	}
 
 	@Override
 	public DirectoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -51,10 +61,12 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 
 		switch (viewType) {
 			case DirectoryHolder.FOLDER:
-				contentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem_folder, parent, false);
+				contentView = LayoutInflater.from(parent.getContext())
+						.inflate(layoutMode == HomeActivity.LIST_LAYOUT ? R.layout.listitem_folder : R.layout.gridview_folder, parent, false);
 				break;
 			case DirectoryHolder.FILE:
-				contentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem_file, parent, false);
+				contentView = LayoutInflater.from(parent.getContext())
+						.inflate(layoutMode == HomeActivity.LIST_LAYOUT ? R.layout.listitem_file : R.layout.gridview_file, parent, false);
 				break;
 			case DirectoryHolder.HEADER:
 				contentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem_header, parent, false);
@@ -157,7 +169,9 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 			DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
 			folderTitleText.setText(folder.getName());
 
-			folderModifiedDate.setText(df.format(folder.getModified()));
+			if (folderModifiedDate != null) {
+				folderModifiedDate.setText(df.format(folder.getModified()));
+			}
 
 			if (listener == null) {
 				return;
@@ -186,7 +200,9 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
 			DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
 			filename.setText(file.getName());
 
-			fileModifiedDate.setText(df.format(file.getModified()));
+			if (fileModifiedDate != null) {
+				fileModifiedDate.setText(df.format(file.getModified()));
+			}
 
 			Glide.with(ctx)
 					.load(UrlHelper.getAuthenticatedUrl(file.getUrl()))

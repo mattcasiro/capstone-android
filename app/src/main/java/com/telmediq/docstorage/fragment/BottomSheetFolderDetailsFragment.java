@@ -1,5 +1,6 @@
 package com.telmediq.docstorage.fragment;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -150,7 +152,25 @@ public class BottomSheetFolderDetailsFragment extends BottomSheetDialogFragment 
 				starSwitch.toggle();
 				break;
 			case R.id.renameListItem:
+				Timber.d("renaming file");
 
+				final EditText folderName = new EditText(getContext());
+
+				DialogInterface.OnClickListener renameListener = new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Call<Folder> call = app.getTelmediqService().renameFolder(folder.getId(), folderName.getText().toString());
+						call.enqueue(renameFolderCallback);
+					}
+				};
+
+				new AlertDialog.Builder(getContext())
+						.setTitle(("Rename File"))
+						.setView(folderName)
+						.setPositiveButton("OK", renameListener)
+						.setNegativeButton("Cancel", null)
+						.create()
+						.show();
 				break;
 			case R.id.removeListItem:
 				Timber.d("removing folder");
@@ -173,6 +193,7 @@ public class BottomSheetFolderDetailsFragment extends BottomSheetDialogFragment 
 
 		Timber.d("Clicked id# %s", view.getId());
 	}
+
 
 	@OnCheckedChanged({R.id.starSwitch})
 	public void onOptionSwitchToggled(CompoundButton button, boolean isChecked) {
@@ -214,6 +235,30 @@ public class BottomSheetFolderDetailsFragment extends BottomSheetDialogFragment 
 		@Override
 		public void onFailure(Call<Folder> call, Throwable t) {
 			Timber.d("failed to delete folder");
+		}
+	};
+
+	Callback<Folder> renameFolderCallback = new Callback<Folder>() {
+		@Override
+		public void onResponse(Call<Folder> call, final Response<Folder> response) {
+			String error = Utils.checkResponseForError(response);
+			if (error != null) {
+				onFailure(call, new Throwable(error));
+				return;
+			}
+			Realm realm = Realm.getDefaultInstance();
+			realm.executeTransaction(new Realm.Transaction() {
+				@Override
+				public void execute(Realm realm) {
+					realm.copyToRealmOrUpdate(response.body());
+				}
+			});
+			dismiss();
+		}
+
+		@Override
+		public void onFailure(Call<Folder> call, Throwable t) {
+			Timber.d("failed to rename file");
 		}
 	};
 	//</editor-fold>
