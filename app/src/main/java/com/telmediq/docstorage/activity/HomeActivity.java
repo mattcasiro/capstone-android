@@ -95,6 +95,8 @@ public class HomeActivity extends TelmediqActivity {
 	protected void onResume() {
 		super.onResume();
 		setupRealmListeners(true);
+		List<DirectoryHolder> directoryHolders = DirectoryHolder.generateDirectoryHolder(folders, files);
+		adapter.updateData(directoryHolders);
 	}
 	//</editor-fold>
 
