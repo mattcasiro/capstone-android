@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/action_gridview"
+		android:title="@string/action_gridview"
+		app:materialIcon="view_grid"
+		app:showAsAction="always"/>
+
+	<item
+		android:id="@+id/action_search"
+		android:title="@string/action_search"
+		app:actionViewClass="android.support.v7.widget.SearchView"
+		app:materialIcon="magnify"
+		app:showAsAction="always|collapseActionView"/>
+
+	<item
+		android:id="@+id/action_profile"
+		android:title="@string/action_profile"
+		app:materialIcon="face_profile"
+		app:showAsAction="never"/>
+
 	<item
 		android:id="@+id/action_settings"
-		android:orderInCategory="100"
 		android:title="@string/action_settings"
-		android:icon="@drawable/ic_menu_gallery"
-		app:showAsAction="ifRoom"/>
+		app:materialIcon="settings"
+		app:showAsAction="never"/>
+
+	<item
+		android:id="@+id/action_logout"
+		android:title="@string/action_logout"
+		app:materialIcon="logout"
+		app:showAsAction="never"/>
 </menu>

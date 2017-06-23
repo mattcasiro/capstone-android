@@ -8,4 +8,6 @@
 	<color name="textSecondary">#8a000000</color>
 	<color name="textDisabled">#61000000</color>
 	<color name="divider">#23000000</color>
+	<color name="backgroundPrimary">#EBEBEB</color>
+	<color name="blackTransparent">#70000000</color>
 </resources>

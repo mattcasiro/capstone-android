@@ -13,7 +13,7 @@ import io.realm.Realm;
  */
 
 public class TelmediqActivity extends AppCompatActivity {
-	Realm realm;
+	protected Realm realm;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,6 +34,6 @@ public class TelmediqActivity extends AppCompatActivity {
 	}
 
 	public TelmediqService getTelmediqService() {
-		return ((TelmediqApplication)getApplication()).getTelmediqService();
+		return ((TelmediqApplication) getApplication()).getTelmediqService();
 	}
 }

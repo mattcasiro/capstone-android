@@ -3,7 +3,10 @@ package com.telmediq.docstorage.helper;
 import android.content.SharedPreferences;
 
 import com.telmediq.docstorage.TelmediqApplication;
+import com.telmediq.docstorage.activity.HomeActivity;
 import com.telmediq.docstorage.model.AuthorizationResponse;
+
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -36,4 +39,33 @@ public class AppValues {
 		return !getAccessToken().isEmpty();
 	}
 	//</editor-fold>
+
+	public static void setRootFolderId(AuthorizationResponse authorization) {
+		if (authorization == null) {
+			sharedPrefs().edit().remove(Constants.Preference.ROOT_FOLDER_ID).apply();
+			return;
+		}
+		sharedPrefs().edit().putInt(Constants.Preference.ROOT_FOLDER_ID, authorization.getRootId()).apply();
+		Timber.i("Root folder set: %d", authorization.getRootId());
+	}
+
+	public static Integer getRootFolderId() {
+		return sharedPrefs().getInt(Constants.Preference.ROOT_FOLDER_ID, 0);
+	}
+
+	public static void setDirectoryLayoutMode(Integer listMode){
+		if (listMode == null){
+			listMode = HomeActivity.LIST_LAYOUT;
+		}
+		sharedPrefs().edit().putInt(Constants.Preference.DIRECTORY_LAYOUT_MODE, listMode).apply();
+	}
+
+	public static Integer getDirectoryLayoutMode(){
+		return sharedPrefs().getInt(Constants.Preference.DIRECTORY_LAYOUT_MODE, HomeActivity.LIST_LAYOUT);
+	}
+
+
+	public static void clear(){
+		sharedPrefs().edit().clear().apply();
+	}
 }

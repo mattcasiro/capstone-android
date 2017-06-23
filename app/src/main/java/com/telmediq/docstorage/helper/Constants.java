@@ -11,9 +11,17 @@ public class Constants {
 
 	public interface Preference {
 		String ACCESS_TOKEN = BuildConfig.APPLICATION_ID + ".accessToken";
+		String ROOT_FOLDER_ID = BuildConfig.APPLICATION_ID + ".rootFolderId";
+		String DIRECTORY_LAYOUT_MODE = BuildConfig.APPLICATION_ID + ".directoryLayoutMode";
 	}
 
 	public interface Extras {
 		String FILE_ID = BuildConfig.APPLICATION_ID + ".fileId";
+		String FOLDER_ID = BuildConfig.APPLICATION_ID + ".folderId";
+		String SEARCH_STRING = BuildConfig.APPLICATION_ID + ".searchString";
+	}
+
+	public interface Actions {
+		String FILE_DELETED = BuildConfig.APPLICATION_ID + ".fileDeleted";
 	}
 }

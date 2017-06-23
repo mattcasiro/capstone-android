@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 
-	android:id="@+id/filelistitem_root"
+	android:id="@+id/listItem_rootView"
 	android:layout_width="match_parent"
 	android:layout_height="70dp"
 	android:background="?attr/selectableItemBackground">
@@ -11,18 +11,17 @@
 	<LinearLayout
 		style="@style/simpleListItem"
 		android:layout_alignParentBottom="true"
-		android:layout_below="@+id/imageView2"
-		android:background="@android:color/transparent"
+		android:layout_below="@+id/listItemFolder_divider"
+		android:background="@android:color/white"
 		android:gravity="center">
 
-		<ImageView
-			android:id="@+id/image_image"
+		<net.steamcrafted.materialiconlib.MaterialIconView
+			android:id="@+id/listItemFolder_folderIcon"
 			style="@style/listItemIcon"
-			android:layout_width="56dp"
-			android:layout_height="56dp"
-			android:padding="@dimen/itemSpacing"
-			android:scaleType="centerCrop"
-			android:src="@drawable/muffin"/>
+			android:background="?attr/selectableItemBackgroundBorderless"
+			app:materialIcon="folder"
+			app:materialIconColor="@color/textSecondary"
+			app:materialIconSize="24dp"/>
 
 		<LinearLayout
 			android:layout_width="0dp"
@@ -31,7 +30,7 @@
 			android:orientation="vertical">
 
 			<TextView
-				android:id="@+id/filelistitem_filename"
+				android:id="@+id/listItemFolder_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:ellipsize="middle"
@@ -53,7 +52,7 @@
 					android:textSize="14sp"/>
 
 				<TextView
-					android:id="@+id/filelistitem_modified_date"
+					android:id="@+id/listItemFolder_modifiedDate"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:ellipsize="middle"
@@ -66,7 +65,7 @@
 		</LinearLayout>
 
 		<net.steamcrafted.materialiconlib.MaterialIconView
-			android:id="@+id/filelistitem_menu"
+			android:id="@+id/listItemFolder_menuIcon"
 			style="@style/listItemIcon"
 			android:background="?attr/selectableItemBackgroundBorderless"
 			app:materialIcon="dots_vertical"
@@ -76,7 +75,7 @@
 	</LinearLayout>
 
 	<ImageView
-		android:id="@+id/imageView2"
+		android:id="@+id/listItemFolder_divider"
 		style="@style/divider"/>
 
 </RelativeLayout>

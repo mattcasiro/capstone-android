@@ -1,35 +1,52 @@
 package com.telmediq.docstorage.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
+import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.telmediq.docstorage.R;
 import com.telmediq.docstorage.TelmediqActivity;
+import com.telmediq.docstorage.helper.AppValues;
+import com.telmediq.docstorage.helper.Constants;
 import com.telmediq.docstorage.helper.Utils;
 import com.telmediq.docstorage.model.AuthorizationResponse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
 
+import static com.telmediq.docstorage.R.layout.activity_login;
+
 public class LoginActivity extends TelmediqActivity {
 	//<editor-fold desc="View Initialization">
-	@BindView(R.id.activityLogin_emailText) EditText emailEditText;
-	@BindView(R.id.activityLogin_passwordText) EditText passwordEditText;
-	@BindView(R.id.activityLogin_loginButton) Button loginButton;
+	@BindView(R.id.activityLogin_emailText)
+	EditText emailEditText;
+	@BindView(R.id.activityLogin_passwordText)
+	EditText passwordEditText;
+	@BindView(R.id.activityLogin_loginButton)
+	Button loginButton;
+	@BindView(R.id.activityLogin_emailLayout)
+	TextInputLayout emailLayout;
+	@BindView(R.id.activityLogin_passwordLayout)
+	TextInputLayout passwordLayout;
 	//</editor-fold>
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		setContentView(activity_login);
 		ButterKnife.bind(this);
 
 		loginButton.setOnClickListener(loginClicked);
@@ -38,18 +55,24 @@ public class LoginActivity extends TelmediqActivity {
 	private void login() {
 		String email = emailEditText.getText().toString();
 		String password = passwordEditText.getText().toString();
+
+		// Validate both so that all errors are displayed, then check the validity
+		validateEmailAddress();
+		validatePassword();
+		if (!validateEmailAddress() || !validatePassword()) {
+			Timber.e("Invalid or missing credentials, login cancelled");
+			return;
+		}
 		Timber.i("email: %s, password: %s", email, password);
 
 		Call<AuthorizationResponse> loginCall = getTelmediqService().login(email, password);
 		loginCall.enqueue(loginCallback);
 	}
+
 	//<editor-fold desc="Listeners">
 	View.OnClickListener loginClicked = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-	//		Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-	//		startActivity(intent);
-	//		finish();
 			login();
 		}
 	};
@@ -64,13 +87,80 @@ public class LoginActivity extends TelmediqActivity {
 				onFailure(call, new Throwable(error));
 				return;
 			}
+
 			Timber.i(response.body().getStatus());
+			AppValues.setAccessToken(response.body());
+			AppValues.setRootFolderId(response.body());
+
+			// Redirect user to the Home activity
+			Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+			intent.putExtra(Constants.Extras.FOLDER_ID, response.body().getRootId());
+			startActivity(intent);
+			finish();
 		}
 
 		@Override
 		public void onFailure(Call<AuthorizationResponse> call, Throwable t) {
 			Timber.e(t.getMessage());
+			Snackbar snackbar = Snackbar
+					.make(findViewById(R.id.login_coordinatorLayout),
+							"Invalid email or password",
+							Snackbar.LENGTH_LONG);
+			snackbar.getView().setBackgroundColor(Color.RED);
+			snackbar.show();
 		}
 	};
 	//</editor-fold>
+
+	//<editor-fold desc="Validation">
+	private boolean validateEmailAddress() {
+		if (emailEditText == null) {
+			return false;
+		}
+
+		String error = validateEmailAddress(emailEditText.getText().toString());
+		if (error != null) {
+			emailLayout.setError(error);
+			return false;
+		} else {
+			emailLayout.setErrorEnabled(false);
+		}
+		return true;
+	}
+
+	private String validateEmailAddress(String email) {
+		if (email == null || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+			return "Enter a valid email address";
+		}
+		return null;
+	}
+
+	private boolean validatePassword() {
+		if (passwordEditText == null) {
+			return false;
+		}
+
+		String error = validatePassword(passwordEditText.getText().toString());
+		if (error != null) {
+			passwordLayout.setError(error);
+			return false;
+		} else {
+			passwordLayout.setErrorEnabled(false);
+		}
+		return true;
+	}
+
+	private String validatePassword(String password) {
+		if (password == null || password.equalsIgnoreCase("")) {
+			return "Password is required";
+		}
+		return null;
+	}
+	//</editor-fold>
+
+	@OnClick(R.id.login_coordinatorLayout)
+	public void closeKeyboard() {
+		InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+	}
 }

@@ -1,6 +1,10 @@
 package com.telmediq.docstorage.helper;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+
+import com.telmediq.docstorage.R;
 
 import java.io.IOException;
 
@@ -16,15 +20,21 @@ public class Utils {
 		if (response.raw().code() < 200 || response.raw().code() > 299) {
 			try {
 				error = response.errorBody().string();
-				if (!error.startsWith("{")) {
-					if (error.toLowerCase().contains("No address associated with hostname")) {
-						error = "Not connected to the internet";
-					}
-				}
 			} catch (IOException e) {
 				error = response.raw().message();
 			}
 		}
 		return error;
+	}
+
+
+	public static AlertDialog buildAlertDialog(Context context, int title, int message, int icon, DialogInterface.OnClickListener listener) {
+		return new AlertDialog.Builder(context)
+				.setTitle(title)
+				.setMessage(message)
+				.setIcon(icon)
+				.setPositiveButton(R.string.yes, listener)
+				.setNegativeButton(R.string.no, null)
+				.create();
 	}
 }

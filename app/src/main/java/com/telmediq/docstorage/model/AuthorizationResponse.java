@@ -7,6 +7,7 @@ package com.telmediq.docstorage.model;
 public class AuthorizationResponse {
 	private String status;
 	private String token;
+	private Integer root_id;
 
 	public AuthorizationResponse() {
 
@@ -31,5 +32,9 @@ public class AuthorizationResponse {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public Integer getRootId() {
+		return root_id;
 	}
 }

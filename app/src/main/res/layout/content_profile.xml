@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	tools:showIn="@layout/activity_profile">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/profile_detailsTextView"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="4dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginRight="8dp"
+			android:layout_marginTop="@dimen/activity_vertical_margin"
+			android:text="@string/details"
+			android:textColor="@color/textSecondary"
+			android:textStyle="bold"/>
+
+		<android.support.v7.widget.CardView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="4dp">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:orientation="vertical"
+				android:paddingBottom="8dp"
+				android:paddingLeft="@dimen/activity_horizontal_margin"
+				android:paddingRight="@dimen/activity_horizontal_margin"
+				android:paddingTop="8dp">
+
+				<android.support.design.widget.TextInputLayout
+					android:id="@+id/profile_firstNameLayout"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
+
+					<AutoCompleteTextView
+						android:id="@+id/profile_firstNameText"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:hint="@string/first_name"
+						android:imeOptions="actionNext"
+						android:inputType="textPersonName"
+						android:textColor="@color/profile_edit_text"/>
+				</android.support.design.widget.TextInputLayout>
+
+				<android.support.design.widget.TextInputLayout
+					android:id="@+id/profile_lastNameLayout"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
+
+					<AutoCompleteTextView
+						android:id="@+id/profile_lastNameText"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:hint="@string/last_name"
+						android:imeOptions="actionDone"
+						android:inputType="textPersonName"
+						android:textColor="@color/profile_edit_text"/>
+				</android.support.design.widget.TextInputLayout>
+
+				<android.support.design.widget.TextInputLayout
+					android:id="@+id/profile_emailLayout"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
+
+					<AutoCompleteTextView
+						android:id="@+id/profile_emailText"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:enabled="false"
+						android:hint="@string/email"
+						android:imeOptions="actionDone"
+						android:inputType="textPersonName"
+						android:textColor="@color/profile_edit_text"/>
+				</android.support.design.widget.TextInputLayout>
+			</LinearLayout>
+		</android.support.v7.widget.CardView>
+	</LinearLayout>
+</ScrollView>
